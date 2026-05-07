@@ -1,0 +1,1602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZoneUp – Game On. Study On.</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --p1:#6B21E8;--p2:#8B5CF6;--p3:#A78BFA;--p4:#C4B5FD;--p5:#EDE9FE;--p6:#F5F3FF;
+  --grad:linear-gradient(135deg,#6B21E8 0%,#8B5CF6 50%,#A855F7 100%);
+  --grad-soft:linear-gradient(135deg,#EDE9FE 0%,#F5F3FF 100%);
+  --accent-yellow:#FBBF24;--accent-green:#10B981;--accent-red:#EF4444;--accent-blue:#3B82F6;
+  --white:#FFFFFF;--dark:#1E1B4B;--gray:#6B7280;--gray-light:#F3F4F6;
+  --shadow-sm:0 2px 8px rgba(107,33,232,.10);--shadow-md:0 6px 24px rgba(107,33,232,.15);
+  --shadow-lg:0 12px 40px rgba(107,33,232,.22);--shadow-glow:0 0 30px rgba(139,92,246,.35);
+  --radius-sm:8px;--radius-md:14px;--radius-lg:20px;--radius-xl:28px;--radius-pill:999px;
+}
+html{scroll-behavior:smooth;}
+body{font-family:'Poppins',sans-serif;background:#F5F3FF;color:var(--dark);line-height:1.6;min-height:100vh;}
+::-webkit-scrollbar{width:6px;}
+::-webkit-scrollbar-track{background:var(--p6);}
+::-webkit-scrollbar-thumb{background:var(--p3);border-radius:3px;}
+
+/* ===== NAVBAR ===== */
+.navbar{background:var(--white);border-bottom:3px solid var(--p5);position:sticky;top:0;z-index:1000;box-shadow:0 2px 16px rgba(107,33,232,.08);}
+.nav-container{max-width:1200px;margin:auto;display:flex;justify-content:space-between;align-items:center;padding:12px 24px;}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.logo-icon{width:40px;height:40px;background:var(--grad);border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:var(--shadow-md);}
+.logo-text{font-family:'Nunito',sans-serif;font-size:24px;font-weight:900;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-0.5px;}
+.nav-links{display:flex;gap:4px;flex-wrap:wrap;}
+.nav-btn{background:none;border:none;padding:8px 14px;border-radius:var(--radius-pill);cursor:pointer;font-family:'Poppins',sans-serif;font-size:12px;font-weight:600;color:var(--gray);transition:all .2s;}
+.nav-btn:hover{background:var(--p5);color:var(--p1);}
+.nav-btn.active{background:var(--grad);color:var(--white);box-shadow:var(--shadow-sm);}
+.nav-user-chip{display:flex;align-items:center;gap:8px;background:var(--p5);padding:6px 14px 6px 8px;border-radius:var(--radius-pill);cursor:pointer;border:none;font-family:'Poppins',sans-serif;font-size:12px;font-weight:600;color:var(--p1);transition:all .2s;}
+.nav-user-chip:hover{background:var(--p4);}
+.nav-avatar-sm{width:28px;height:28px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:var(--white);font-family:'Nunito',sans-serif;}
+
+/* ===== PAGES ===== */
+.page{display:none;animation:fadeUp .35s ease;}
+.page.active{display:block;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+
+/* ===== BUTTONS ===== */
+.btn-primary{background:var(--grad);color:var(--white);border:none;padding:13px 30px;border-radius:var(--radius-pill);font-family:'Nunito',sans-serif;font-weight:800;font-size:14px;cursor:pointer;transition:all .3s;box-shadow:var(--shadow-md);}
+.btn-primary:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);}
+.btn-secondary{background:var(--white);color:var(--p1);border:2px solid var(--p4);padding:11px 28px;border-radius:var(--radius-pill);font-family:'Nunito',sans-serif;font-weight:800;font-size:14px;cursor:pointer;transition:all .3s;}
+.btn-secondary:hover{background:var(--p5);border-color:var(--p2);}
+.btn-sm{padding:8px 18px;font-size:12px;}
+.btn-icon{width:42px;height:42px;border-radius:50%;border:2px solid var(--p4);background:var(--white);color:var(--p1);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.btn-icon:hover{border-color:var(--p2);background:var(--p5);}
+
+/* ===== CARD ===== */
+.card{background:var(--white);border-radius:var(--radius-lg);padding:20px;box-shadow:var(--shadow-sm);border:1.5px solid var(--p5);transition:all .2s;}
+.card:hover{box-shadow:var(--shadow-md);border-color:var(--p4);}
+.card-title{font-family:'Nunito',sans-serif;font-size:15px;font-weight:800;color:var(--p1);margin-bottom:14px;display:flex;align-items:center;gap:6px;}
+.stat-card{background:var(--white);border-radius:var(--radius-md);padding:18px;box-shadow:var(--shadow-sm);border:1.5px solid var(--p5);text-align:center;}
+.stat-num{font-family:'Nunito',sans-serif;font-size:26px;font-weight:900;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.1;}
+.stat-label{font-size:11px;color:var(--gray);margin-top:3px;font-weight:600;}
+.prog-wrap{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.prog-label{font-size:12px;color:var(--gray);min-width:90px;font-weight:600;}
+.prog-bar{flex:1;height:8px;background:var(--p5);border-radius:4px;overflow:hidden;}
+.prog-fill{height:100%;background:var(--grad);border-radius:4px;transition:width .6s ease;}
+.prog-pct{font-size:11px;color:var(--p1);font-weight:800;min-width:30px;text-align:right;}
+.avatar{width:42px;height:42px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;color:var(--white);flex-shrink:0;font-family:'Nunito',sans-serif;}
+.status{display:inline-block;padding:3px 10px;border-radius:var(--radius-pill);font-size:10px;font-weight:800;font-family:'Nunito',sans-serif;}
+.s-active{background:#D1FAE5;color:#065F46;}
+.s-idle{background:#FEF3C7;color:#92400E;}
+.s-offline{background:#FEE2E2;color:#991B1B;}
+.s-done{background:#D1FAE5;color:#065F46;}
+.s-pending{background:#FEF3C7;color:#92400E;}
+.data-table{width:100%;border-collapse:collapse;font-size:12px;}
+.data-table th{text-align:left;color:var(--p1);font-size:11px;font-weight:800;padding:10px 12px;border-bottom:2px solid var(--p5);font-family:'Nunito',sans-serif;letter-spacing:.3px;}
+.data-table td{padding:11px 12px;border-bottom:1px solid var(--p6);color:var(--gray);vertical-align:middle;}
+.data-table tr:last-child td{border-bottom:none;}
+.data-table tr:hover td{background:var(--p6);}
+.page-hero{background:var(--grad);padding:28px 24px;position:relative;overflow:hidden;}
+.page-hero::before{content:'';position:absolute;width:300px;height:300px;background:rgba(255,255,255,.06);border-radius:50%;top:-100px;right:-80px;pointer-events:none;}
+.page-hero::after{content:'';position:absolute;width:200px;height:200px;background:rgba(255,255,255,.04);border-radius:50%;bottom:-60px;left:-40px;pointer-events:none;}
+.page-hero h2{color:var(--white);font-family:'Nunito',sans-serif;font-size:22px;font-weight:900;position:relative;}
+.page-hero p{color:rgba(255,255,255,.8);font-size:13px;margin-top:3px;position:relative;}
+.page-footer{background:var(--dark);color:rgba(255,255,255,.6);text-align:center;padding:22px;font-size:12px;font-weight:600;}
+.page-footer span{color:var(--p3);}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;padding:20px 24px;}
+.content-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:0 24px 24px;}
+@media(max-width:640px){.content-grid{grid-template-columns:1fr;}.nav-links{gap:2px;}.nav-btn{padding:6px 8px;font-size:11px;}}
+
+/* ===== INPUT FIELDS ===== */
+.form-input{width:100%;border:2px solid var(--p5);border-radius:var(--radius-sm);padding:12px 14px;font-family:'Poppins',sans-serif;font-size:13px;color:var(--dark);background:var(--white);outline:none;transition:border-color .2s;}
+.form-input:focus{border-color:var(--p2);box-shadow:0 0 0 3px rgba(139,92,246,.1);}
+.form-textarea{width:100%;border:2px solid var(--p5);border-radius:var(--radius-sm);padding:10px 12px;font-family:'Poppins',sans-serif;font-size:12px;color:var(--dark);background:var(--p6);resize:none;outline:none;transition:border-color .2s;}
+.form-textarea:focus{border-color:var(--p2);}
+.form-select{padding:9px 14px;border:2px solid rgba(255,255,255,.3);border-radius:var(--radius-sm);background:rgba(255,255,255,.15);font-family:'Poppins',sans-serif;font-size:12px;color:var(--white);cursor:pointer;outline:none;backdrop-filter:blur(6px);}
+.form-select option{color:var(--dark);background:var(--white);}
+
+/* ============================================================
+   LOGIN PAGE
+============================================================ */
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--grad);padding:20px;position:relative;overflow:hidden;}
+.login-bg1{position:absolute;width:500px;height:500px;background:rgba(255,255,255,.05);border-radius:50%;top:-200px;right:-150px;pointer-events:none;}
+.login-bg2{position:absolute;width:350px;height:350px;background:rgba(255,255,255,.04);border-radius:50%;bottom:-100px;left:-100px;pointer-events:none;}
+.login-card{background:var(--white);border-radius:var(--radius-xl);padding:40px 36px;width:100%;max-width:420px;box-shadow:0 24px 60px rgba(0,0,0,.25);position:relative;}
+.login-logo{text-align:center;margin-bottom:28px;}
+.login-logo .logo-icon{width:56px;height:56px;margin:0 auto 10px;font-size:26px;}
+.login-logo .logo-text{font-size:28px;}
+.login-tabs{display:flex;background:var(--p6);border-radius:var(--radius-pill);padding:4px;margin-bottom:24px;}
+.login-tab{flex:1;padding:9px;border-radius:var(--radius-pill);border:none;cursor:pointer;font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;color:var(--gray);background:none;transition:all .2s;}
+.login-tab.active{background:var(--grad);color:var(--white);box-shadow:var(--shadow-sm);}
+.login-form-group{margin-bottom:16px;}
+.login-form-group label{display:block;font-size:12px;font-weight:700;color:var(--dark);margin-bottom:6px;}
+.login-divider{display:flex;align-items:center;gap:12px;margin:20px 0;}
+.login-divider::before,.login-divider::after{content:'';flex:1;height:1px;background:var(--p5);}
+.login-divider span{font-size:11px;color:var(--gray);font-weight:600;}
+.role-pick{display:flex;gap:10px;margin-bottom:20px;}
+.role-opt{flex:1;border:2px solid var(--p5);border-radius:var(--radius-md);padding:14px 10px;text-align:center;cursor:pointer;transition:all .2s;background:var(--white);}
+.role-opt:hover{border-color:var(--p3);background:var(--p6);}
+.role-opt.active{border-color:var(--p2);background:var(--p5);}
+.role-opt .r-ico{font-size:24px;display:block;margin-bottom:4px;}
+.role-opt .r-lbl{font-size:11px;font-weight:800;color:var(--dark);font-family:'Nunito',sans-serif;}
+.alert-strip{background:rgba(251,191,36,.15);border:1.5px solid rgba(251,191,36,.4);border-radius:var(--radius-md);padding:10px 16px;font-size:12px;color:#92400E;display:flex;align-items:center;gap:8px;font-weight:600;}
+.quick-btn{width:100%;text-align:left;padding:10px 14px;border:2px solid var(--p5);border-radius:var(--radius-sm);background:var(--white);font-family:'Poppins',sans-serif;font-size:12px;color:var(--p1);font-weight:600;cursor:pointer;margin-bottom:8px;transition:all .2s;}
+.quick-btn:hover{background:var(--p5);border-color:var(--p3);}
+
+/* ============================================================
+   LANDING
+============================================================ */
+.hero-section{background:var(--grad);min-height:90vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:80px 24px 60px;position:relative;overflow:hidden;}
+.hero-bg-circle{position:absolute;border-radius:50%;background:rgba(255,255,255,.05);pointer-events:none;}
+.hero-tag{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.3);color:var(--white);font-size:12px;font-weight:700;padding:7px 18px;border-radius:var(--radius-pill);margin-bottom:24px;backdrop-filter:blur(6px);font-family:'Nunito',sans-serif;}
+.hero-title{font-family:'Nunito',sans-serif;font-size:clamp(38px,7vw,68px);font-weight:900;color:var(--white);line-height:1.1;margin-bottom:18px;letter-spacing:-1.5px;}
+.hero-title .spark{color:var(--accent-yellow);}
+.hero-subtitle{font-size:15px;color:rgba(255,255,255,.85);max-width:540px;margin:0 auto 34px;line-height:1.7;}
+.hero-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;}
+.btn-white{background:var(--white);color:var(--p1);border:none;padding:13px 30px;border-radius:var(--radius-pill);font-family:'Nunito',sans-serif;font-weight:900;font-size:14px;cursor:pointer;transition:all .3s;box-shadow:0 4px 20px rgba(0,0,0,.15);}
+.btn-white:hover{transform:translateY(-3px);box-shadow:0 8px 28px rgba(0,0,0,.2);}
+.btn-glass{background:rgba(255,255,255,.15);color:var(--white);border:2px solid rgba(255,255,255,.4);padding:11px 28px;border-radius:var(--radius-pill);font-family:'Nunito',sans-serif;font-weight:800;font-size:14px;cursor:pointer;transition:all .3s;backdrop-filter:blur(6px);}
+.btn-glass:hover{background:rgba(255,255,255,.25);}
+.hero-floats{display:flex;gap:20px;justify-content:center;margin-top:50px;flex-wrap:wrap;position:relative;}
+.float-card{background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.2);border-radius:var(--radius-md);padding:16px 22px;text-align:center;backdrop-filter:blur(10px);min-width:120px;}
+.float-num{font-family:'Nunito',sans-serif;font-size:28px;font-weight:900;color:var(--white);}
+.float-label{font-size:11px;color:rgba(255,255,255,.75);font-weight:600;}
+.features-sec{max-width:1000px;margin:0 auto;padding:64px 24px;}
+.sec-head{text-align:center;margin-bottom:44px;}
+.sec-head h2{font-family:'Nunito',sans-serif;font-size:30px;font-weight:900;color:var(--dark);margin-bottom:6px;}
+.sec-head p{font-size:13px;color:var(--gray);}
+.sec-underline{width:60px;height:5px;background:var(--grad);border-radius:3px;margin:10px auto 0;}
+.feats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:18px;}
+.feat-card{background:var(--white);border-radius:var(--radius-lg);padding:28px 20px;text-align:center;box-shadow:var(--shadow-sm);border:1.5px solid var(--p5);transition:all .3s;cursor:default;}
+.feat-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg);border-color:var(--p3);}
+.feat-emoji{font-size:36px;margin-bottom:14px;display:block;}
+.feat-card h3{font-family:'Nunito',sans-serif;font-size:15px;font-weight:800;color:var(--dark);margin-bottom:6px;}
+.feat-card p{font-size:12px;color:var(--gray);line-height:1.6;}
+.feat-accent{display:inline-block;margin-top:10px;font-size:11px;font-weight:700;color:var(--p2);background:var(--p5);padding:3px 10px;border-radius:var(--radius-pill);}
+.how-sec{background:var(--dark);padding:64px 24px;text-align:center;}
+.how-sec h2{font-family:'Nunito',sans-serif;font-size:28px;font-weight:900;color:var(--white);margin-bottom:8px;}
+.how-sec p{color:rgba(255,255,255,.6);font-size:13px;margin-bottom:40px;}
+.steps-row{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;max-width:800px;margin:0 auto;}
+.step-card{background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.1);border-radius:var(--radius-lg);padding:24px 20px;width:180px;text-align:center;transition:all .3s;}
+.step-card:hover{background:rgba(255,255,255,.1);transform:translateY(-4px);}
+.step-num{width:44px;height:44px;background:var(--grad);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Nunito',sans-serif;font-weight:900;font-size:18px;color:var(--white);margin:0 auto 12px;box-shadow:var(--shadow-glow);}
+.step-card h3{font-family:'Nunito',sans-serif;font-size:14px;font-weight:800;color:var(--white);margin-bottom:6px;}
+.step-card p{font-size:11px;color:rgba(255,255,255,.55);line-height:1.5;}
+.cta-sec{background:var(--grad-soft);text-align:center;padding:64px 20px;border-top:2px solid var(--p5);}
+.cta-sec h2{font-family:'Nunito',sans-serif;font-size:26px;font-weight:900;color:var(--dark);margin-bottom:10px;}
+.cta-sec p{font-size:13px;color:var(--gray);margin-bottom:26px;}
+
+/* ============================================================
+   STUDENT DASHBOARD
+============================================================ */
+.dash-top{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;position:relative;}
+.user-chip{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.25);padding:8px 14px 8px 8px;border-radius:var(--radius-pill);backdrop-filter:blur(6px);}
+.user-chip .lv{font-family:'Nunito',sans-serif;font-size:12px;font-weight:800;color:var(--white);}
+.user-chip .xp{font-size:10px;color:rgba(255,255,255,.7);}
+.xp-mini{width:80px;height:5px;background:rgba(255,255,255,.25);border-radius:3px;overflow:hidden;margin-top:3px;}
+.xp-fill{height:100%;background:var(--accent-yellow);border-radius:3px;}
+.game-badge{display:inline-flex;align-items:center;gap:5px;background:var(--p5);border:1.5px solid var(--p4);color:var(--p1);font-size:11px;font-weight:800;padding:6px 12px;border-radius:var(--radius-pill);font-family:'Nunito',sans-serif;transition:all .2s;cursor:default;}
+.game-badge:hover{background:var(--p4);transform:scale(1.05);}
+.game-badge.locked{opacity:.35;filter:grayscale(1);}
+.badge-wrap{display:flex;flex-wrap:wrap;gap:8px;}
+.session-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--p6);font-size:12px;}
+.session-row:last-child{border-bottom:none;}
+
+/* ============================================================
+   FOCUS TIMER
+============================================================ */
+.timer-page{max-width:500px;margin:0 auto;padding:40px 24px;text-align:center;}
+.timer-hero-txt h2{font-family:'Nunito',sans-serif;font-size:26px;font-weight:900;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:4px;}
+.timer-hero-txt p{color:var(--gray);font-size:13px;margin-bottom:28px;}
+.mode-tabs{display:flex;background:var(--white);border-radius:var(--radius-pill);padding:5px;margin-bottom:32px;border:2px solid var(--p5);box-shadow:var(--shadow-sm);}
+.mode-tab{flex:1;padding:9px 10px;border-radius:var(--radius-pill);border:none;cursor:pointer;font-family:'Nunito',sans-serif;font-size:12px;font-weight:800;color:var(--gray);background:none;transition:all .2s;}
+.mode-tab.active{background:var(--grad);color:var(--white);box-shadow:var(--shadow-sm);}
+.timer-wrap{position:relative;width:230px;height:230px;margin:0 auto 32px;}
+.timer-svg{position:absolute;top:0;left:0;transform:rotate(-90deg);}
+.timer-inner{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;}
+.timer-display{font-family:'Nunito',sans-serif;font-size:46px;font-weight:900;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;letter-spacing:-2px;}
+.timer-lbl{font-size:11px;color:var(--gray);font-weight:700;margin-top:4px;}
+.timer-controls{display:flex;gap:12px;justify-content:center;align-items:center;margin-bottom:24px;}
+.timer-start-btn{background:var(--grad);color:var(--white);border:none;padding:14px 40px;border-radius:var(--radius-pill);font-family:'Nunito',sans-serif;font-weight:900;font-size:16px;cursor:pointer;box-shadow:var(--shadow-md);transition:all .3s;}
+.timer-start-btn:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);}
+.xp-box{background:linear-gradient(135deg,var(--p5),#F0EBFF);border:2px solid var(--p4);border-radius:var(--radius-md);padding:14px 20px;margin-bottom:24px;display:flex;align-items:center;justify-content:center;gap:10px;font-size:13px;color:var(--p1);font-weight:700;}
+.xp-box .big{font-family:'Nunito',sans-serif;font-size:20px;font-weight:900;}
+.log-card{background:var(--white);border-radius:var(--radius-md);padding:18px;box-shadow:var(--shadow-sm);border:1.5px solid var(--p5);text-align:left;}
+.log-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--p6);font-size:12px;}
+.log-row:last-child{border-bottom:none;}
+
+/* ============================================================
+   LEADERBOARD
+============================================================ */
+.leader-tabs-row{display:flex;gap:8px;padding:16px 24px;justify-content:center;background:var(--white);border-bottom:2px solid var(--p5);}
+.leader-tab{padding:8px 22px;border-radius:var(--radius-pill);border:2px solid var(--p4);cursor:pointer;font-family:'Nunito',sans-serif;font-size:12px;font-weight:800;background:var(--white);color:var(--p1);transition:all .2s;}
+.leader-tab.active{background:var(--grad);color:var(--white);border-color:transparent;box-shadow:var(--shadow-sm);}
+.leader-list{padding:20px 24px;max-width:700px;margin:0 auto;}
+.podium{display:flex;align-items:flex-end;justify-content:center;gap:12px;margin-bottom:24px;padding:20px 0;}
+.podium-item{display:flex;flex-direction:column;align-items:center;gap:8px;}
+.podium-avatar{border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Nunito',sans-serif;font-weight:900;color:var(--white);border:3px solid var(--white);box-shadow:var(--shadow-md);}
+.p1-av{width:64px;height:64px;font-size:20px;background:var(--grad);}
+.p2-av{width:52px;height:52px;font-size:16px;background:linear-gradient(135deg,#9CA3AF,#6B7280);}
+.p3-av{width:48px;height:48px;font-size:14px;background:linear-gradient(135deg,#F59E0B,#D97706);}
+.podium-name{font-family:'Nunito',sans-serif;font-size:12px;font-weight:800;color:var(--dark);}
+.podium-xp{font-size:11px;color:var(--p1);font-weight:700;}
+.podium-crown{font-size:22px;}
+.podium-block{border-radius:var(--radius-md) var(--radius-md) 0 0;width:80px;display:flex;align-items:center;justify-content:center;font-family:'Nunito',sans-serif;font-weight:900;font-size:20px;color:var(--white);}
+.b1{height:70px;background:var(--grad);box-shadow:var(--shadow-md);}
+.b2{height:50px;background:linear-gradient(135deg,#9CA3AF,#6B7280);}
+.b3{height:40px;background:linear-gradient(135deg,#F59E0B,#D97706);}
+.leader-item{display:flex;align-items:center;background:var(--white);border-radius:var(--radius-md);padding:14px 16px;margin-bottom:10px;box-shadow:var(--shadow-sm);gap:14px;border:2px solid transparent;transition:all .2s;}
+.leader-item:hover{border-color:var(--p4);transform:translateX(4px);}
+.leader-item.is-you{border-color:var(--p2);background:var(--p6);}
+.rank-dot{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Nunito',sans-serif;font-weight:900;font-size:13px;flex-shrink:0;background:var(--p5);color:var(--p1);}
+.leader-info{flex:1;}
+.leader-name{font-size:13px;font-weight:700;color:var(--dark);font-family:'Nunito',sans-serif;display:flex;align-items:center;gap:6px;}
+.leader-sub{font-size:11px;color:var(--gray);margin-top:2px;}
+.you-pill{background:var(--grad);color:var(--white);font-size:9px;font-weight:900;padding:2px 8px;border-radius:var(--radius-pill);font-family:'Nunito',sans-serif;}
+.leader-pts{font-family:'Nunito',sans-serif;font-weight:900;font-size:15px;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+
+/* ============================================================
+   SUBSCRIPTION
+============================================================ */
+.plans-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;padding:32px 24px;max-width:860px;margin:0 auto;}
+.plan-card{background:var(--white);border-radius:var(--radius-xl);padding:28px 22px;box-shadow:var(--shadow-md);border:2px solid var(--p5);transition:all .3s;display:flex;flex-direction:column;position:relative;overflow:hidden;}
+.plan-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:var(--grad);}
+.plan-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg);}
+.plan-card.popular{border-color:var(--p2);box-shadow:var(--shadow-glow);}
+.plan-card.popular::before{height:6px;}
+.pop-tag{position:absolute;top:14px;right:14px;background:var(--grad);color:var(--white);font-family:'Nunito',sans-serif;font-size:10px;font-weight:900;padding:4px 12px;border-radius:var(--radius-pill);}
+.plan-icon{font-size:32px;margin-bottom:10px;display:block;}
+.plan-name{font-family:'Nunito',sans-serif;font-size:18px;font-weight:900;color:var(--dark);margin-bottom:4px;}
+.plan-price{font-family:'Nunito',sans-serif;font-size:36px;font-weight:900;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin:10px 0 4px;letter-spacing:-1px;}
+.plan-price span{font-size:14px;color:var(--gray);font-weight:500;-webkit-text-fill-color:var(--gray);}
+.plan-desc{font-size:12px;color:var(--gray);margin-bottom:16px;}
+.plan-line{height:1px;background:var(--p5);margin-bottom:16px;}
+.plan-feats{list-style:none;margin-bottom:22px;flex:1;}
+.plan-feats li{font-size:12px;color:var(--gray);padding:6px 0;border-bottom:1px solid var(--p6);display:flex;align-items:flex-start;gap:8px;}
+.plan-feats li:last-child{border-bottom:none;}
+.chk{color:var(--p2);font-weight:900;font-size:14px;flex-shrink:0;margin-top:1px;}
+.school-box{background:var(--dark);border-radius:var(--radius-xl);padding:28px;margin:0 24px 32px;max-width:812px;margin-left:auto;margin-right:auto;position:relative;overflow:hidden;}
+.school-box::before{content:'';position:absolute;width:200px;height:200px;background:rgba(139,92,246,.15);border-radius:50%;top:-60px;right:-40px;}
+.school-box h3{font-family:'Nunito',sans-serif;color:var(--white);font-size:18px;font-weight:900;margin-bottom:8px;position:relative;}
+.school-box p{font-size:12px;color:rgba(255,255,255,.6);margin-bottom:8px;line-height:1.6;position:relative;}
+.school-price{font-family:'Nunito',sans-serif;font-size:14px;color:var(--p3);font-weight:800;margin-bottom:16px;position:relative;}
+
+/* ============================================================
+   PROFESSOR DASHBOARD
+============================================================ */
+.prof-top{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;position:relative;}
+
+/* ============================================================
+   XP BLITZ GAME
+============================================================ */
+.blitz-lobby{max-width:700px;margin:0 auto;padding:32px 24px;text-align:center;}
+.blitz-lobby h2{font-family:'Nunito',sans-serif;font-size:28px;font-weight:900;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:6px;}
+.blitz-lobby p{color:var(--gray);font-size:13px;margin-bottom:28px;}
+.blitz-pin-box{background:var(--white);border:3px solid var(--p4);border-radius:var(--radius-xl);padding:32px;margin-bottom:24px;box-shadow:var(--shadow-md);}
+.blitz-pin-box h3{font-family:'Nunito',sans-serif;font-size:17px;font-weight:800;color:var(--dark);margin-bottom:18px;}
+.blitz-game-modes{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:24px;}
+.blitz-mode-card{background:var(--white);border:2px solid var(--p5);border-radius:var(--radius-lg);padding:22px 16px;text-align:center;cursor:pointer;transition:all .2s;box-shadow:var(--shadow-sm);}
+.blitz-mode-card:hover{border-color:var(--p3);transform:translateY(-4px);box-shadow:var(--shadow-md);}
+.blitz-mode-card.selected{border-color:var(--p2);background:var(--p5);}
+.blitz-mode-icon{font-size:32px;display:block;margin-bottom:8px;}
+.blitz-mode-name{font-family:'Nunito',sans-serif;font-size:14px;font-weight:800;color:var(--dark);margin-bottom:4px;}
+.blitz-mode-desc{font-size:11px;color:var(--gray);}
+.player-list{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;padding:14px 0;}
+.player-pip{display:flex;align-items:center;gap:6px;background:var(--p5);border:1.5px solid var(--p4);border-radius:var(--radius-pill);padding:5px 12px 5px 5px;font-size:12px;font-weight:700;color:var(--p1);font-family:'Nunito',sans-serif;}
+.player-pip .pip-av{width:24px;height:24px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:900;color:var(--white);}
+
+/* GAME SCREEN */
+.blitz-game{display:none;max-width:700px;margin:0 auto;padding:20px 24px;}
+.blitz-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
+.blitz-q-counter{font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;color:var(--gray);}
+.blitz-score-pill{background:var(--grad);color:var(--white);font-family:'Nunito',sans-serif;font-size:14px;font-weight:900;padding:6px 18px;border-radius:var(--radius-pill);}
+.blitz-combo{font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;color:var(--accent-yellow);}
+.timer-bar-wrap{height:10px;background:var(--p5);border-radius:5px;margin-bottom:20px;overflow:hidden;}
+.timer-bar-fill{height:100%;border-radius:5px;transition:width .1s linear;background:linear-gradient(90deg,#6B21E8,#A855F7);}
+.timer-bar-fill.urgent{background:linear-gradient(90deg,#EF4444,#F87171);}
+.blitz-question{background:var(--white);border-radius:var(--radius-xl);padding:28px 24px;text-align:center;box-shadow:var(--shadow-md);border:2px solid var(--p5);margin-bottom:20px;}
+.blitz-q-cat{font-size:11px;font-weight:800;color:var(--p2);font-family:'Nunito',sans-serif;letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px;}
+.blitz-q-text{font-family:'Nunito',sans-serif;font-size:20px;font-weight:800;color:var(--dark);line-height:1.4;}
+.blitz-answers{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
+.blitz-ans-btn{border:2px solid var(--p4);border-radius:var(--radius-md);padding:18px 14px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:800;cursor:pointer;text-align:center;transition:all .25s;background:var(--white);color:var(--dark);position:relative;overflow:hidden;}
+.blitz-ans-btn::before{content:'';position:absolute;inset:0;opacity:0;transition:opacity .2s;}
+.blitz-ans-btn:hover:not(:disabled){transform:translateY(-3px);box-shadow:var(--shadow-md);border-color:var(--p2);}
+.blitz-ans-btn.correct{background:#D1FAE5;border-color:#10B981;color:#065F46;}
+.blitz-ans-btn.wrong{background:#FEE2E2;border-color:#EF4444;color:#991B1B;}
+.blitz-ans-btn.reveal-correct{background:#D1FAE5;border-color:#10B981;color:#065F46;}
+.blitz-ans-btn:disabled{cursor:default;}
+.ans-letter{display:inline-block;width:24px;height:24px;border-radius:50%;background:var(--p5);color:var(--p1);font-size:11px;font-weight:900;line-height:24px;margin-right:8px;text-align:center;}
+.blitz-powerups{display:flex;gap:10px;justify-content:center;margin-bottom:16px;}
+.powerup-btn{border:2px solid var(--p4);border-radius:var(--radius-md);padding:10px 16px;background:var(--white);cursor:pointer;font-family:'Nunito',sans-serif;font-size:12px;font-weight:800;color:var(--p1);transition:all .2s;display:flex;align-items:center;gap:5px;}
+.powerup-btn:hover:not(:disabled){background:var(--p5);transform:scale(1.05);}
+.powerup-btn:disabled{opacity:.4;cursor:not-allowed;}
+.powerup-badge{background:var(--grad);color:var(--white);font-size:9px;font-weight:900;width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
+.blitz-feedback{text-align:center;font-family:'Nunito',sans-serif;font-size:20px;font-weight:900;min-height:32px;margin-bottom:12px;transition:all .3s;}
+.blitz-feedback.correct-fb{color:var(--accent-green);animation:fbPop .3s ease;}
+.blitz-feedback.wrong-fb{color:var(--accent-red);}
+@keyframes fbPop{0%{transform:scale(.8);}60%{transform:scale(1.2);}100%{transform:scale(1);}}
+
+/* RESULTS SCREEN */
+.blitz-results{display:none;max-width:600px;margin:0 auto;padding:32px 24px;text-align:center;}
+.results-hero{background:var(--grad);border-radius:var(--radius-xl);padding:32px;margin-bottom:24px;box-shadow:var(--shadow-lg);}
+.results-hero h2{font-family:'Nunito',sans-serif;font-size:28px;font-weight:900;color:var(--white);margin-bottom:4px;}
+.results-hero .big-score{font-family:'Nunito',sans-serif;font-size:56px;font-weight:900;color:var(--white);line-height:1;}
+.results-hero .xp-earned{font-size:16px;color:rgba(255,255,255,.85);margin-top:6px;}
+.results-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--p5);font-size:13px;}
+.results-row:last-child{border-bottom:none;}
+.results-key{color:var(--gray);font-weight:600;}
+.results-val{font-family:'Nunito',sans-serif;font-weight:800;color:var(--dark);}
+.live-score-bar{display:flex;justify-content:space-between;background:var(--white);border-radius:var(--radius-md);padding:10px 16px;margin-bottom:16px;box-shadow:var(--shadow-sm);border:1.5px solid var(--p5);}
+.opp-score{font-family:'Nunito',sans-serif;font-size:12px;font-weight:800;color:var(--p1);}
+
+/* Prof game controls */
+.pin-display{background:var(--dark);border-radius:var(--radius-lg);padding:20px 24px;margin-bottom:16px;text-align:center;}
+.pin-code{font-family:'Nunito',sans-serif;font-size:42px;font-weight:900;color:var(--accent-yellow);letter-spacing:8px;}
+.pin-label{font-size:12px;color:rgba(255,255,255,.6);font-weight:600;}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     LOGIN PAGE (shown first, no navbar)
+============================================================ -->
+<div id="loginPage">
+<div class="login-wrap">
+  <div class="login-bg1"></div>
+  <div class="login-bg2"></div>
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="logo-icon">⚡</div>
+      <div class="logo-text">ZoneUp</div>
+      <p style="font-size:12px;color:var(--gray);margin-top:4px;">Game On. Study On. 🇵🇭</p>
+    </div>
+
+    <div class="login-tabs">
+      <button class="login-tab active" onclick="switchLoginTab('login',this)">Log In</button>
+      <button class="login-tab" onclick="switchLoginTab('signup',this)">Sign Up</button>
+    </div>
+
+    <!-- Role Picker -->
+    <div style="margin-bottom:18px;">
+      <p style="font-size:12px;font-weight:700;color:var(--dark);margin-bottom:10px;">I am a…</p>
+      <div class="role-pick">
+        <div class="role-opt active" id="roleStudent" onclick="selectRole('student')">
+          <span class="r-ico">📚</span>
+          <span class="r-lbl">Student</span>
+        </div>
+        <div class="role-opt" id="roleProfessor" onclick="selectRole('professor')">
+          <span class="r-ico">👩‍🏫</span>
+          <span class="r-lbl">Professor</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="login-form-group">
+      <label>Email / Student ID</label>
+      <input class="form-input" type="text" placeholder="e.g. juan.delacruz@school.edu" id="loginEmail"/>
+    </div>
+    <div class="login-form-group">
+      <label>Password</label>
+      <input class="form-input" type="password" placeholder="••••••••" id="loginPass"/>
+    </div>
+
+    <!-- Sign Up extras (hidden by default) -->
+    <div id="signupExtras" style="display:none;">
+      <div class="login-form-group">
+        <label>Full Name</label>
+        <input class="form-input" type="text" placeholder="Juan Dela Cruz"/>
+      </div>
+      <div class="login-form-group">
+        <label>Class / Section</label>
+        <input class="form-input" type="text" placeholder="BSIT 2-A"/>
+      </div>
+    </div>
+
+    <button class="btn-primary" style="width:100%;margin-bottom:14px;" onclick="doLogin()">⚡ Continue</button>
+
+    <div class="login-divider"><span>or quick demo</span></div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn-secondary" style="flex:1;font-size:12px;" onclick="quickDemo('student')">👤 Student Demo</button>
+      <button class="btn-secondary" style="flex:1;font-size:12px;" onclick="quickDemo('professor')">👩‍🏫 Professor Demo</button>
+    </div>
+    <p style="font-size:11px;color:var(--gray);text-align:center;margin-top:14px;">7-day free trial · No credit card needed · GCash accepted</p>
+  </div>
+</div>
+</div>
+
+<!-- ============================================================
+     MAIN APP (hidden until login)
+============================================================ -->
+<div id="mainApp" style="display:none;">
+
+<!-- NAVBAR -->
+<nav class="navbar" id="mainNav">
+  <div class="nav-container">
+    <a class="nav-logo" href="#" onclick="showPage('landing',document.querySelectorAll('.nav-btn')[0]);return false;">
+      <div class="logo-icon">⚡</div>
+      <span class="logo-text">ZoneUp</span>
+    </a>
+    <div class="nav-links" id="navLinks"></div>
+    <button class="nav-user-chip" onclick="doLogout()">
+      <div class="nav-avatar-sm" id="navAvatar">JD</div>
+      <span id="navUserName">Juan</span>
+      <span style="font-size:10px;color:var(--gray);margin-left:4px;">Log out</span>
+    </button>
+  </div>
+</nav>
+
+<!-- ============================================================
+     STUDENT PAGES
+============================================================ -->
+<div id="studentApp" style="display:none;">
+
+<!-- PAGE: LANDING -->
+<div class="page active" id="page-landing">
+  <div class="hero-section">
+    <div class="hero-bg-circle" style="width:500px;height:500px;top:-180px;right:-150px;"></div>
+    <div class="hero-bg-circle" style="width:350px;height:350px;bottom:-120px;left:-100px;"></div>
+    <div class="hero-tag">🇵🇭 Built for Filipino Students · Free to Try</div>
+    <h1 class="hero-title">Game On.<br><span class="spark">Study On. ⚡</span></h1>
+    <p class="hero-subtitle">ZoneUp mixes gamification with a real study tracker. Earn XP, climb leaderboards, unlock badges — and actually enjoy studying.</p>
+    <div class="hero-btns">
+      <button class="btn-white" onclick="showPage('student',document.querySelectorAll('#studentApp .nav-btn')[1])">🚀 Go to Dashboard</button>
+      <button class="btn-glass" onclick="showPage('game',document.querySelectorAll('#studentApp .nav-btn')[4])">🎮 Play XP Blitz</button>
+    </div>
+    <div class="hero-floats">
+      <div class="float-card"><div class="float-num">1K+</div><div class="float-label">Students Playing</div></div>
+      <div class="float-card"><div class="float-num">50+</div><div class="float-label">Schools Joined</div></div>
+      <div class="float-card"><div class="float-num">₱25</div><div class="float-label">Starts At / Month</div></div>
+      <div class="float-card"><div class="float-num">4.9⭐</div><div class="float-label">Student Rating</div></div>
+    </div>
+  </div>
+  <div class="features-sec">
+    <div class="sec-head">
+      <h2>Why Students Love ZoneUp</h2>
+      <p>The only study app that actually feels like a game</p>
+      <div class="sec-underline"></div>
+    </div>
+    <div class="feats-grid">
+      <div class="feat-card"><span class="feat-emoji">⏱️</span><h3>Focus Timer</h3><p>Pomodoro sessions that reward you with XP after every round</p><span class="feat-accent">+50 XP per session</span></div>
+      <div class="feat-card"><span class="feat-emoji">🏆</span><h3>Live Leaderboard</h3><p>Compete with classmates in real time. Weekly resets keep it fresh</p><span class="feat-accent">Weekly prizes</span></div>
+      <div class="feat-card"><span class="feat-emoji">⚡</span><h3>XP Blitz</h3><p>Fast-paced quiz battles with combos, power-ups, and live rivals</p><span class="feat-accent">NEW feature</span></div>
+      <div class="feat-card"><span class="feat-emoji">🎖️</span><h3>Badges & XP</h3><p>Earn badges for streaks, milestones, and achievements</p><span class="feat-accent">50+ achievements</span></div>
+      <div class="feat-card"><span class="feat-emoji">📊</span><h3>Smart Tracking</h3><p>Visual charts show study habits and which subjects need work</p><span class="feat-accent">Real-time stats</span></div>
+      <div class="feat-card"><span class="feat-emoji">💸</span><h3>Affordable</h3><p>Only ₱25–₱50/month. Designed for every Filipino student</p><span class="feat-accent">Free tier available</span></div>
+    </div>
+  </div>
+  <div class="how-sec">
+    <h2>How XP Blitz Works</h2>
+    <p>Our unique quiz game — not Kahoot, something better</p>
+    <div class="steps-row">
+      <div class="step-card"><div class="step-num">1</div><h3>Join a Room</h3><p>Professor creates a game, students enter the PIN code</p></div>
+      <div class="step-card"><div class="step-num">2</div><h3>Answer Fast</h3><p>Shrinking timer bar — faster answers = more XP points</p></div>
+      <div class="step-card"><div class="step-num">3</div><h3>Build Combos</h3><p>Chain correct answers for multipliers up to 5× damage</p></div>
+      <div class="step-card"><div class="step-num">4</div><h3>Use Power-ups</h3><p>Shield, Time Freeze, and 50/50 to outplay your rivals</p></div>
+    </div>
+  </div>
+  <div class="cta-sec">
+    <h2>Ready to Zone Up? ⚡</h2>
+    <p>Jump into your dashboard or challenge classmates right now.</p>
+    <button class="btn-primary" onclick="showPage('game',document.querySelectorAll('#studentApp .nav-btn')[4])">🎮 Play XP Blitz Now</button>
+  </div>
+  <footer class="page-footer">© 2025 <span>ZoneUp</span> · Game On. Study On. 🇵🇭 · Made with 💜 by 2 students</footer>
+</div>
+
+<!-- PAGE: STUDENT DASHBOARD -->
+<div class="page" id="page-student">
+  <div class="page-hero">
+    <div class="dash-top">
+      <div>
+        <h2>Good afternoon, Juan! 👋</h2>
+        <p>Tuesday · Week 3 · Keep the streak alive!</p>
+      </div>
+      <div class="user-chip">
+        <div class="avatar">JD</div>
+        <div>
+          <div class="lv">⭐ Level 7 Scholar</div>
+          <div class="xp">1,240 / 1,500 XP</div>
+          <div class="xp-mini"><div class="xp-fill" style="width:83%"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="stats-grid">
+    <div class="stat-card"><div class="stat-num">4h 20m</div><div class="stat-label">⏱️ Focus Today</div></div>
+    <div class="stat-card"><div class="stat-num">🔥 12</div><div class="stat-label">Day Streak</div></div>
+    <div class="stat-card"><div class="stat-num">#3</div><div class="stat-label">🏆 Class Rank</div></div>
+    <div class="stat-card"><div class="stat-num">1,240</div><div class="stat-label">⚡ Total XP</div></div>
+    <div class="stat-card"><div class="stat-num">6</div><div class="stat-label">🎖️ Badges</div></div>
+  </div>
+  <div class="content-grid">
+    <div class="card">
+      <div class="card-title">📚 Subject Progress</div>
+      <div class="prog-wrap"><span class="prog-label">Mathematics</span><div class="prog-bar"><div class="prog-fill" style="width:80%"></div></div><span class="prog-pct">80%</span></div>
+      <div class="prog-wrap"><span class="prog-label">English</span><div class="prog-bar"><div class="prog-fill" style="width:65%"></div></div><span class="prog-pct">65%</span></div>
+      <div class="prog-wrap"><span class="prog-label">Science</span><div class="prog-bar"><div class="prog-fill" style="width:90%"></div></div><span class="prog-pct">90%</span></div>
+      <div class="prog-wrap"><span class="prog-label">Filipino</span><div class="prog-bar"><div class="prog-fill" style="width:50%"></div></div><span class="prog-pct">50%</span></div>
+      <div class="prog-wrap"><span class="prog-label">MAPEH</span><div class="prog-bar"><div class="prog-fill" style="width:72%"></div></div><span class="prog-pct">72%</span></div>
+    </div>
+    <div class="card">
+      <div class="card-title">🎖️ Your Badges</div>
+      <div class="badge-wrap">
+        <span class="game-badge">⚡ Early Bird</span>
+        <span class="game-badge">🔥 7-Day Streak</span>
+        <span class="game-badge">📚 Bookworm</span>
+        <span class="game-badge">🏆 Top 5</span>
+        <span class="game-badge">⏱️ Marathon</span>
+        <span class="game-badge">🌟 Perfect Week</span>
+      </div>
+      <div style="margin-top:16px;">
+        <div class="card-title" style="font-size:13px;margin-bottom:8px;">🔒 Locked</div>
+        <div class="badge-wrap">
+          <span class="game-badge locked">👑 Champion</span>
+          <span class="game-badge locked">🚀 30-Day Streak</span>
+          <span class="game-badge locked">💯 Perfect Month</span>
+        </div>
+      </div>
+    </div>
+    <div class="card" style="grid-column:1/-1;">
+      <div class="card-title">📅 Today's Sessions</div>
+      <div style="overflow-x:auto;">
+        <table class="data-table">
+          <thead><tr><th>Subject</th><th>Duration</th><th>XP Earned</th><th>Time</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Mathematics</strong></td><td>45 min</td><td><span style="color:var(--p1);font-weight:800;font-family:'Nunito',sans-serif;">+90 XP</span></td><td>8:00 AM</td><td><span class="status s-done">Done ✓</span></td></tr>
+            <tr><td><strong>Science</strong></td><td>30 min</td><td><span style="color:var(--p1);font-weight:800;font-family:'Nunito',sans-serif;">+60 XP</span></td><td>9:00 AM</td><td><span class="status s-done">Done ✓</span></td></tr>
+            <tr><td><strong>English</strong></td><td>—</td><td>—</td><td>—</td><td><span class="status s-pending">Pending</span></td></tr>
+            <tr><td><strong>Filipino</strong></td><td>—</td><td>—</td><td>—</td><td><span class="status s-pending">Pending</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <footer class="page-footer">© 2025 <span>ZoneUp</span> · Game On. Study On. 🇵🇭</footer>
+</div>
+
+<!-- PAGE: TIMER -->
+<div class="page" id="page-timer">
+  <div class="timer-page">
+    <div class="timer-hero-txt">
+      <h2>⚡ Focus Timer</h2>
+      <p>Stay in the zone — earn XP for every completed round!</p>
+    </div>
+    <div class="mode-tabs">
+      <button class="mode-tab active" onclick="setMode('focus',this,25)">🎯 Focus</button>
+      <button class="mode-tab" onclick="setMode('short',this,5)">☕ Short Break</button>
+      <button class="mode-tab" onclick="setMode('long',this,15)">🌿 Long Break</button>
+    </div>
+    <div class="timer-wrap">
+      <svg class="timer-svg" width="230" height="230" viewBox="0 0 230 230">
+        <defs><linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:#6B21E8"/><stop offset="100%" style="stop-color:#A855F7"/></linearGradient></defs>
+        <circle cx="115" cy="115" r="104" fill="none" stroke="#EDE9FE" stroke-width="10"/>
+        <circle id="progressRing" cx="115" cy="115" r="104" fill="none" stroke="url(#ringGrad)" stroke-width="10" stroke-linecap="round" stroke-dasharray="653.5" stroke-dashoffset="0" style="transition:stroke-dashoffset .5s ease;"/>
+      </svg>
+      <div class="timer-inner">
+        <div class="timer-display" id="timerDisplay">25:00</div>
+        <div class="timer-lbl" id="timerLbl">Focus Session</div>
+      </div>
+    </div>
+    <div class="timer-controls">
+      <button class="btn-icon" onclick="resetTimer()">↺</button>
+      <button class="timer-start-btn" id="startPauseBtn" onclick="toggleTimer()">▶ Start</button>
+      <button class="btn-icon" onclick="skipTimer()">⏭</button>
+    </div>
+    <div class="xp-box">🎮 Complete this session to earn <span class="big">+50 XP</span> &amp; keep your streak!</div>
+    <div class="log-card">
+      <div class="card-title">📋 Completed Today</div>
+      <div class="log-row"><span style="color:var(--dark);font-weight:600;">📐 Mathematics</span><span style="color:var(--p1);font-family:'Nunito',sans-serif;font-weight:800;">25 min · +50 XP ✓</span></div>
+      <div class="log-row"><span style="color:var(--dark);font-weight:600;">🔬 Science</span><span style="color:var(--p1);font-family:'Nunito',sans-serif;font-weight:800;">25 min · +50 XP ✓</span></div>
+      <div id="sessionLog"></div>
+    </div>
+  </div>
+  <footer class="page-footer">© 2025 <span>ZoneUp</span> · Game On. Study On. 🇵🇭</footer>
+</div>
+
+<!-- PAGE: LEADERBOARD -->
+<div class="page" id="page-leaderboard">
+  <div class="page-hero" style="text-align:center;"><h2>🏆 Class Leaderboard</h2><p>BSIT 2-A · Week 3 · Updated live every session</p></div>
+  <div class="leader-tabs-row">
+    <button class="leader-tab active" onclick="switchTab(this)">📅 Weekly</button>
+    <button class="leader-tab" onclick="switchTab(this)">📆 Monthly</button>
+    <button class="leader-tab" onclick="switchTab(this)">🏅 All Time</button>
+  </div>
+  <div class="leader-list">
+    <div class="podium">
+      <div class="podium-item">
+        <div class="podium-name">Karl</div><div class="podium-xp">2,610 XP</div>
+        <div class="podium-avatar p2-av">KS</div><div class="podium-block b2">2</div>
+      </div>
+      <div class="podium-item">
+        <div class="podium-crown">👑</div>
+        <div class="podium-name">Maria</div><div class="podium-xp">2,850 XP</div>
+        <div class="podium-avatar p1-av">MR</div><div class="podium-block b1">1</div>
+      </div>
+      <div class="podium-item">
+        <div class="podium-name">Juan</div><div class="podium-xp">1,240 XP</div>
+        <div class="podium-avatar p3-av">JD</div><div class="podium-block b3">3</div>
+      </div>
+    </div>
+    <div class="leader-item is-you">
+      <div class="rank-dot">3</div>
+      <div class="avatar">JD</div>
+      <div class="leader-info"><div class="leader-name">Juan Dela Cruz <span class="you-pill">YOU</span></div><div class="leader-sub">🔥 12-day streak · 24 sessions</div></div>
+      <div class="leader-pts">1,240 XP</div>
+    </div>
+    <div class="leader-item"><div class="rank-dot">4</div><div class="avatar" style="background:linear-gradient(135deg,#10B981,#059669);">AL</div><div class="leader-info"><div class="leader-name">Ana Lim</div><div class="leader-sub">🔥 8-day streak · 20 sessions</div></div><div class="leader-pts">1,100 XP</div></div>
+    <div class="leader-item"><div class="rank-dot">5</div><div class="avatar" style="background:linear-gradient(135deg,#3B82F6,#2563EB);">RC</div><div class="leader-info"><div class="leader-name">Rico Cruz</div><div class="leader-sub">🔥 5-day streak · 18 sessions</div></div><div class="leader-pts">980 XP</div></div>
+    <div class="leader-item"><div class="rank-dot">6</div><div class="avatar" style="background:linear-gradient(135deg,#EC4899,#DB2777);">SV</div><div class="leader-info"><div class="leader-name">Sofia Villanueva</div><div class="leader-sub">🔥 3-day streak · 14 sessions</div></div><div class="leader-pts">870 XP</div></div>
+    <div class="leader-item"><div class="rank-dot">7</div><div class="avatar" style="background:linear-gradient(135deg,#F59E0B,#D97706);">BT</div><div class="leader-info"><div class="leader-name">Ben Torres</div><div class="leader-sub">No streak · 8 sessions</div></div><div class="leader-pts">540 XP</div></div>
+  </div>
+  <footer class="page-footer">© 2025 <span>ZoneUp</span> · Game On. Study On. 🇵🇭</footer>
+</div>
+
+<!-- PAGE: XP BLITZ (STUDENT) -->
+<div class="page" id="page-game">
+
+  <!-- LOBBY -->
+  <div class="blitz-lobby" id="blitzLobby">
+    <h2>⚡ XP Blitz</h2>
+    <p>ZoneUp's fast-paced study battle. Build combos, use power-ups, outlast your classmates!</p>
+
+    <!-- Game mode picker -->
+    <div style="text-align:left;margin-bottom:8px;"><span style="font-size:12px;font-weight:700;color:var(--gray);">SELECT GAME MODE</span></div>
+    <div class="blitz-game-modes">
+      <div class="blitz-mode-card selected" id="mode-solo" onclick="selectGameMode('solo')">
+        <span class="blitz-mode-icon">🧠</span>
+        <div class="blitz-mode-name">Solo Practice</div>
+        <div class="blitz-mode-desc">Study alone, earn XP</div>
+      </div>
+      <div class="blitz-mode-card" id="mode-class" onclick="selectGameMode('class')">
+        <span class="blitz-mode-icon">⚔️</span>
+        <div class="blitz-mode-name">Class Battle</div>
+        <div class="blitz-mode-desc">Enter PIN, fight classmates</div>
+      </div>
+      <div class="blitz-mode-card" id="mode-survival" onclick="selectGameMode('survival')">
+        <span class="blitz-mode-icon">💀</span>
+        <div class="blitz-mode-name">Survival Mode</div>
+        <div class="blitz-mode-desc">3 wrong = eliminated</div>
+      </div>
+    </div>
+
+    <!-- PIN entry for class battle -->
+    <div class="blitz-pin-box" id="pinBox" style="display:none;">
+      <h3>Enter Class PIN from your Professor</h3>
+      <div style="display:flex;gap:10px;justify-content:center;margin-bottom:12px;">
+        <input class="form-input" style="width:60px;text-align:center;font-size:20px;font-family:'Nunito',sans-serif;font-weight:900;" maxlength="1" id="pin1" oninput="nextPin(this,'pin2')"/>
+        <input class="form-input" style="width:60px;text-align:center;font-size:20px;font-family:'Nunito',sans-serif;font-weight:900;" maxlength="1" id="pin2" oninput="nextPin(this,'pin3')"/>
+        <input class="form-input" style="width:60px;text-align:center;font-size:20px;font-family:'Nunito',sans-serif;font-weight:900;" maxlength="1" id="pin3" oninput="nextPin(this,'pin4')"/>
+        <input class="form-input" style="width:60px;text-align:center;font-size:20px;font-family:'Nunito',sans-serif;font-weight:900;" maxlength="1" id="pin4"/>
+      </div>
+      <p style="font-size:11px;color:var(--gray);">Demo PIN: <strong>7421</strong></p>
+    </div>
+
+    <!-- Subject -->
+    <div style="margin-bottom:20px;">
+      <p style="font-size:12px;font-weight:700;color:var(--dark);margin-bottom:8px;">SELECT SUBJECT</p>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;">
+        <button class="game-badge" style="cursor:pointer;" onclick="selectSubject(this)">📐 Mathematics</button>
+        <button class="game-badge" style="cursor:pointer;" onclick="selectSubject(this)">🔬 Science</button>
+        <button class="game-badge" style="cursor:pointer;" onclick="selectSubject(this)">📖 English</button>
+        <button class="game-badge" style="cursor:pointer;" onclick="selectSubject(this)">📝 Filipino</button>
+        <button class="game-badge" style="cursor:pointer;" onclick="selectSubject(this)">💻 Programming</button>
+      </div>
+    </div>
+
+    <!-- Class players preview -->
+    <div class="card" style="margin-bottom:20px;">
+      <div class="card-title">👥 Classmates Online</div>
+      <div class="player-list">
+        <div class="player-pip"><div class="pip-av">MR</div>Maria R.</div>
+        <div class="player-pip"><div class="pip-av">KS</div>Karl S.</div>
+        <div class="player-pip"><div class="pip-av" style="background:linear-gradient(135deg,#10B981,#059669);">AL</div>Ana L.</div>
+        <div class="player-pip"><div class="pip-av" style="background:linear-gradient(135deg,#3B82F6,#2563EB);">RC</div>Rico C.</div>
+        <div class="player-pip"><div class="pip-av" style="background:linear-gradient(135deg,#EC4899,#DB2777);">SV</div>Sofia V.</div>
+      </div>
+    </div>
+
+    <button class="btn-primary" style="width:100%;font-size:16px;padding:16px;" onclick="startBlitz()">⚡ Start XP Blitz!</button>
+    <p style="font-size:11px;color:var(--gray);margin-top:10px;">10 questions · ~5 min · XP goes to your account</p>
+  </div>
+
+  <!-- GAME SCREEN -->
+  <div class="blitz-game" id="blitzGame">
+    <div class="blitz-header">
+      <span class="blitz-q-counter" id="qCounter">Question 1 / 10</span>
+      <span class="blitz-combo" id="comboDisplay">Combo: ×1</span>
+      <span class="blitz-score-pill" id="scorePill">Score: 0</span>
+    </div>
+
+    <!-- Live opponents mini bar -->
+    <div class="live-score-bar">
+      <span class="opp-score">Maria: <strong id="oMaria">0</strong></span>
+      <span class="opp-score">Karl: <strong id="oKarl">0</strong></span>
+      <span class="opp-score" style="color:var(--accent-green);">YOU: <strong id="oYou">0</strong></span>
+      <span class="opp-score">Ana: <strong id="oAna">0</strong></span>
+    </div>
+
+    <div class="timer-bar-wrap">
+      <div class="timer-bar-fill" id="timerBar" style="width:100%;"></div>
+    </div>
+
+    <div class="blitz-question">
+      <div class="blitz-q-cat" id="qCategory">Mathematics</div>
+      <div class="blitz-q-text" id="qText">Loading question...</div>
+    </div>
+
+    <!-- Power-ups -->
+    <div class="blitz-powerups">
+      <button class="powerup-btn" id="pu50" onclick="use5050()">
+        🎯 50/50 <div class="powerup-badge" id="pu50count">1</div>
+      </button>
+      <button class="powerup-btn" id="puFreeze" onclick="useFreeze()">
+        ❄️ Freeze <div class="powerup-badge" id="puFreezeCount">1</div>
+      </button>
+      <button class="powerup-btn" id="puShield" onclick="useShield()">
+        🛡️ Shield <div class="powerup-badge" id="puShieldCount">1</div>
+      </button>
+    </div>
+
+    <div class="blitz-feedback" id="blitzFeedback"></div>
+
+    <div class="blitz-answers" id="answersGrid">
+      <button class="blitz-ans-btn" onclick="answerQ(0)"><span class="ans-letter">A</span><span id="a0"></span></button>
+      <button class="blitz-ans-btn" onclick="answerQ(1)"><span class="ans-letter">B</span><span id="a1"></span></button>
+      <button class="blitz-ans-btn" onclick="answerQ(2)"><span class="ans-letter">C</span><span id="a2"></span></button>
+      <button class="blitz-ans-btn" onclick="answerQ(3)"><span class="ans-letter">D</span><span id="a3"></span></button>
+    </div>
+  </div>
+
+  <!-- RESULTS SCREEN -->
+  <div class="blitz-results" id="blitzResults">
+    <div class="results-hero">
+      <h2 id="resultsTitle">🎉 Round Complete!</h2>
+      <div class="big-score" id="resultsBigScore">8,450</div>
+      <div class="xp-earned" id="resultsXP">+120 XP added to your account</div>
+    </div>
+    <div class="card">
+      <div class="results-row"><span class="results-key">✅ Correct Answers</span><span class="results-val" id="rCorrect">8 / 10</span></div>
+      <div class="results-row"><span class="results-key">⏱️ Avg. Speed</span><span class="results-val" id="rSpeed">4.2 sec</span></div>
+      <div class="results-row"><span class="results-key">🔥 Best Combo</span><span class="results-val" id="rCombo">×4</span></div>
+      <div class="results-row"><span class="results-key">🏆 Your Rank</span><span class="results-val" id="rRank">#2 in class</span></div>
+      <div class="results-row"><span class="results-key">⚡ XP Earned</span><span class="results-val" id="rXP" style="color:var(--p1);">+120 XP</span></div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:20px;">
+      <button class="btn-primary" style="flex:1;" onclick="restartBlitz()">🔄 Play Again</button>
+      <button class="btn-secondary" style="flex:1;" onclick="backToLobby()">📊 View Leaderboard</button>
+    </div>
+  </div>
+
+  <footer class="page-footer" id="gameFooter">© 2025 <span>ZoneUp</span> · Game On. Study On. 🇵🇭</footer>
+</div>
+
+<!-- PAGE: SUBSCRIPTION -->
+<div class="page" id="page-subscription">
+  <div class="page-hero" style="text-align:center;"><h2>💎 Choose Your Plan</h2><p>Affordable pricing built for every Filipino student</p></div>
+  <div class="plans-grid">
+    <div class="plan-card">
+      <span class="plan-icon">🆓</span>
+      <div class="plan-name">Free</div>
+      <div class="plan-price">₱0 <span>/month</span></div>
+      <div class="plan-desc">Try ZoneUp, no credit card needed</div>
+      <div class="plan-line"></div>
+      <ul class="plan-feats">
+        <li><span class="chk">✓</span> Focus timer (3 sessions/day)</li>
+        <li><span class="chk">✓</span> Leaderboard (view only)</li>
+        <li><span class="chk">✓</span> 1 subject tracking</li>
+        <li><span class="chk">✓</span> XP Blitz – Solo only</li>
+      </ul>
+      <button class="btn-secondary" style="width:100%;padding:12px;">Current Plan</button>
+    </div>
+    <div class="plan-card popular">
+      <div class="pop-tag">⭐ Most Popular</div>
+      <span class="plan-icon">📘</span>
+      <div class="plan-name">Student Basic</div>
+      <div class="plan-price">₱25 <span>/month</span></div>
+      <div class="plan-desc">Perfect for everyday student use</div>
+      <div class="plan-line"></div>
+      <ul class="plan-feats">
+        <li><span class="chk">✓</span> Unlimited focus sessions</li>
+        <li><span class="chk">✓</span> Full leaderboard access</li>
+        <li><span class="chk">✓</span> 5 subject tracking</li>
+        <li><span class="chk">✓</span> XP Blitz – Class Battle mode</li>
+        <li><span class="chk">✓</span> XP multiplier (1.5×)</li>
+        <li><span class="chk">✓</span> Weekly progress reports</li>
+      </ul>
+      <button class="btn-primary" style="width:100%;padding:12px;">Subscribe – ₱25/mo</button>
+    </div>
+    <div class="plan-card">
+      <span class="plan-icon">🏆</span>
+      <div class="plan-name">Student Pro</div>
+      <div class="plan-price">₱50 <span>/month</span></div>
+      <div class="plan-desc">For serious, top-performing students</div>
+      <div class="plan-line"></div>
+      <ul class="plan-feats">
+        <li><span class="chk">✓</span> Everything in Basic</li>
+        <li><span class="chk">✓</span> XP Blitz – All modes + Survival</li>
+        <li><span class="chk">✓</span> 3× power-ups per game</li>
+        <li><span class="chk">✓</span> Custom study goals</li>
+        <li><span class="chk">✓</span> XP multiplier (2×)</li>
+        <li><span class="chk">✓</span> Detailed analytics</li>
+        <li><span class="chk">✓</span> Early feature access</li>
+      </ul>
+      <button class="btn-primary" style="width:100%;padding:12px;">Go Pro – ₱50/mo</button>
+    </div>
+  </div>
+  <div class="school-box">
+    <h3>🏫 School / Institution Package</h3>
+    <p>Get ZoneUp for your entire class or department at discounted group rates. Includes professor dashboard, bulk accounts, XP Blitz game management, and dedicated support.</p>
+    <div class="school-price">Starting at ₱5,000 – ₱15,000 per project</div>
+    <button class="btn-secondary btn-sm">Contact Us for School Packages →</button>
+  </div>
+  <div style="text-align:center;padding:0 24px 40px;max-width:600px;margin:0 auto;">
+    <p style="font-size:12px;color:var(--gray);">All plans include a 7-day free trial. No hidden fees. Cancel anytime. GCash, Maya, and bank transfer accepted. 🇵🇭</p>
+  </div>
+  <footer class="page-footer">© 2025 <span>ZoneUp</span> · Game On. Study On. 🇵🇭</footer>
+</div>
+
+</div><!-- /studentApp -->
+
+<!-- ============================================================
+     PROFESSOR PAGES
+============================================================ -->
+<div id="profApp" style="display:none;">
+
+<!-- PAGE: PROF DASHBOARD -->
+<div class="page active" id="page-prof-dashboard">
+  <div class="page-hero">
+    <div class="prof-top">
+      <div>
+        <h2>Professor Dashboard 👩‍🏫</h2>
+        <p>Welcome back, Prof. Santos · Tuesday, May 5, 2025</p>
+      </div>
+      <select class="form-select">
+        <option>BSIT 2-A · Introduction to Programming</option>
+        <option>BSIT 2-B · Data Structures</option>
+        <option>BSCS 3-A · Algorithms</option>
+      </select>
+    </div>
+    <div class="alert-strip" style="margin-top:12px;">⚠️ <strong>3 students</strong> have not started a session today — consider sending a reminder!</div>
+  </div>
+  <div class="stats-grid">
+    <div class="stat-card"><div class="stat-num">38</div><div class="stat-label">👥 Total Students</div></div>
+    <div class="stat-card"><div class="stat-num" style="background:linear-gradient(135deg,#10B981,#059669);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">24</div><div class="stat-label">✅ Active Now</div></div>
+    <div class="stat-card"><div class="stat-num" style="background:linear-gradient(135deg,#F59E0B,#D97706);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">11</div><div class="stat-label">⏳ Idle</div></div>
+    <div class="stat-card"><div class="stat-num" style="background:linear-gradient(135deg,#EF4444,#DC2626);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">3</div><div class="stat-label">❌ Offline</div></div>
+    <div class="stat-card"><div class="stat-num">3h 12m</div><div class="stat-label">⏱️ Avg Focus</div></div>
+    <div class="stat-card"><div class="stat-num">87%</div><div class="stat-label">📈 Engagement</div></div>
+  </div>
+  <div class="content-grid" style="padding:0 24px 0;">
+    <div class="card" style="grid-column:1/-1;">
+      <div class="card-title">📋 Student Activity Monitor</div>
+      <div style="overflow-x:auto;">
+        <table class="data-table">
+          <thead><tr><th>Student</th><th>Focus Today</th><th>Sessions</th><th>XP This Week</th><th>Streak</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Maria Reyes</strong></td><td>4h 30m</td><td>6</td><td><strong>2,850 XP</strong></td><td>🔥 18</td><td><span class="status s-active">Active</span></td></tr>
+            <tr><td><strong>Karl Santos</strong></td><td>3h 55m</td><td>5</td><td><strong>2,610 XP</strong></td><td>🔥 15</td><td><span class="status s-active">Active</span></td></tr>
+            <tr><td><strong>Juan Dela Cruz</strong></td><td>4h 20m</td><td>5</td><td><strong>1,240 XP</strong></td><td>🔥 12</td><td><span class="status s-active">Active</span></td></tr>
+            <tr><td><strong>Ana Lim</strong></td><td>2h 10m</td><td>3</td><td>1,100 XP</td><td>🔥 8</td><td><span class="status s-idle">Idle</span></td></tr>
+            <tr><td><strong>Rico Cruz</strong></td><td>1h 45m</td><td>2</td><td>980 XP</td><td>🔥 5</td><td><span class="status s-idle">Idle</span></td></tr>
+            <tr><td><strong>Ben Torres</strong></td><td>0h 30m</td><td>1</td><td>540 XP</td><td>—</td><td><span class="status s-offline">Offline</span></td></tr>
+            <tr><td><strong>Lena Pascual</strong></td><td>0h 00m</td><td>0</td><td>320 XP</td><td>—</td><td><span class="status s-offline">Offline</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="content-grid" style="padding:16px 24px 24px;">
+    <div class="card">
+      <div class="card-title">📊 Subject Focus Breakdown</div>
+      <div class="prog-wrap"><span class="prog-label">Programming</span><div class="prog-bar"><div class="prog-fill" style="width:75%"></div></div><span class="prog-pct">75%</span></div>
+      <div class="prog-wrap"><span class="prog-label">Data Structures</span><div class="prog-bar"><div class="prog-fill" style="width:60%"></div></div><span class="prog-pct">60%</span></div>
+      <div class="prog-wrap"><span class="prog-label">Mathematics</span><div class="prog-bar"><div class="prog-fill" style="width:85%"></div></div><span class="prog-pct">85%</span></div>
+      <div class="prog-wrap"><span class="prog-label">English</span><div class="prog-bar"><div class="prog-fill" style="width:45%"></div></div><span class="prog-pct">45%</span></div>
+    </div>
+    <div class="card">
+      <div class="card-title">📢 Send Announcement</div>
+      <textarea class="form-textarea" rows="4" placeholder="Type a message to your entire class..."></textarea>
+      <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
+        <button class="btn-primary btn-sm" style="flex:1;">📤 Send to All</button>
+        <button class="btn-secondary btn-sm" style="flex:1;">⚠️ Remind Offline</button>
+      </div>
+      <div style="margin-top:16px;">
+        <div class="card-title" style="font-size:12px;margin-bottom:8px;">⚡ Quick Actions</div>
+        <button class="quick-btn">📊 Export Weekly Report (CSV)</button>
+        <button class="quick-btn">🏆 Generate Leaderboard PDF</button>
+        <button class="quick-btn">📩 Email Progress to Parents</button>
+      </div>
+    </div>
+  </div>
+  <footer class="page-footer">© 2025 <span>ZoneUp</span> · Game On. Study On. 🇵🇭</footer>
+</div>
+
+<!-- PAGE: PROF — CREATE XP BLITZ -->
+<div class="page" id="page-prof-game">
+  <div class="page-hero" style="text-align:center;">
+    <h2>⚡ Host XP Blitz</h2>
+    <p>Create a live quiz battle for your class — students join with a PIN</p>
+  </div>
+  <div style="max-width:700px;margin:0 auto;padding:24px;">
+
+    <!-- PIN display -->
+    <div class="pin-display">
+      <div class="pin-label" style="color:rgba(255,255,255,.6);font-size:12px;font-weight:700;margin-bottom:4px;">CLASS GAME PIN</div>
+      <div class="pin-code">7421</div>
+      <div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:6px;">Students go to ZoneUp → XP Blitz → Enter this PIN</div>
+    </div>
+
+    <!-- Game settings -->
+    <div class="card" style="margin-bottom:16px;">
+      <div class="card-title">⚙️ Game Settings</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+        <div>
+          <label style="font-size:12px;font-weight:700;color:var(--dark);display:block;margin-bottom:6px;">Subject</label>
+          <select style="width:100%;padding:10px 12px;border:2px solid var(--p5);border-radius:var(--radius-sm);font-family:'Poppins',sans-serif;font-size:12px;color:var(--dark);background:var(--white);outline:none;">
+            <option>Introduction to Programming</option>
+            <option>Data Structures</option>
+            <option>Algorithms</option>
+            <option>Mathematics</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size:12px;font-weight:700;color:var(--dark);display:block;margin-bottom:6px;">Game Mode</label>
+          <select style="width:100%;padding:10px 12px;border:2px solid var(--p5);border-radius:var(--radius-sm);font-family:'Poppins',sans-serif;font-size:12px;color:var(--dark);background:var(--white);outline:none;">
+            <option>Class Battle (free-for-all)</option>
+            <option>Team vs Team</option>
+            <option>Survival Mode</option>
+            <option>Speed Round (15 sec/q)</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size:12px;font-weight:700;color:var(--dark);display:block;margin-bottom:6px;">Questions</label>
+          <select style="width:100%;padding:10px 12px;border:2px solid var(--p5);border-radius:var(--radius-sm);font-family:'Poppins',sans-serif;font-size:12px;color:var(--dark);background:var(--white);outline:none;">
+            <option>5 questions</option>
+            <option>10 questions</option>
+            <option>15 questions</option>
+            <option>20 questions</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size:12px;font-weight:700;color:var(--dark);display:block;margin-bottom:6px;">Time per Question</label>
+          <select style="width:100%;padding:10px 12px;border:2px solid var(--p5);border-radius:var(--radius-sm);font-family:'Poppins',sans-serif;font-size:12px;color:var(--dark);background:var(--white);outline:none;">
+            <option>15 seconds</option>
+            <option>20 seconds</option>
+            <option selected>30 seconds</option>
+            <option>45 seconds</option>
+          </select>
+        </div>
+      </div>
+      <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--p5);">
+        <label style="font-size:12px;font-weight:700;color:var(--dark);display:block;margin-bottom:8px;">XP Reward Settings</label>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--gray);cursor:pointer;"><input type="checkbox" checked/> Enable Combo Multipliers</label>
+          <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--gray);cursor:pointer;"><input type="checkbox" checked/> Allow Power-ups</label>
+          <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--gray);cursor:pointer;"><input type="checkbox"/> Show Live Scores</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add questions -->
+    <div class="card" style="margin-bottom:16px;">
+      <div class="card-title">➕ Questions</div>
+      <div id="profQuestions">
+        <div style="background:var(--p6);border-radius:var(--radius-md);padding:14px;margin-bottom:10px;border:1.5px solid var(--p5);">
+          <div style="font-size:12px;font-weight:700;color:var(--p1);margin-bottom:8px;">Question 1</div>
+          <input class="form-input" style="margin-bottom:8px;" placeholder="Type your question here..." value="What does CPU stand for?"/>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <input class="form-input" style="border-color:#10B981;font-size:12px;" placeholder="Correct answer" value="Central Processing Unit"/>
+            <input class="form-input" style="font-size:12px;" placeholder="Wrong answer" value="Computer Power Unit"/>
+            <input class="form-input" style="font-size:12px;" placeholder="Wrong answer" value="Core Program Unit"/>
+            <input class="form-input" style="font-size:12px;" placeholder="Wrong answer" value="Central Program Upload"/>
+          </div>
+        </div>
+        <div style="background:var(--p6);border-radius:var(--radius-md);padding:14px;margin-bottom:10px;border:1.5px solid var(--p5);">
+          <div style="font-size:12px;font-weight:700;color:var(--p1);margin-bottom:8px;">Question 2</div>
+          <input class="form-input" style="margin-bottom:8px;" placeholder="Type your question here..." value="Which language is known as the 'mother' of programming?"/>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <input class="form-input" style="border-color:#10B981;font-size:12px;" placeholder="Correct answer" value="COBOL"/>
+            <input class="form-input" style="font-size:12px;" placeholder="Wrong answer" value="Python"/>
+            <input class="form-input" style="font-size:12px;" placeholder="Wrong answer" value="Java"/>
+            <input class="form-input" style="font-size:12px;" placeholder="Wrong answer" value="C++"/>
+          </div>
+        </div>
+      </div>
+      <button class="btn-secondary btn-sm" onclick="addQuestion()" style="width:100%;">+ Add Another Question</button>
+    </div>
+
+    <!-- Waiting room stats -->
+    <div class="card" style="margin-bottom:16px;">
+      <div class="card-title">👥 Waiting Room — Students Joined</div>
+      <div class="player-list" style="justify-content:flex-start;">
+        <div class="player-pip"><div class="pip-av">MR</div>Maria R.</div>
+        <div class="player-pip"><div class="pip-av">KS</div>Karl S.</div>
+        <div class="player-pip"><div class="pip-av" style="background:linear-gradient(135deg,#10B981,#059669);">JD</div>Juan D.</div>
+        <div class="player-pip"><div class="pip-av" style="background:linear-gradient(135deg,#3B82F6,#2563EB);">AL</div>Ana L.</div>
+      </div>
+      <p style="font-size:11px;color:var(--gray);margin-top:8px;">4 / 38 students joined · Waiting for more...</p>
+    </div>
+
+    <div style="display:flex;gap:10px;">
+      <button class="btn-primary" style="flex:2;font-size:15px;padding:15px;">🚀 Launch Game Now</button>
+      <button class="btn-secondary" style="flex:1;">💾 Save as Template</button>
+    </div>
+    <p style="font-size:11px;color:var(--gray);text-align:center;margin-top:8px;">All XP earned goes directly to students' accounts after the game ends</p>
+  </div>
+  <footer class="page-footer">© 2025 <span>ZoneUp</span> · Game On. Study On. 🇵🇭</footer>
+</div>
+
+<!-- PAGE: PROF — LEADERBOARD VIEW -->
+<div class="page" id="page-prof-leaderboard">
+  <div class="page-hero" style="text-align:center;"><h2>🏆 Class Leaderboard</h2><p>BSIT 2-A · Full view with export tools</p></div>
+  <div class="leader-tabs-row">
+    <button class="leader-tab active" onclick="switchTab(this)">📅 Weekly</button>
+    <button class="leader-tab" onclick="switchTab(this)">📆 Monthly</button>
+    <button class="leader-tab" onclick="switchTab(this)">🏅 All Time</button>
+  </div>
+  <div class="leader-list">
+    <div class="podium">
+      <div class="podium-item"><div class="podium-name">Karl</div><div class="podium-xp">2,610 XP</div><div class="podium-avatar p2-av">KS</div><div class="podium-block b2">2</div></div>
+      <div class="podium-item"><div class="podium-crown">👑</div><div class="podium-name">Maria</div><div class="podium-xp">2,850 XP</div><div class="podium-avatar p1-av">MR</div><div class="podium-block b1">1</div></div>
+      <div class="podium-item"><div class="podium-name">Juan</div><div class="podium-xp">1,240 XP</div><div class="podium-avatar p3-av">JD</div><div class="podium-block b3">3</div></div>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:16px;">
+      <button class="btn-secondary btn-sm">📥 Export CSV</button>
+      <button class="btn-secondary btn-sm">🏆 Generate PDF</button>
+      <button class="btn-secondary btn-sm">📩 Email to Parents</button>
+    </div>
+    <div class="leader-item"><div class="rank-dot">1</div><div class="avatar" style="background:var(--grad);">MR</div><div class="leader-info"><div class="leader-name">Maria Reyes</div><div class="leader-sub">🔥 18-day streak · 30 sessions</div></div><div class="leader-pts">2,850 XP</div></div>
+    <div class="leader-item"><div class="rank-dot">2</div><div class="avatar" style="background:linear-gradient(135deg,#9CA3AF,#6B7280);">KS</div><div class="leader-info"><div class="leader-name">Karl Santos</div><div class="leader-sub">🔥 15-day streak · 27 sessions</div></div><div class="leader-pts">2,610 XP</div></div>
+    <div class="leader-item"><div class="rank-dot">3</div><div class="avatar" style="background:linear-gradient(135deg,#F59E0B,#D97706);">JD</div><div class="leader-info"><div class="leader-name">Juan Dela Cruz</div><div class="leader-sub">🔥 12-day streak · 24 sessions</div></div><div class="leader-pts">1,240 XP</div></div>
+    <div class="leader-item"><div class="rank-dot">4</div><div class="avatar" style="background:linear-gradient(135deg,#10B981,#059669);">AL</div><div class="leader-info"><div class="leader-name">Ana Lim</div><div class="leader-sub">🔥 8-day streak · 20 sessions</div></div><div class="leader-pts">1,100 XP</div></div>
+  </div>
+  <footer class="page-footer">© 2025 <span>ZoneUp</span> · Game On. Study On. 🇵🇭</footer>
+</div>
+
+<!-- PAGE: PROF — PLANS -->
+<div class="page" id="page-prof-plans">
+  <div class="page-hero" style="text-align:center;"><h2>💎 Institution Plans</h2><p>ZoneUp for your entire school or department</p></div>
+  <div class="plans-grid">
+    <div class="plan-card">
+      <span class="plan-icon">🏫</span>
+      <div class="plan-name">Class Pack</div>
+      <div class="plan-price">₱500 <span>/month</span></div>
+      <div class="plan-desc">For a single class of up to 50 students</div>
+      <div class="plan-line"></div>
+      <ul class="plan-feats">
+        <li><span class="chk">✓</span> Professor dashboard</li>
+        <li><span class="chk">✓</span> XP Blitz hosting (unlimited)</li>
+        <li><span class="chk">✓</span> Student progress reports</li>
+        <li><span class="chk">✓</span> Parent email reports</li>
+        <li><span class="chk">✓</span> 50 student accounts</li>
+      </ul>
+      <button class="btn-primary" style="width:100%;padding:12px;">Get Started</button>
+    </div>
+    <div class="plan-card popular">
+      <div class="pop-tag">⭐ Best Value</div>
+      <span class="plan-icon">🏛️</span>
+      <div class="plan-name">Department Pack</div>
+      <div class="plan-price">₱2,000 <span>/month</span></div>
+      <div class="plan-desc">Multiple classes, one dashboard</div>
+      <div class="plan-line"></div>
+      <ul class="plan-feats">
+        <li><span class="chk">✓</span> Up to 10 professor accounts</li>
+        <li><span class="chk">✓</span> 300 student accounts</li>
+        <li><span class="chk">✓</span> Department-wide leaderboards</li>
+        <li><span class="chk">✓</span> Custom branding</li>
+        <li><span class="chk">✓</span> Analytics dashboard</li>
+        <li><span class="chk">✓</span> Dedicated support</li>
+      </ul>
+      <button class="btn-primary" style="width:100%;padding:12px;">Contact Us</button>
+    </div>
+    <div class="plan-card">
+      <span class="plan-icon">🎓</span>
+      <div class="plan-name">Full School</div>
+      <div class="plan-price">Custom</div>
+      <div class="plan-desc">Enterprise solution for your institution</div>
+      <div class="plan-line"></div>
+      <ul class="plan-feats">
+        <li><span class="chk">✓</span> Unlimited professors & students</li>
+        <li><span class="chk">✓</span> School-wide leaderboard</li>
+        <li><span class="chk">✓</span> Custom system integration</li>
+        <li><span class="chk">✓</span> White-label option</li>
+        <li><span class="chk">✓</span> SLA + priority support</li>
+        <li><span class="chk">✓</span> On-site training</li>
+      </ul>
+      <button class="btn-secondary" style="width:100%;padding:12px;">Get a Quote →</button>
+    </div>
+  </div>
+  <footer class="page-footer">© 2025 <span>ZoneUp</span> · Game On. Study On. 🇵🇭</footer>
+</div>
+
+</div><!-- /profApp -->
+</div><!-- /mainApp -->
+
+<script>
+// ============================================================
+// GLOBAL STATE
+// ============================================================
+let currentRole = 'student';
+let selectedRole = 'student';
+
+// ============================================================
+// LOGIN
+// ============================================================
+function switchLoginTab(tab, el) {
+  document.querySelectorAll('.login-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('signupExtras').style.display = tab === 'signup' ? 'block' : 'none';
+}
+
+function selectRole(role) {
+  selectedRole = role;
+  document.getElementById('roleStudent').classList.toggle('active', role === 'student');
+  document.getElementById('roleProfessor').classList.toggle('active', role === 'professor');
+}
+
+function doLogin() {
+  launchApp(selectedRole);
+}
+
+function quickDemo(role) {
+  selectedRole = role;
+  launchApp(role);
+}
+
+function launchApp(role) {
+  currentRole = role;
+  document.getElementById('loginPage').style.display = 'none';
+  document.getElementById('mainApp').style.display = 'block';
+
+  const navLinks = document.getElementById('navLinks');
+  navLinks.innerHTML = '';
+
+  if (role === 'student') {
+    document.getElementById('studentApp').style.display = 'block';
+    document.getElementById('profApp').style.display = 'none';
+    document.getElementById('navAvatar').textContent = 'JD';
+    document.getElementById('navUserName').textContent = 'Juan';
+
+    const tabs = [
+      {label:'🏠 Home', page:'landing'},
+      {label:'📚 Dashboard', page:'student'},
+      {label:'⏱️ Timer', page:'timer'},
+      {label:'🏆 Leaderboard', page:'leaderboard'},
+      {label:'⚡ XP Blitz', page:'game'},
+      {label:'💎 Plans', page:'subscription'},
+    ];
+    tabs.forEach((t, i) => {
+      const b = document.createElement('button');
+      b.className = 'nav-btn' + (i === 0 ? ' active' : '');
+      b.textContent = t.label;
+      b.onclick = () => showPage(t.page, b);
+      navLinks.appendChild(b);
+    });
+    document.querySelectorAll('#studentApp .page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-landing').classList.add('active');
+
+  } else {
+    document.getElementById('profApp').style.display = 'block';
+    document.getElementById('studentApp').style.display = 'none';
+    document.getElementById('navAvatar').textContent = 'PS';
+    document.getElementById('navUserName').textContent = 'Prof. Santos';
+
+    const tabs = [
+      {label:'📊 Dashboard', page:'prof-dashboard'},
+      {label:'⚡ Host Blitz', page:'prof-game'},
+      {label:'🏆 Leaderboard', page:'prof-leaderboard'},
+      {label:'💎 Plans', page:'prof-plans'},
+    ];
+    tabs.forEach((t, i) => {
+      const b = document.createElement('button');
+      b.className = 'nav-btn' + (i === 0 ? ' active' : '');
+      b.textContent = t.label;
+      b.onclick = () => showPage(t.page, b);
+      navLinks.appendChild(b);
+    });
+    document.querySelectorAll('#profApp .page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-prof-dashboard').classList.add('active');
+  }
+}
+
+function doLogout() {
+  document.getElementById('mainApp').style.display = 'none';
+  document.getElementById('loginPage').style.display = 'block';
+  document.getElementById('navLinks').innerHTML = '';
+}
+
+function showPage(name, btn) {
+  const container = currentRole === 'student' ? '#studentApp' : '#profApp';
+  document.querySelectorAll(container + ' .page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  const pg = document.getElementById('page-' + name);
+  if (pg) pg.classList.add('active');
+  if (btn && btn.classList) btn.classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+// ============================================================
+// TIMER
+// ============================================================
+let timerInterval = null;
+let timerRunning = false;
+let totalSec = 25 * 60;
+let currentSec = 25 * 60;
+let sessCount = 2;
+const CIRC = 2 * Math.PI * 104;
+
+function updateDisplay() {
+  const m = Math.floor(currentSec / 60);
+  const s = currentSec % 60;
+  const el = document.getElementById('timerDisplay');
+  if (el) el.textContent = String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+  const pct = 1 - (currentSec / totalSec);
+  const ring = document.getElementById('progressRing');
+  if (ring) ring.style.strokeDashoffset = String(CIRC * (1 - pct));
+}
+function toggleTimer() {
+  const btn = document.getElementById('startPauseBtn');
+  if (timerRunning) {
+    clearInterval(timerInterval); timerRunning = false; btn.textContent = '▶ Resume';
+  } else {
+    timerRunning = true; btn.textContent = '⏸ Pause';
+    timerInterval = setInterval(() => {
+      if (currentSec <= 0) {
+        clearInterval(timerInterval); timerRunning = false; btn.textContent = '▶ Start';
+        onSessionComplete(); return;
+      }
+      currentSec--; updateDisplay();
+    }, 1000);
+  }
+}
+function resetTimer() {
+  clearInterval(timerInterval); timerRunning = false;
+  currentSec = totalSec;
+  const btn = document.getElementById('startPauseBtn');
+  if (btn) btn.textContent = '▶ Start';
+  updateDisplay();
+}
+function skipTimer() {
+  clearInterval(timerInterval); timerRunning = false; currentSec = 0; updateDisplay();
+  onSessionComplete();
+  const btn = document.getElementById('startPauseBtn');
+  if (btn) btn.textContent = '▶ Start';
+  currentSec = totalSec; updateDisplay();
+}
+function onSessionComplete() {
+  sessCount++;
+  const subjs = ['📐 Mathematics','🔬 Science','📖 English','📝 Filipino','🎵 MAPEH','🧮 Statistics'];
+  const s = subjs[sessCount % subjs.length];
+  const log = document.getElementById('sessionLog');
+  if (!log) return;
+  const div = document.createElement('div');
+  div.className = 'log-row';
+  div.innerHTML = `<span style="color:var(--dark);font-weight:600;">${s}</span><span style="color:var(--p1);font-family:'Nunito',sans-serif;font-weight:800;">25 min · +50 XP ✓</span>`;
+  log.prepend(div);
+}
+function setMode(mode, btn, mins) {
+  document.querySelectorAll('.mode-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  const labels = {focus:'Focus Session', short:'Short Break', long:'Long Break'};
+  const lbl = document.getElementById('timerLbl');
+  if (lbl) lbl.textContent = labels[mode];
+  totalSec = mins * 60; resetTimer();
+}
+function switchTab(btn) {
+  document.querySelectorAll('.leader-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+}
+updateDisplay();
+
+// ============================================================
+// XP BLITZ GAME ENGINE
+// ============================================================
+const questions = [
+  {cat:'💻 Programming', q:'What does CPU stand for?', opts:['Central Processing Unit','Computer Power Unit','Core Program Unit','Central Program Upload'], ans:0},
+  {cat:'💻 Programming', q:'Which symbol is used for single-line comments in Python?', opts:['//','/* */','#','--'], ans:2},
+  {cat:'📐 Mathematics', q:'What is 15% of 200?', opts:['25','30','35','20'], ans:1},
+  {cat:'🔬 Science', q:'What planet is known as the Red Planet?', opts:['Jupiter','Venus','Mars','Saturn'], ans:2},
+  {cat:'📖 English', q:'Which word is a synonym for "happy"?', opts:['Sad','Elated','Tired','Angry'], ans:1},
+  {cat:'💻 Programming', q:'In HTML, what does <br> do?', opts:['Bold text','Insert a line break','Create a button','Add border'], ans:1},
+  {cat:'📐 Mathematics', q:'What is the square root of 144?', opts:['10','11','12','13'], ans:2},
+  {cat:'🔬 Science', q:'What is the chemical symbol for water?', opts:['WO','HO2','H2O','OW'], ans:2},
+  {cat:'💻 Programming', q:'Which of these is NOT a programming language?', opts:['Python','HTML','Java','Photoshop'], ans:3},
+  {cat:'📐 Mathematics', q:'What is 7 × 8?', opts:['54','56','58','48'], ans:1},
+];
+
+let blitzState = {
+  qIndex: 0,
+  score: 0,
+  combo: 0,
+  maxCombo: 0,
+  correct: 0,
+  shieldActive: false,
+  freezeActive: false,
+  pu50used: false,
+  puFreezeUsed: false,
+  puShieldUsed: false,
+  timerVal: 100,
+  timerInterval: null,
+  answered: false,
+  eliminated: [],
+  timeTaken: [],
+  gameMode: 'solo',
+};
+let oppScores = {maria: 0, karl: 0, ana: 0};
+
+function selectGameMode(mode) {
+  blitzState.gameMode = mode;
+  document.querySelectorAll('.blitz-mode-card').forEach(c => c.classList.remove('selected'));
+  document.getElementById('mode-' + mode).classList.add('selected');
+  document.getElementById('pinBox').style.display = mode === 'class' ? 'block' : 'none';
+}
+
+let selectedSubjectBtn = null;
+function selectSubject(btn) {
+  if (selectedSubjectBtn) selectedSubjectBtn.style.background = '';
+  selectedSubjectBtn = btn;
+  btn.style.background = 'var(--p4)';
+}
+
+function nextPin(cur, nextId) {
+  if (cur.value.length === 1) {
+    const next = document.getElementById(nextId);
+    if (next) next.focus();
+  }
+}
+
+function startBlitz() {
+  blitzState = {
+    qIndex: 0, score: 0, combo: 0, maxCombo: 0, correct: 0,
+    shieldActive: false, freezeActive: false,
+    pu50used: false, puFreezeUsed: false, puShieldUsed: false,
+    timerVal: 100, timerInterval: null, answered: false,
+    eliminated: [], timeTaken: [], gameMode: blitzState.gameMode,
+  };
+  oppScores = {maria: 0, karl: 0, ana: 0};
+  document.getElementById('blitzLobby').style.display = 'none';
+  document.getElementById('blitzGame').style.display = 'block';
+  document.getElementById('blitzResults').style.display = 'none';
+  document.getElementById('gameFooter').style.display = 'none';
+  document.getElementById('pu50').disabled = false;
+  document.getElementById('puFreeze').disabled = false;
+  document.getElementById('puShield').disabled = false;
+  document.getElementById('pu50count').textContent = '1';
+  document.getElementById('puFreezeCount').textContent = '1';
+  document.getElementById('puShieldCount').textContent = '1';
+  loadQuestion();
+}
+
+function loadQuestion() {
+  const q = questions[blitzState.qIndex];
+  blitzState.answered = false;
+  blitzState.eliminated = [];
+  blitzState.timerVal = 100;
+
+  document.getElementById('qCounter').textContent = `Question ${blitzState.qIndex + 1} / ${questions.length}`;
+  document.getElementById('comboDisplay').textContent = blitzState.combo > 1 ? `Combo: ×${blitzState.combo}` : 'Combo: ×1';
+  document.getElementById('scorePill').textContent = `Score: ${blitzState.score.toLocaleString()}`;
+  document.getElementById('qCategory').textContent = q.cat;
+  document.getElementById('qText').textContent = q.q;
+  document.getElementById('blitzFeedback').textContent = '';
+  document.getElementById('blitzFeedback').className = 'blitz-feedback';
+
+  const btns = document.querySelectorAll('.blitz-ans-btn');
+  btns.forEach((btn, i) => {
+    btn.disabled = false;
+    btn.className = 'blitz-ans-btn';
+    btn.querySelector('span:last-child').textContent = q.opts[i];
+    btn.style.opacity = '1';
+  });
+
+  // timer bar
+  clearInterval(blitzState.timerInterval);
+  const bar = document.getElementById('timerBar');
+  bar.style.width = '100%';
+  bar.className = 'timer-bar-fill';
+
+  const startTime = Date.now();
+  blitzState.timerInterval = setInterval(() => {
+    if (blitzState.freezeActive) return;
+    blitzState.timerVal -= (100 / 300); // 30 sec = 300 ticks at ~100ms
+    bar.style.width = Math.max(0, blitzState.timerVal) + '%';
+    if (blitzState.timerVal <= 30) bar.className = 'timer-bar-fill urgent';
+    if (blitzState.timerVal <= 0) {
+      clearInterval(blitzState.timerInterval);
+      if (!blitzState.answered) timeOut(startTime);
+    }
+    // Simulate opponent scoring
+    if (Math.random() < 0.003) {
+      oppScores.maria += Math.floor(Math.random() * 400 + 100);
+      document.getElementById('oMaria').textContent = oppScores.maria.toLocaleString();
+    }
+    if (Math.random() < 0.002) {
+      oppScores.karl += Math.floor(Math.random() * 350 + 80);
+      document.getElementById('oKarl').textContent = oppScores.karl.toLocaleString();
+    }
+    if (Math.random() < 0.0015) {
+      oppScores.ana += Math.floor(Math.random() * 300 + 60);
+      document.getElementById('oAna').textContent = oppScores.ana.toLocaleString();
+    }
+  }, 100);
+}
+
+function answerQ(idx) {
+  if (blitzState.answered) return;
+  blitzState.answered = true;
+  clearInterval(blitzState.timerInterval);
+
+  const q = questions[blitzState.qIndex];
+  const btns = document.querySelectorAll('.blitz-ans-btn');
+  btns.forEach(b => b.disabled = true);
+  btns[q.ans].classList.add('reveal-correct');
+
+  const timeBonus = Math.floor(blitzState.timerVal * 8); // max 800 for instant
+  const comboMult = Math.min(blitzState.combo + 1, 5);
+
+  if (idx === q.ans) {
+    blitzState.correct++;
+    blitzState.combo++;
+    blitzState.maxCombo = Math.max(blitzState.maxCombo, blitzState.combo);
+    const pts = (500 + timeBonus) * comboMult;
+    blitzState.score += pts;
+    btns[idx].classList.add('correct');
+    const fb = document.getElementById('blitzFeedback');
+    fb.className = 'blitz-feedback correct-fb';
+    fb.textContent = blitzState.combo > 1
+      ? `🔥 ×${blitzState.combo} COMBO! +${pts.toLocaleString()} pts`
+      : `✅ Correct! +${pts.toLocaleString()} pts`;
+  } else {
+    if (blitzState.shieldActive) {
+      blitzState.shieldActive = false;
+      const fb = document.getElementById('blitzFeedback');
+      fb.className = 'blitz-feedback correct-fb';
+      fb.textContent = '🛡️ Shield blocked the combo break!';
+    } else {
+      blitzState.combo = 0;
+      btns[idx].classList.add('wrong');
+      const fb = document.getElementById('blitzFeedback');
+      fb.className = 'blitz-feedback wrong-fb';
+      fb.textContent = '❌ Wrong! Combo reset.';
+    }
+  }
+
+  document.getElementById('scorePill').textContent = `Score: ${blitzState.score.toLocaleString()}`;
+  document.getElementById('comboDisplay').textContent = blitzState.combo > 1 ? `Combo: ×${blitzState.combo}` : 'Combo: ×1';
+  document.getElementById('oYou').textContent = blitzState.score.toLocaleString();
+
+  setTimeout(() => nextQuestion(), 1500);
+}
+
+function timeOut(startTime) {
+  blitzState.answered = true;
+  blitzState.combo = 0;
+  const btns = document.querySelectorAll('.blitz-ans-btn');
+  btns.forEach(b => b.disabled = true);
+  btns[questions[blitzState.qIndex].ans].classList.add('reveal-correct');
+  const fb = document.getElementById('blitzFeedback');
+  fb.className = 'blitz-feedback wrong-fb';
+  fb.textContent = "⏰ Time's up! Combo reset.";
+  document.getElementById('comboDisplay').textContent = 'Combo: ×1';
+  setTimeout(() => nextQuestion(), 1500);
+}
+
+function nextQuestion() {
+  blitzState.qIndex++;
+  if (blitzState.qIndex >= questions.length) {
+    endBlitz();
+  } else {
+    loadQuestion();
+  }
+}
+
+function endBlitz() {
+  document.getElementById('blitzGame').style.display = 'none';
+  document.getElementById('blitzResults').style.display = 'block';
+  document.getElementById('gameFooter').style.display = 'block';
+
+  const xp = Math.floor(blitzState.score / 50) + (blitzState.correct * 10);
+  const rank = blitzState.score > oppScores.maria ? '#1' : blitzState.score > oppScores.karl ? '#2' : '#3';
+
+  document.getElementById('resultsBigScore').textContent = blitzState.score.toLocaleString();
+  document.getElementById('resultsXP').textContent = `+${xp} XP added to your account`;
+  document.getElementById('rCorrect').textContent = `${blitzState.correct} / ${questions.length}`;
+  document.getElementById('rSpeed').textContent = `${(30 - blitzState.timerVal * 0.3).toFixed(1)} sec avg`;
+  document.getElementById('rCombo').textContent = `×${blitzState.maxCombo}`;
+  document.getElementById('rRank').textContent = `${rank} in class`;
+  document.getElementById('rXP').textContent = `+${xp} XP`;
+
+  if (blitzState.correct === questions.length) {
+    document.getElementById('resultsTitle').textContent = '🏆 PERFECT ROUND!';
+  } else if (blitzState.correct >= 8) {
+    document.getElementById('resultsTitle').textContent = '🔥 Amazing Run!';
+  } else if (blitzState.correct >= 6) {
+    document.getElementById('resultsTitle').textContent = '⚡ Round Complete!';
+  } else {
+    document.getElementById('resultsTitle').textContent = '📚 Keep Practicing!';
+  }
+}
+
+function use5050() {
+  if (blitzState.pu50used || blitzState.answered) return;
+  blitzState.pu50used = true;
+  document.getElementById('pu50').disabled = true;
+  document.getElementById('pu50count').textContent = '0';
+  const q = questions[blitzState.qIndex];
+  const btns = document.querySelectorAll('.blitz-ans-btn');
+  let removed = 0;
+  for (let i = 0; i < 4 && removed < 2; i++) {
+    if (i !== q.ans) {
+      btns[i].style.opacity = '0.25';
+      btns[i].disabled = true;
+      removed++;
+    }
+  }
+}
+
+function useFreeze() {
+  if (blitzState.puFreezeUsed || blitzState.answered) return;
+  blitzState.puFreezeUsed = true;
+  blitzState.freezeActive = true;
+  document.getElementById('puFreeze').disabled = true;
+  document.getElementById('puFreezeCount').textContent = '0';
+  const fb = document.getElementById('blitzFeedback');
+  fb.className = 'blitz-feedback correct-fb';
+  fb.textContent = '❄️ Time frozen for 5 seconds!';
+  setTimeout(() => {
+    blitzState.freezeActive = false;
+    if (!blitzState.answered) {
+      const f = document.getElementById('blitzFeedback');
+      f.textContent = '';
+    }
+  }, 5000);
+}
+
+function useShield() {
+  if (blitzState.puShieldUsed || blitzState.answered) return;
+  blitzState.puShieldUsed = true;
+  blitzState.shieldActive = true;
+  document.getElementById('puShield').disabled = true;
+  document.getElementById('puShieldCount').textContent = '0';
+  const fb = document.getElementById('blitzFeedback');
+  fb.className = 'blitz-feedback correct-fb';
+  fb.textContent = '🛡️ Shield active — next wrong answer protected!';
+  setTimeout(() => {
+    if (!blitzState.answered && document.getElementById('blitzFeedback').textContent.includes('Shield active')) {
+      document.getElementById('blitzFeedback').textContent = '';
+    }
+  }, 2000);
+}
+
+function restartBlitz() {
+  document.getElementById('blitzResults').style.display = 'none';
+  document.getElementById('blitzLobby').style.display = 'block';
+}
+
+function backToLobby() {
+  const navBtn = document.querySelectorAll('#studentApp .nav-btn')[3];
+  showPage('leaderboard', navBtn);
+  document.getElementById('blitzResults').style.display = 'none';
+  document.getElementById('blitzLobby').style.display = 'block';
+  document.getElementById('gameFooter').style.display = 'block';
+}
+
+// Prof: add question
+let qCount = 2;
+function addQuestion() {
+  qCount++;
+  const container = document.getElementById('profQuestions');
+  const div = document.createElement('div');
+  div.style.cssText = 'background:var(--p6);border-radius:var(--radius-md);padding:14px;margin-bottom:10px;border:1.5px solid var(--p5);';
+  div.innerHTML = `
+    <div style="font-size:12px;font-weight:700;color:var(--p1);margin-bottom:8px;">Question ${qCount}</div>
+    <input class="form-input" style="margin-bottom:8px;" placeholder="Type your question here..."/>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <input class="form-input" style="border-color:#10B981;font-size:12px;" placeholder="Correct answer"/>
+      <input class="form-input" style="font-size:12px;" placeholder="Wrong answer"/>
+      <input class="form-input" style="font-size:12px;" placeholder="Wrong answer"/>
+      <input class="form-input" style="font-size:12px;" placeholder="Wrong answer"/>
+    </div>`;
+  container.appendChild(div);
+}
+</script>
+</body>
+</html>

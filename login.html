@@ -123,10 +123,10 @@
 
     <div class="login-logo">
       <div class="logo-icon">
-        <i class="ti ti-clock" aria-hidden="true"></i>
+        <img src="icon.png" alt="Logo" />
       </div>
       <div>
-        <div class="logo-text"><span class="logo-accent">KAIROS</span></div>
+        <div class="logo-text"><span class="logo-accent">TOKI</span></div>
         <div class="logo-sub">Timing is Everything</div>
       </div>
     </div>
@@ -273,13 +273,13 @@ function doLogin() {
     if (!org) return showError('Organizer ID not found.');
     if (org.password !== pass) return showError('Incorrect password.');
     sessionStorage.setItem('ae_user', JSON.stringify({ role: 'organizer', id, name: org.name, dept: org.dept }));
-    window.location.href = 'organizer.html';
+    window.location.href = 'oDashboard.html';
   } else {
     const stu = STUDENTS[id];
     if (!stu) return showError('Student number not found.');
     if (stu.password !== pass) return showError('Incorrect password.');
     sessionStorage.setItem('ae_user', JSON.stringify({ role: 'student', id, name: stu.name, course: stu.course }));
-    window.location.href = 'student.html';
+    window.location.href = 'sDashboard.html';
   }
 }
 

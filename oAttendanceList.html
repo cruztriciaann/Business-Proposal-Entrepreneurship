@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TOKI — Attendance List</title>
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<div class="app-layout">
+
+  <!-- ═══ SIDEBAR ═══ -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon"><img src="icon.png" alt="Logo" /></div>
+      <div>
+        <div class="logo-text"><span class="logo-accent">TOKI</span></div>
+        <div class="logo-sub">Timing is Everything</div>
+      </div>
+    </div>
+    <div class="sidebar-role">
+      <span class="role-pill organizer"><i class="ti ti-microphone"></i> Organizer</span>
+    </div>
+    <div class="sidebar-user">
+      <div class="user-name" id="sb-name">—</div>
+      <div class="user-id"   id="sb-dept">—</div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Main</div>
+      <a class="nav-item" href="oDashboard.html">
+        <span class="nav-icon"><i class="ti ti-layout-dashboard"></i></span> Dashboard
+      </a>
+      <a class="nav-item" href="oManageEvent.html">
+        <span class="nav-icon"><i class="ti ti-calendar-event"></i></span> Manage Event
+      </a>
+      <a class="nav-item" href="oCheckIn.html">
+        <span class="nav-icon"><i class="ti ti-door-enter"></i></span> Check-in
+      </a>
+      <a class="nav-item" href="oCheckOut.html">
+        <span class="nav-icon"><i class="ti ti-door-exit"></i></span> Check-out
+      </a>
+      <div class="nav-section-label">Records</div>
+      <a class="nav-item active" href="oAttendanceList.html">
+        <span class="nav-icon"><i class="ti ti-clipboard-list"></i></span> Attendance List
+      </a>
+      <a class="nav-item" href="oManualEntry.html">
+        <span class="nav-icon"><i class="ti ti-edit"></i></span> Manual Entry
+      </a>
+      <div class="nav-section-label">Communication</div>
+      <a class="nav-item" href="oAnnouncements.html">
+        <span class="nav-icon"><i class="ti ti-speakerphone"></i></span> Announcements
+      </a>
+    </nav>
+    </nav>
+    <div class="sidebar-bottom">
+      <button class="theme-toggle" onclick="TOKI.toggleTheme()">
+        <span style="display:flex;align-items:center;gap:8px;">
+          <i class="ti" id="theme-icon"></i>
+          <span id="theme-label">Light Mode</span>
+        </span>
+        <div class="toggle-switch"></div>
+      </button>
+      <button class="logout-btn" onclick="TOKI.logout()">
+        <i class="ti ti-logout"></i> Sign Out
+      </button>
+    </div>
+  </aside>
+
+  <!-- ═══ MAIN ═══ -->
+  <div class="main-content">
+    <div class="top-bar">
+      <div>
+        <div class="page-title">Attendance List</div>
+        <div class="page-sub">View and export all attendance data</div>
+      </div>
+      <div class="top-bar-right">
+        <div id="event-badge"></div>
+      </div>
+    </div>
+
+    <div class="content-scroll">
+      <div class="page active oAttendanceList">
+
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Attendance Records</div>
+              <div class="card-sub" id="att-count">0 students</div>
+            </div>
+            <div class="flex-row">
+              <input type="text" class="form-input" id="att-search" placeholder="Search name or ID..."
+                     oninput="renderTable()"
+                     style="width:190px;padding:8px 12px;font-size:12.5px;" />
+              <button class="btn btn-ghost btn-sm" onclick="exportCSV()">
+                <i class="ti ti-download"></i> Export CSV
+              </button>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Student No.</th>
+                  <th>Name</th>
+                  <th>Check-in</th>
+                  <th>Check-out</th>
+                  <th>Method</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="att-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+      </div><!-- .oAttendanceList -->
+    </div><!-- .content-scroll -->
+  </div><!-- .main-content -->
+
+  <!-- ═══ MOBILE BOTTOM NAV ═══ -->
+  <nav class="bottom-nav">
+    <a class="bottom-nav-item" href="oDashboard.html">
+      <span class="bn-icon"><i class="ti ti-layout-dashboard"></i></span><span>Home</span>
+    </a>
+    <a class="bottom-nav-item" href="oManageEvent.html">
+      <span class="bn-icon"><i class="ti ti-calendar-event"></i></span><span>Event</span>
+    </a>
+    <a class="bottom-nav-item" href="oCheckIn.html">
+      <span class="bn-icon"><i class="ti ti-door-enter"></i></span><span>Check-in</span>
+    </a>
+    <a class="bottom-nav-item" href="oCheckOut.html">
+      <span class="bn-icon"><i class="ti ti-door-exit"></i></span><span>Check-out</span>
+    </a>
+    <a class="bottom-nav-item active" href="oAttendanceList.html">
+      <span class="bn-icon"><i class="ti ti-clipboard-list"></i></span><span>Records</span>
+    </a>
+    <a class="bottom-nav-item" href="oAnnouncements.html">
+      <span class="bn-icon"><i class="ti ti-speakerphone"></i></span><span>Posts</span>
+    </a>
+  </nav>
+
+</div><!-- .app-layout -->
+
+<script src="shared-state.js"></script>
+<script>
+  const user = TOKI.requireOrganizer();
+  TOKI.initTheme();
+  if (user) {
+    document.getElementById('sb-name').textContent = user.name;
+    document.getElementById('sb-dept').textContent = user.dept;
+  }
+
+  function renderTable() {
+    const st  = TOKI.load();
+    const q   = (document.getElementById('att-search').value || '').toLowerCase();
+    const list = st.attendance.filter(a =>
+      a.name.toLowerCase().includes(q) || a.sid.toLowerCase().includes(q)
+    );
+
+    document.getElementById('event-badge').innerHTML = st.event
+      ? `<span class="badge badge-green"><span class="dot pulse"></span>${st.event.name}</span>`
+      : `<span class="badge badge-gray">No Active Event</span>`;
+
+    document.getElementById('att-count').textContent =
+      `${list.length} student${list.length !== 1 ? 's' : ''}`;
+
+    document.getElementById('att-tbody').innerHTML = list.length === 0
+      ? `<tr><td colspan="6">
+           <div class="empty-state">
+             <div class="icon"><i class="ti ti-inbox"></i></div>
+             <p>No records yet</p>
+           </div>
+         </td></tr>`
+      : list.map(a => `
+        <tr>
+          <td><span style="font-family:var(--font-mono);font-size:11.5px;">${a.sid}</span></td>
+          <td><strong>${a.name}</strong></td>
+          <td><span style="font-family:var(--font-mono);font-size:11.5px;">${a.checkinTime || '—'}</span></td>
+          <td><span style="font-family:var(--font-mono);font-size:11.5px;">${a.checkoutTime || '—'}</span></td>
+          <td><span class="badge ${a.method === 'manual' ? 'badge-amber' : 'badge-blue'}">${a.method}</span></td>
+          <td><span class="badge ${a.checkoutTime ? 'badge-green' : 'badge-rose'}">${a.checkoutTime ? 'Complete' : 'Inside'}</span></td>
+        </tr>`).join('');
+  }
+
+  function exportCSV() {
+    const st = TOKI.load();
+    if (!st.attendance.length) return alert('No data to export.');
+    const rows = [
+      'Student Number,Name,Check-in,Check-out,Method',
+      ...st.attendance.map(a =>
+        `${a.sid},"${a.name}",${a.checkinTime || ''},${a.checkoutTime || ''},${a.method}`)
+    ].join('\n');
+    const blob = new Blob([rows], { type: 'text/csv' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `${(st.event?.name || 'attendance').replace(/\s+/g, '-')}.csv`;
+    a.click();
+  }
+
+  renderTable();
+  setInterval(renderTable, 5000);
+</script>
+</body>
+</html>

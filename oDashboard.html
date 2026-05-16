@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TOKI — Dashboard</title>
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<div class="app-layout">
+
+  <!-- ═══ SIDEBAR ═══ -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon"><img src="icon.png" alt="Logo" /></div>
+      <div>
+        <div class="logo-text"><span class="logo-accent">TOKI</span></div>
+        <div class="logo-sub">Timing is Everything</div>
+      </div>
+    </div>
+    <div class="sidebar-role">
+      <span class="role-pill organizer"><i class="ti ti-microphone"></i> Organizer</span>
+    </div>
+    <div class="sidebar-user">
+      <div class="user-name" id="sb-name">—</div>
+      <div class="user-id"   id="sb-dept">—</div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Main</div>
+      <a class="nav-item active" href="oDashboard.html">
+        <span class="nav-icon"><i class="ti ti-layout-dashboard"></i></span> Dashboard
+      </a>
+      <a class="nav-item" href="oManageEvent.html">
+        <span class="nav-icon"><i class="ti ti-calendar-event"></i></span> Manage Event
+      </a>
+      <a class="nav-item" href="oCheckIn.html">
+        <span class="nav-icon"><i class="ti ti-door-enter"></i></span> Check-in
+      </a>
+      <a class="nav-item" href="oCheckOut.html">
+        <span class="nav-icon"><i class="ti ti-door-exit"></i></span> Check-out
+      </a>
+      <div class="nav-section-label">Records</div>
+      <a class="nav-item" href="oAttendanceList.html">
+        <span class="nav-icon"><i class="ti ti-clipboard-list"></i></span> Attendance List
+      </a>
+      <a class="nav-item" href="oManualEntry.html">
+        <span class="nav-icon"><i class="ti ti-edit"></i></span> Manual Entry
+      </a>
+      <div class="nav-section-label">Communication</div>
+      <a class="nav-item" href="oAnnouncements.html">
+        <span class="nav-icon"><i class="ti ti-speakerphone"></i></span> Announcements
+      </a>
+    </nav>
+    <div class="sidebar-bottom">
+      <button class="theme-toggle" onclick="TOKI.toggleTheme()">
+        <span style="display:flex;align-items:center;gap:8px;">
+          <i class="ti" id="theme-icon"></i>
+          <span id="theme-label">Light Mode</span>
+        </span>
+        <div class="toggle-switch"></div>
+      </button>
+      <button class="logout-btn" onclick="TOKI.logout()">
+        <i class="ti ti-logout"></i> Sign Out
+      </button>
+    </div>
+  </aside>
+
+  <!-- ═══ MAIN ═══ -->
+  <div class="main-content">
+    <div class="top-bar">
+      <div>
+        <div class="page-title">Dashboard</div>
+        <div class="page-sub">Overview of your event</div>
+      </div>
+      <div class="top-bar-right">
+        <div id="event-badge"></div>
+      </div>
+    </div>
+
+    <div class="content-scroll">
+      <div class="page active oDashboard">
+
+        <div id="no-event-banner" class="alert alert-warning" style="display:none;">
+          <i class="ti ti-alert-triangle"></i>
+          No active event yet. Go to <strong><a href="oManageEvent.html" style="color:inherit;">Manage Event</a></strong> to create one.
+        </div>
+
+        <div class="stat-grid">
+          <div class="stat-card rose">
+            <div class="stat-icon"><i class="ti ti-users"></i></div>
+            <div class="stat-num" id="d-total">0</div>
+            <div class="stat-label">Total Check-ins</div>
+          </div>
+          <div class="stat-card emerald">
+            <div class="stat-icon"><i class="ti ti-circle-check"></i></div>
+            <div class="stat-num" id="d-out">0</div>
+            <div class="stat-label">Checked Out</div>
+          </div>
+          <div class="stat-card amber">
+            <div class="stat-icon"><i class="ti ti-home"></i></div>
+            <div class="stat-num" id="d-inside">0</div>
+            <div class="stat-label">Still Inside</div>
+          </div>
+          <div class="stat-card dark">
+            <div class="stat-icon"><i class="ti ti-clock"></i></div>
+            <div class="stat-num" id="d-time" style="font-size:17px;letter-spacing:0;">—</div>
+            <div class="stat-label">Event Started</div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title">Event Info</div>
+                <div class="card-sub">Current active event</div>
+              </div>
+            </div>
+            <div id="d-event-info" style="color:var(--text3);font-size:13px;">No event created yet.</div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title">Window Status</div>
+                <div class="card-sub">Check-in / Check-out</div>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:8px;" id="d-window-status">
+              <div class="step pending">
+                <span class="step-icon"><i class="ti ti-door-enter"></i></span>
+                <div><div class="step-label">Check-in</div><div class="step-time">Not opened</div></div>
+              </div>
+              <div class="step pending">
+                <span class="step-icon"><i class="ti ti-door-exit"></i></span>
+                <div><div class="step-label">Check-out</div><div class="step-time">Not opened</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Recent Activity</div>
+            <a href="oAttendanceList.html" class="btn btn-ghost btn-sm">
+              View All <i class="ti ti-arrow-right"></i>
+            </a>
+          </div>
+          <div id="d-activity">
+            <div class="empty-state">
+              <div class="icon"><i class="ti ti-inbox"></i></div>
+              <p>No activity yet</p>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- .oDashboard -->
+    </div><!-- .content-scroll -->
+  </div><!-- .main-content -->
+
+  <!-- ═══ MOBILE BOTTOM NAV ═══ -->
+  <nav class="bottom-nav">
+    <a class="bottom-nav-item active" href="oDashboard.html">
+      <span class="bn-icon"><i class="ti ti-layout-dashboard"></i></span><span>Home</span>
+    </a>
+    <a class="bottom-nav-item" href="oManageEvent.html">
+      <span class="bn-icon"><i class="ti ti-calendar-event"></i></span><span>Event</span>
+    </a>
+    <a class="bottom-nav-item" href="oCheckIn.html">
+      <span class="bn-icon"><i class="ti ti-door-enter"></i></span><span>Check-in</span>
+    </a>
+    <a class="bottom-nav-item" href="oCheckOut.html">
+      <span class="bn-icon"><i class="ti ti-door-exit"></i></span><span>Check-out</span>
+    </a>
+    <a class="bottom-nav-item" href="oAttendanceList.html">
+      <span class="bn-icon"><i class="ti ti-clipboard-list"></i></span><span>Records</span>
+    </a>
+    <a class="bottom-nav-item" href="oAnnouncements.html">
+      <span class="bn-icon"><i class="ti ti-speakerphone"></i></span><span>Posts</span>
+  </nav>
+
+</div><!-- .app-layout -->
+
+<script src="shared-state.js"></script>
+<script>
+  const user = TOKI.requireOrganizer();
+  TOKI.initTheme();
+  if (user) {
+    document.getElementById('sb-name').textContent = user.name;
+    document.getElementById('sb-dept').textContent = user.dept;
+  }
+
+  function render() {
+    const st = TOKI.load();
+    const total  = st.attendance.filter(a => a.checkinTime).length;
+    const out    = st.attendance.filter(a => a.checkoutTime).length;
+    const inside = Math.max(0, total - out);
+
+    document.getElementById('d-total').textContent  = total;
+    document.getElementById('d-out').textContent    = out;
+    document.getElementById('d-inside').textContent = inside;
+    document.getElementById('d-time').textContent   = st.event ? st.event.time : '—';
+    document.getElementById('no-event-banner').style.display = st.event ? 'none' : 'block';
+
+    document.getElementById('event-badge').innerHTML = st.event
+      ? `<span class="badge badge-green"><span class="dot pulse"></span>${st.event.name}</span>`
+      : `<span class="badge badge-gray">No Active Event</span>`;
+
+    document.getElementById('d-event-info').innerHTML = st.event ? `
+      <div style="display:flex;flex-direction:column;gap:9px;">
+        <div><span style="color:var(--text3);font-size:9px;text-transform:uppercase;letter-spacing:1.2px;font-weight:700;">Name</span><br><strong>${st.event.name}</strong></div>
+        <div><span style="color:var(--text3);font-size:9px;text-transform:uppercase;letter-spacing:1.2px;font-weight:700;">Venue</span><br>${st.event.venue}</div>
+        <div><span style="color:var(--text3);font-size:9px;text-transform:uppercase;letter-spacing:1.2px;font-weight:700;">Date</span><br>${st.event.date} at ${st.event.time}</div>
+        <div><span style="color:var(--text3);font-size:9px;text-transform:uppercase;letter-spacing:1.2px;font-weight:700;">GPS Radius</span><br>${st.event.radius}m ${st.orgLat ? '(active)' : '(disabled)'}</div>
+      </div>` : '<div style="color:var(--text3)">No event created yet.</div>';
+
+    document.getElementById('d-window-status').innerHTML = `
+      <div class="step ${st.checkinOpen ? 'active' : st.checkinCode ? 'done' : 'pending'}">
+        <span class="step-icon"><i class="ti ti-door-enter"></i></span>
+        <div><div class="step-label">Check-in</div><div class="step-time">${st.checkinOpen ? 'Open now' : st.checkinCode ? 'Closed' : 'Not opened'}</div></div>
+        ${st.checkinOpen ? '<span class="badge badge-green" style="margin-left:auto"><span class="dot pulse"></span> Live</span>' : ''}
+      </div>
+      <div class="step ${st.checkoutOpen ? 'active' : st.checkoutCode ? 'done' : 'pending'}">
+        <span class="step-icon"><i class="ti ti-door-exit"></i></span>
+        <div><div class="step-label">Check-out</div><div class="step-time">${st.checkoutOpen ? 'Open now' : st.checkoutCode ? 'Closed' : 'Not opened'}</div></div>
+        ${st.checkoutOpen ? '<span class="badge badge-green" style="margin-left:auto"><span class="dot pulse"></span> Live</span>' : ''}
+      </div>`;
+
+    const recent = [...st.attendance].reverse().slice(0, 5);
+    document.getElementById('d-activity').innerHTML = recent.length === 0
+      ? `<div class="empty-state"><div class="icon"><i class="ti ti-inbox"></i></div><p>No activity yet</p></div>`
+      : `<div class="feed">${recent.map(a => `
+          <div class="feed-item">
+            <span class="feed-icon"><i class="ti ${a.checkoutTime ? 'ti-door-exit' : 'ti-circle-check'}"></i></span>
+            <div><div class="feed-name">${a.name}</div><div style="font-size:10px;color:var(--text3);font-family:var(--font-mono);">${a.sid}</div></div>
+            <span class="feed-time">${a.checkoutTime || a.checkinTime}</span>
+          </div>`).join('')}</div>`;
+  }
+
+  render();
+  setInterval(render, 5000);
+</script>
+</body>
+</html>

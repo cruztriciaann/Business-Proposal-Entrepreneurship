@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TOKI — Manage Event</title>
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<div class="app-layout">
+
+  <!-- ═══ SIDEBAR ═══ -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon"><img src="icon.png" alt="Logo" /></div>
+      <div>
+        <div class="logo-text"><span class="logo-accent">TOKI</span></div>
+        <div class="logo-sub">Timing is Everything</div>
+      </div>
+    </div>
+    <div class="sidebar-role">
+      <span class="role-pill organizer"><i class="ti ti-microphone"></i> Organizer</span>
+    </div>
+    <div class="sidebar-user">
+      <div class="user-name" id="sb-name">—</div>
+      <div class="user-id"   id="sb-dept">—</div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Main</div>
+      <a class="nav-item" href="oDashboard.html">
+        <span class="nav-icon"><i class="ti ti-layout-dashboard"></i></span> Dashboard
+      </a>
+      <a class="nav-item active" href="oManageEvent.html">
+        <span class="nav-icon"><i class="ti ti-calendar-event"></i></span> Manage Event
+      </a>
+      <a class="nav-item" href="oCheckIn.html">
+        <span class="nav-icon"><i class="ti ti-door-enter"></i></span> Check-in
+      </a>
+      <a class="nav-item" href="oCheckOut.html">
+        <span class="nav-icon"><i class="ti ti-door-exit"></i></span> Check-out
+      </a>
+      <div class="nav-section-label">Records</div>
+      <a class="nav-item" href="oAttendanceList.html">
+        <span class="nav-icon"><i class="ti ti-clipboard-list"></i></span> Attendance List
+      </a>
+      <a class="nav-item" href="oManualEntry.html">
+        <span class="nav-icon"><i class="ti ti-edit"></i></span> Manual Entry
+      </a>
+      <div class="nav-section-label">Communication</div>
+      <a class="nav-item" href="oAnnouncements.html">
+        <span class="nav-icon"><i class="ti ti-speakerphone"></i></span> Announcements
+      </a>
+    </nav>
+    <div class="sidebar-bottom">
+      <button class="theme-toggle" onclick="TOKI.toggleTheme()">
+        <span style="display:flex;align-items:center;gap:8px;">
+          <i class="ti" id="theme-icon"></i>
+          <span id="theme-label">Light Mode</span>
+        </span>
+        <div class="toggle-switch"></div>
+      </button>
+      <button class="logout-btn" onclick="TOKI.logout()">
+        <i class="ti ti-logout"></i> Sign Out
+      </button>
+    </div>
+  </aside>
+
+  <!-- ═══ MAIN ═══ -->
+  <div class="main-content">
+    <div class="top-bar">
+      <div>
+        <div class="page-title">Manage Event</div>
+        <div class="page-sub">Create or end your event</div>
+      </div>
+      <div class="top-bar-right">
+        <div id="event-badge"></div>
+      </div>
+    </div>
+
+    <div class="content-scroll">
+      <div class="page active oManageEvent">
+
+        <!-- CREATE FORM -->
+        <div id="event-form-section">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title">Create New Event</div>
+                <div class="card-sub">Your GPS location will be auto-captured as the venue center</div>
+              </div>
+            </div>
+
+            <div class="gps-bar" id="event-gps-bar">
+              <i class="ti ti-map-pin"></i>
+              <div>
+                <div id="event-gps-text">Detecting location...</div>
+                <div id="event-gps-coords" style="font-size:11px;color:var(--text3);margin-top:1px;"></div>
+              </div>
+            </div>
+
+            <div class="grid-2">
+              <div class="form-group">
+                <label class="form-label">Event Name</label>
+                <input type="text" class="form-input" id="e-name" placeholder="e.g. General Assembly 2025" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Venue / Room</label>
+                <input type="text" class="form-input" id="e-venue" placeholder="e.g. 8th Floor Auditorium" />
+              </div>
+            </div>
+
+            <div class="grid-2">
+              <div class="form-group">
+                <label class="form-label">Department</label>
+                <input type="text" class="form-input" id="e-dept" placeholder="e.g. College of IT" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">GPS Radius (meters)</label>
+                <input type="number" class="form-input" id="e-radius" value="120" min="30" max="500" />
+              </div>
+            </div>
+
+            <div class="alert alert-info">
+              <i class="ti ti-info-circle"></i>
+              Make sure you are physically at the venue when creating the event — your location is used as the center point for student GPS verification.
+            </div>
+
+            <button class="btn btn-primary" id="create-event-btn" onclick="createEvent()" disabled>
+              <i class="ti ti-rocket"></i> Create Event &amp; Capture Location
+            </button>
+          </div>
+        </div>
+
+        <!-- ACTIVE EVENT -->
+        <div id="event-active-section" style="display:none;">
+          <div class="alert alert-success">
+            <i class="ti ti-circle-check"></i>
+            Event is active. End it below to create a new one.
+          </div>
+          <div class="card" id="event-detail-card"></div>
+          <button class="btn btn-danger" onclick="endEvent()">
+            <i class="ti ti-trash"></i> End Event &amp; Clear Data
+          </button>
+        </div>
+
+      </div><!-- .oManageEvent -->
+    </div><!-- .content-scroll -->
+  </div><!-- .main-content -->
+
+  <!-- ═══ MOBILE BOTTOM NAV ═══ -->
+  <nav class="bottom-nav">
+    <a class="bottom-nav-item" href="oDashboard.html">
+      <span class="bn-icon"><i class="ti ti-layout-dashboard"></i></span><span>Home</span>
+    </a>
+    <a class="bottom-nav-item active" href="oManageEvent.html">
+      <span class="bn-icon"><i class="ti ti-calendar-event"></i></span><span>Event</span>
+    </a>
+    <a class="bottom-nav-item" href="oCheckIn.html">
+      <span class="bn-icon"><i class="ti ti-door-enter"></i></span><span>Check-in</span>
+    </a>
+    <a class="bottom-nav-item" href="oCheckOut.html">
+      <span class="bn-icon"><i class="ti ti-door-exit"></i></span><span>Check-out</span>
+    </a>
+    <a class="bottom-nav-item" href="oAttendanceList.html">
+      <span class="bn-icon"><i class="ti ti-clipboard-list"></i></span><span>Records</span>
+    </a>
+    <a class="bottom-nav-item" href="oAnnouncements.html">
+      <span class="bn-icon"><i class="ti ti-speakerphone"></i></span><span>Posts</span>
+  </nav>
+
+</div><!-- .app-layout -->
+
+<script src="shared-state.js"></script>
+<script>
+  const user = TOKI.requireOrganizer();
+  TOKI.initTheme();
+  if (user) {
+    document.getElementById('sb-name').textContent = user.name;
+    document.getElementById('sb-dept').textContent = user.dept;
+  }
+
+  let capturedLat = null, capturedLng = null;
+
+  // GPS
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(pos => {
+      capturedLat = pos.coords.latitude;
+      capturedLng = pos.coords.longitude;
+      const st = TOKI.load(); st.orgLat = capturedLat; st.orgLng = capturedLng; TOKI.save(st);
+      document.getElementById('event-gps-text').textContent = `Location captured (±${Math.round(pos.coords.accuracy)}m)`;
+      document.getElementById('event-gps-coords').textContent = `${capturedLat.toFixed(5)}, ${capturedLng.toFixed(5)}`;
+      document.getElementById('event-gps-bar').className = 'gps-bar ok';
+    }, () => {
+      document.getElementById('event-gps-text').textContent = 'Location unavailable — event will use code-only check-in';
+      document.getElementById('event-gps-bar').className = 'gps-bar warn';
+    }, { enableHighAccuracy: false, timeout: 8000 });
+  }
+  document.getElementById('create-event-btn').disabled = false;
+
+  function createEvent() {
+    const name   = document.getElementById('e-name').value.trim();
+    const venue  = document.getElementById('e-venue').value.trim();
+    const dept   = document.getElementById('e-dept').value.trim();
+    const radius = parseInt(document.getElementById('e-radius').value) || 120;
+    if (!name)  return alert('Enter an event name.');
+    if (!venue) return alert('Enter a venue.');
+    const st = TOKI.defaultState();
+    st.orgLat = capturedLat; st.orgLng = capturedLng;
+    st.event  = { name, venue, dept, radius, date: new Date().toLocaleDateString(), time: new Date().toLocaleTimeString() };
+    TOKI.save(st);
+    window.location.href = 'oDashboard.html';
+  }
+
+  function endEvent() {
+    if (!confirm('End this event? All data will be cleared.')) return;
+    localStorage.removeItem('ae_state');
+    location.reload();
+  }
+
+  function render() {
+    const st = TOKI.load();
+    document.getElementById('event-form-section').style.display   = st.event ? 'none'  : 'block';
+    document.getElementById('event-active-section').style.display = st.event ? 'block' : 'none';
+    document.getElementById('event-badge').innerHTML = st.event
+      ? `<span class="badge badge-green"><span class="dot pulse"></span>${st.event.name}</span>`
+      : `<span class="badge badge-gray">No Active Event</span>`;
+    if (st.event) {
+      document.getElementById('event-detail-card').innerHTML = `
+        <div class="card-header"><div class="card-title">${st.event.name}</div></div>
+        <div style="display:flex;flex-direction:column;gap:9px;font-size:13px;">
+          <div class="flex-row"><span style="color:var(--text3);width:90px;font-weight:700;font-size:11px;">Venue</span><span>${st.event.venue}</span></div>
+          <div class="flex-row"><span style="color:var(--text3);width:90px;font-weight:700;font-size:11px;">Department</span><span>${st.event.dept || '—'}</span></div>
+          <div class="flex-row"><span style="color:var(--text3);width:90px;font-weight:700;font-size:11px;">Date</span><span>${st.event.date}</span></div>
+          <div class="flex-row"><span style="color:var(--text3);width:90px;font-weight:700;font-size:11px;">GPS Radius</span><span>${st.event.radius}m</span></div>
+          <div class="flex-row"><span style="color:var(--text3);width:90px;font-weight:700;font-size:11px;">Attendees</span><span>${st.attendance.length}</span></div>
+        </div>`;
+    }
+  }
+
+  render();
+</script>
+</body>
+</html>

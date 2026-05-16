@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TOKI — My History</title>
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+
+<div class="app-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">
+        <i class="ti ti-clock" aria-hidden="true"></i>
+      </div>
+      <div>
+        <div class="logo-text"><span class="logo-accent">TOKI</span></div>
+        <div class="logo-sub">Timing is Everything</div>
+      </div>
+    </div>
+
+    <div class="sidebar-role">
+      <span class="role-pill student">
+        <i class="ti ti-school" aria-hidden="true"></i> Student
+      </span>
+    </div>
+
+    <div class="sidebar-user">
+      <div class="user-name" id="sb-name">—</div>
+      <div class="user-id" id="sb-id">—</div>
+      <div class="user-id" id="sb-course" style="margin-top:1px;">—</div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Main</div>
+      <a class="nav-item" href="sDashboard.html">
+        <span class="nav-icon"><i class="ti ti-layout-dashboard" aria-hidden="true"></i></span> Dashboard
+      </a>
+      <a class="nav-item" href="sCheckIn.html">
+        <span class="nav-icon"><i class="ti ti-circle-check" aria-hidden="true"></i></span> Check-in
+      </a>
+      <a class="nav-item" href="sCheckOut.html">
+        <span class="nav-icon"><i class="ti ti-door-exit" aria-hidden="true"></i></span> Check-out
+      </a>
+      <a class="nav-item active" href="sMyHistory.html">
+        <span class="nav-icon"><i class="ti ti-clipboard-list" aria-hidden="true"></i></span> My History
+      </a>
+      <div class="nav-section-label">Info</div>
+      <a class="nav-item" href="sHowItWorks.html">
+        <span class="nav-icon"><i class="ti ti-help-circle" aria-hidden="true"></i></span> How It Works
+      </a>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+        <span style="display:flex;align-items:center;gap:8px;">
+          <i class="ti" id="theme-icon" aria-hidden="true"></i>
+          <span id="theme-label">Light Mode</span>
+        </span>
+        <div class="toggle-switch"></div>
+      </button>
+      <button class="logout-btn" onclick="logout()">
+        <i class="ti ti-logout" aria-hidden="true"></i> Sign Out
+      </button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main-content">
+
+    <div class="top-bar">
+      <div>
+        <div class="page-title">My History</div>
+        <div class="page-sub">Your attendance records</div>
+      </div>
+      <div class="top-bar-right">
+        <div id="event-badge" class="badge badge-gray">No Active Event</div>
+      </div>
+    </div>
+
+    <div class="content-scroll">
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">My Attendance History</div>
+          <div class="card-sub">Records from this session</div>
+        </div>
+        <div id="history-content">
+          <div class="empty-state">
+            <div class="icon"><i class="ti ti-clipboard-list" aria-hidden="true"></i></div>
+            <p>No attendance records yet</p>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- content-scroll -->
+  </div><!-- main-content -->
+
+  <!-- MOBILE BOTTOM NAV -->
+  <nav class="bottom-nav">
+    <a class="bottom-nav-item" href="sDashboard.html">
+      <span class="bn-icon"><i class="ti ti-layout-dashboard" aria-hidden="true"></i></span><span>Home</span>
+    </a>
+    <a class="bottom-nav-item" href="sCheckIn.html">
+      <span class="bn-icon"><i class="ti ti-circle-check" aria-hidden="true"></i></span><span>Check In</span>
+    </a>
+    <a class="bottom-nav-item" href="sCheckOut.html">
+      <span class="bn-icon"><i class="ti ti-door-exit" aria-hidden="true"></i></span><span>Check Out</span>
+    </a>
+    <a class="bottom-nav-item active" href="sMyHistory.html">
+      <span class="bn-icon"><i class="ti ti-clipboard-list" aria-hidden="true"></i></span><span>History</span>
+    </a>
+    <a class="bottom-nav-item" href="sHowItWorks.html">
+      <span class="bn-icon"><i class="ti ti-help-circle" aria-hidden="true"></i></span><span>Help</span>
+    </a>
+  </nav>
+
+</div>
+
+<script>
+const user = JSON.parse(sessionStorage.getItem('ae_user') || 'null');
+if (!user || user.role !== 'student') window.location.href = 'login.html';
+
+document.getElementById('sb-name').textContent   = user.name;
+document.getElementById('sb-id').textContent     = user.id;
+document.getElementById('sb-course').textContent = user.course;
+
+/* ── Theme ── */
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  localStorage.setItem('toki_theme', theme);
+  const icon  = document.getElementById('theme-icon');
+  const label = document.getElementById('theme-label');
+  if (icon)  icon.className  = theme === 'light' ? 'ti ti-moon' : 'ti ti-sun';
+  if (label) label.textContent = theme === 'light' ? 'Dark Mode' : 'Light Mode';
+}
+function toggleTheme() {
+  const cur = document.documentElement.getAttribute('data-theme') || 'dark';
+  applyTheme(cur === 'dark' ? 'light' : 'dark');
+}
+applyTheme(localStorage.getItem('toki_theme') || 'dark');
+
+function getState() {
+  const d = localStorage.getItem('ae_state'); return d ? JSON.parse(d) : null;
+}
+
+function refreshUI() {
+  const s = getState();
+  const event = s?.event || null;
+
+  document.getElementById('event-badge').innerHTML = event
+    ? `<span class="badge badge-green"><span class="dot pulse"></span>${event.name}</span>`
+    : '<span class="badge badge-gray">No Active Event</span>';
+
+  const history = s?.attendance?.filter(a => a.sid === user.id) || [];
+  document.getElementById('history-content').innerHTML = history.length === 0
+    ? `<div class="empty-state"><div class="icon"><i class="ti ti-clipboard-list" aria-hidden="true"></i></div><p>No records yet</p></div>`
+    : history.map(a => `
+        <div style="background:var(--glass2);border:1px solid var(--border);border-radius:var(--r-sm);padding:14px;margin-bottom:8px;">
+          <div style="font-size:13px;display:flex;flex-direction:column;gap:9px;">
+            <div class="flex-between">
+              <strong style="font-family:var(--font-display);">${event?.name || 'Event'}</strong>
+              <span class="badge ${a.checkoutTime ? 'badge-green' : 'badge-rose'}">${a.checkoutTime ? 'Complete' : 'Inside'}</span>
+            </div>
+            <div class="grid-2" style="font-size:12px;">
+              <div><span style="color:var(--text3);font-weight:700;font-size:9px;text-transform:uppercase;letter-spacing:1px;font-family:var(--font-display);">Check-in</span><br><strong style="font-family:var(--font-mono);">${a.checkinTime}</strong></div>
+              <div><span style="color:var(--text3);font-weight:700;font-size:9px;text-transform:uppercase;letter-spacing:1px;font-family:var(--font-display);">Check-out</span><br><strong style="font-family:var(--font-mono);">${a.checkoutTime || '—'}</strong></div>
+            </div>
+          </div>
+        </div>`).join('');
+}
+
+function logout() { sessionStorage.removeItem('ae_user'); window.location.href = 'login.html'; }
+
+refreshUI();
+setInterval(() => refreshUI(), 5000);
+</script>
+</body>
+</html>

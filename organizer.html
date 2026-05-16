@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TOKI — Organizer</title>
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+
+<div class="app-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">
+        <i class="ti ti-clock" aria-hidden="true"></i>
+      </div>
+      <div>
+        <div class="logo-text"><span class="logo-accent">TOKI</span></div>
+        <div class="logo-sub">Timing is Everything</div>
+      </div>
+    </div>
+
+    <div class="sidebar-role">
+      <span class="role-pill organizer">
+        <i class="ti ti-microphone" aria-hidden="true"></i> Organizer
+      </span>
+    </div>
+
+    <div class="sidebar-user">
+      <div class="user-name" id="sb-name">—</div>
+      <div class="user-id" id="sb-dept">—</div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Main</div>
+      <button class="nav-item active" onclick="showPage('dashboard', this)">
+        <span class="nav-icon"><i class="ti ti-layout-dashboard" aria-hidden="true"></i></span> Dashboard
+      </button>
+      <button class="nav-item" onclick="showPage('event', this)">
+        <span class="nav-icon"><i class="ti ti-calendar-event" aria-hidden="true"></i></span> Manage Event
+      </button>
+      <button class="nav-item" onclick="showPage('checkin', this)">
+        <span class="nav-icon"><i class="ti ti-door-enter" aria-hidden="true"></i></span> Check-in
+        <span class="nav-badge" id="nav-checkin-badge" style="display:none;"></span>
+      </button>
+      <button class="nav-item" onclick="showPage('checkout', this)">
+        <span class="nav-icon"><i class="ti ti-door-exit" aria-hidden="true"></i></span> Check-out
+        <span class="nav-badge" id="nav-checkout-badge" style="display:none;"></span>
+      </button>
+
+      <div class="nav-section-label">Records</div>
+      <button class="nav-item" onclick="showPage('attendance', this)">
+        <span class="nav-icon"><i class="ti ti-clipboard-list" aria-hidden="true"></i></span> Attendance List
+      </button>
+      <button class="nav-item" onclick="showPage('manual', this)">
+        <span class="nav-icon"><i class="ti ti-edit" aria-hidden="true"></i></span> Manual Entry
+      </button>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+        <span style="display:flex;align-items:center;gap:8px;">
+          <i class="ti" id="theme-icon" aria-hidden="true"></i>
+          <span id="theme-label">Light Mode</span>
+        </span>
+        <div class="toggle-switch"></div>
+      </button>
+      <button class="logout-btn" onclick="logout()">
+        <i class="ti ti-logout" aria-hidden="true"></i> Sign Out
+      </button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main-content">
+
+    <div class="top-bar">
+      <div>
+        <div class="page-title" id="top-title">Dashboard</div>
+        <div class="page-sub" id="top-sub">Overview of your event</div>
+      </div>
+      <div class="top-bar-right">
+        <div id="event-badge" class="badge badge-gray">No Active Event</div>
+      </div>
+    </div>
+
+    <div class="content-scroll">
+
+      <!-- DASHBOARD -->
+      <div class="page active" id="page-dashboard">
+
+        <div id="no-event-banner" class="alert alert-warning">
+          <i class="ti ti-alert-triangle" aria-hidden="true"></i>
+          No active event yet. Go to <strong>Manage Event</strong> to create one.
+        </div>
+
+        <div class="stat-grid">
+          <div class="stat-card rose">
+            <div class="stat-icon"><i class="ti ti-users" aria-hidden="true"></i></div>
+            <div class="stat-num" id="d-total">0</div>
+            <div class="stat-label">Total Check-ins</div>
+          </div>
+          <div class="stat-card emerald">
+            <div class="stat-icon"><i class="ti ti-circle-check" aria-hidden="true"></i></div>
+            <div class="stat-num" id="d-out">0</div>
+            <div class="stat-label">Checked Out</div>
+          </div>
+          <div class="stat-card amber">
+            <div class="stat-icon"><i class="ti ti-home" aria-hidden="true"></i></div>
+            <div class="stat-num" id="d-inside">0</div>
+            <div class="stat-label">Still Inside</div>
+          </div>
+          <div class="stat-card dark">
+            <div class="stat-icon"><i class="ti ti-clock" aria-hidden="true"></i></div>
+            <div class="stat-num" id="d-time" style="font-size:17px;letter-spacing:0;">—</div>
+            <div class="stat-label">Event Started</div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title">Event Info</div>
+                <div class="card-sub">Current active event</div>
+              </div>
+            </div>
+            <div id="d-event-info" style="color:var(--text3);font-size:13px;">No event created yet.</div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title">Window Status</div>
+                <div class="card-sub">Check-in / Check-out</div>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:8px;" id="d-window-status">
+              <div class="step pending">
+                <span class="step-icon"><i class="ti ti-door-enter" aria-hidden="true"></i></span>
+                <div><div class="step-label">Check-in</div><div class="step-time">Not opened</div></div>
+              </div>
+              <div class="step pending">
+                <span class="step-icon"><i class="ti ti-door-exit" aria-hidden="true"></i></span>
+                <div><div class="step-label">Check-out</div><div class="step-time">Not opened</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Recent Activity</div>
+            <button class="btn btn-ghost btn-sm" onclick="showPage('attendance', document.querySelectorAll('.nav-item')[4])">
+              View All <i class="ti ti-arrow-right" aria-hidden="true"></i>
+            </button>
+          </div>
+          <div id="d-activity">
+            <div class="empty-state">
+              <div class="icon"><i class="ti ti-inbox" aria-hidden="true"></i></div>
+              <p>No activity yet</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- MANAGE EVENT -->
+      <div class="page" id="page-event">
+
+        <div id="event-form-section">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title">Create New Event</div>
+                <div class="card-sub">Your GPS location will be auto-captured as the venue center</div>
+              </div>
+            </div>
+
+            <div class="gps-bar" id="event-gps-bar">
+              <i class="ti ti-map-pin" aria-hidden="true"></i>
+              <div>
+                <div id="event-gps-text">Detecting location...</div>
+                <div id="event-gps-coords" style="font-size:11px;color:var(--text3);margin-top:1px;"></div>
+              </div>
+            </div>
+
+            <div class="grid-2">
+              <div class="form-group">
+                <label class="form-label">Event Name</label>
+                <input type="text" class="form-input" id="e-name" placeholder="e.g. General Assembly 2025" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Venue / Room</label>
+                <input type="text" class="form-input" id="e-venue" placeholder="e.g. 8th Floor Auditorium" />
+              </div>
+            </div>
+
+            <div class="grid-2">
+              <div class="form-group">
+                <label class="form-label">Department</label>
+                <input type="text" class="form-input" id="e-dept" placeholder="e.g. College of IT" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">GPS Radius (meters)</label>
+                <input type="number" class="form-input" id="e-radius" value="120" min="30" max="500" />
+              </div>
+            </div>
+
+            <div class="alert alert-info">
+              <i class="ti ti-info-circle" aria-hidden="true"></i>
+              Make sure you are physically at the venue when creating the event — your location is used as the center point for student GPS verification.
+            </div>
+
+            <button class="btn btn-primary" id="create-event-btn" onclick="createEvent()" disabled>
+              <i class="ti ti-rocket" aria-hidden="true"></i> Create Event &amp; Capture Location
+            </button>
+          </div>
+        </div>
+
+        <div id="event-active-section" style="display:none;">
+          <div class="alert alert-success">
+            <i class="ti ti-circle-check" aria-hidden="true"></i>
+            Event is active. End it below to create a new one.
+          </div>
+          <div class="card" id="event-detail-card"></div>
+          <button class="btn btn-danger" onclick="endEvent()">
+            <i class="ti ti-trash" aria-hidden="true"></i> End Event &amp; Clear Data
+          </button>
+        </div>
+
+      </div>
+
+      <!-- CHECK-IN -->
+      <div class="page" id="page-checkin">
+
+        <div id="ci-no-event" class="alert alert-warning">
+          <i class="ti ti-alert-triangle" aria-hidden="true"></i>
+          Create an event first before opening check-in.
+        </div>
+
+        <div id="ci-section" style="display:none;">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title">Check-in Window</div>
+                <div class="card-sub">Open when students are physically inside the venue</div>
+              </div>
+              <div id="ci-status-badge"></div>
+            </div>
+
+            <div id="ci-open-area">
+              <div class="alert alert-info">
+                <i class="ti ti-speakerphone" aria-hidden="true"></i>
+                Once opened, a 4-digit code appears. Announce it verbally — do NOT share in group chats. Students have <strong>5 minutes</strong> to enter it.
+              </div>
+              <button class="btn btn-primary" onclick="openCheckin()">
+                <i class="ti ti-door-enter" aria-hidden="true"></i> Open Check-in Window
+              </button>
+            </div>
+
+            <div id="ci-code-area" style="display:none;">
+              <div class="alert alert-warning">
+                <i class="ti ti-volume" aria-hidden="true"></i>
+                Announce this code out loud to everyone inside the venue only!
+              </div>
+              <div class="code-display">
+                <div class="code-label">Verbal check-in code</div>
+                <div class="code-big" id="ci-code">----</div>
+                <div class="timer-bar"><div class="timer-fill" id="ci-timer-fill" style="width:100%"></div></div>
+                <div class="timer-label" id="ci-timer-text">5:00</div>
+              </div>
+              <button class="btn btn-ghost btn-sm mt-10" onclick="reopenCheckin()">
+                <i class="ti ti-refresh" aria-hidden="true"></i> Generate New Code
+              </button>
+            </div>
+
+            <div id="ci-closed-area" style="display:none;">
+              <div class="alert alert-danger">
+                <i class="ti ti-clock-x" aria-hidden="true"></i>
+                Check-in window has closed.
+              </div>
+              <button class="btn btn-primary" onclick="openCheckin()">
+                <i class="ti ti-door-enter" aria-hidden="true"></i> Re-open Check-in
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- CHECK-OUT -->
+      <div class="page" id="page-checkout">
+
+        <div id="co-no-event" class="alert alert-warning">
+          <i class="ti ti-alert-triangle" aria-hidden="true"></i>
+          Create an event first before opening check-out.
+        </div>
+
+        <div id="co-section" style="display:none;">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title">Check-out Window</div>
+                <div class="card-sub">Open near the end of the event</div>
+              </div>
+              <div id="co-status-badge"></div>
+            </div>
+
+            <div id="co-open-area">
+              <div class="alert alert-info">
+                <i class="ti ti-speakerphone" aria-hidden="true"></i>
+                Open check-out when the event is about to end. Announce the code verbally inside the venue.
+              </div>
+              <button class="btn btn-success" onclick="openCheckout()">
+                <i class="ti ti-door-exit" aria-hidden="true"></i> Open Check-out Window
+              </button>
+            </div>
+
+            <div id="co-code-area" style="display:none;">
+              <div class="alert alert-warning">
+                <i class="ti ti-volume" aria-hidden="true"></i>
+                Announce this check-out code out loud inside the venue!
+              </div>
+              <div class="code-display">
+                <div class="code-label">Verbal check-out code</div>
+                <div class="code-big" id="co-code">----</div>
+                <div class="timer-bar"><div class="timer-fill" id="co-timer-fill" style="width:100%"></div></div>
+                <div class="timer-label" id="co-timer-text">5:00</div>
+              </div>
+              <button class="btn btn-ghost btn-sm mt-10" onclick="reopenCheckout()">
+                <i class="ti ti-refresh" aria-hidden="true"></i> Generate New Code
+              </button>
+            </div>
+
+            <div id="co-closed-area" style="display:none;">
+              <div class="alert alert-danger">
+                <i class="ti ti-clock-x" aria-hidden="true"></i>
+                Check-out window has closed.
+              </div>
+              <button class="btn btn-success" onclick="openCheckout()">
+                <i class="ti ti-door-exit" aria-hidden="true"></i> Re-open Check-out
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ATTENDANCE -->
+      <div class="page" id="page-attendance">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Attendance Records</div>
+              <div class="card-sub" id="att-count">0 students</div>
+            </div>
+            <div class="flex-row">
+              <input type="text" class="form-input" id="att-search" placeholder="Search name or ID..."
+                     oninput="renderAttendance()"
+                     style="width:190px;padding:8px 12px;font-size:12.5px;" />
+              <button class="btn btn-ghost btn-sm" onclick="exportCSV()">
+                <i class="ti ti-download" aria-hidden="true"></i> Export CSV
+              </button>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Student No.</th><th>Name</th><th>Check-in</th>
+                  <th>Check-out</th><th>Method</th><th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="att-tbody">
+                <tr><td colspan="6">
+                  <div class="empty-state">
+                    <div class="icon"><i class="ti ti-inbox" aria-hidden="true"></i></div>
+                    <p>No records yet</p>
+                  </div>
+                </td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- MANUAL ENTRY -->
+      <div class="page" id="page-manual">
+        <div class="card" style="max-width:460px;">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Manual Entry</div>
+              <div class="card-sub">For students with GPS issues or no phone</div>
+            </div>
+          </div>
+
+          <div class="alert alert-warning">
+            <i class="ti ti-alert-triangle" aria-hidden="true"></i>
+            Use only for students who cannot check in via the app.
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Student Number</label>
+            <input type="text" class="form-input" id="m-sid" placeholder="e.g. 2021-00456" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Full Name</label>
+            <input type="text" class="form-input" id="m-name" placeholder="e.g. Maria Santos" />
+          </div>
+
+          <div id="m-error"   class="alert alert-danger"  style="display:none;"></div>
+          <div id="m-success" class="alert alert-success" style="display:none;"></div>
+
+          <div class="grid-2">
+            <button class="btn btn-primary" onclick="manualAdd('in')">
+              <i class="ti ti-circle-check" aria-hidden="true"></i> Check In
+            </button>
+            <button class="btn btn-success" onclick="manualAdd('out')">
+              <i class="ti ti-door-exit" aria-hidden="true"></i> Check Out
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- content-scroll -->
+  </div><!-- main-content -->
+
+  <!-- MOBILE BOTTOM NAV -->
+  <nav class="bottom-nav">
+    <button class="bottom-nav-item active" onclick="mobileNav('dashboard', this)">
+      <span class="bn-icon"><i class="ti ti-layout-dashboard" aria-hidden="true"></i></span><span>Home</span>
+    </button>
+    <button class="bottom-nav-item" onclick="mobileNav('event', this)">
+      <span class="bn-icon"><i class="ti ti-calendar-event" aria-hidden="true"></i></span><span>Event</span>
+    </button>
+    <button class="bottom-nav-item" onclick="mobileNav('checkin', this)">
+      <span class="bn-icon"><i class="ti ti-door-enter" aria-hidden="true"></i></span><span>Check-in</span>
+      <span class="bn-badge" id="mob-ci-badge"></span>
+    </button>
+    <button class="bottom-nav-item" onclick="mobileNav('checkout', this)">
+      <span class="bn-icon"><i class="ti ti-door-exit" aria-hidden="true"></i></span><span>Check-out</span>
+      <span class="bn-badge" id="mob-co-badge"></span>
+    </button>
+    <button class="bottom-nav-item" onclick="mobileNav('attendance', this)">
+      <span class="bn-icon"><i class="ti ti-clipboard-list" aria-hidden="true"></i></span><span>Records</span>
+    </button>
+  </nav>
+
+</div>
+
+<script>
+const user = JSON.parse(sessionStorage.getItem('ae_user') || 'null');
+if (!user || user.role !== 'organizer') window.location.href = 'login.html';
+
+document.getElementById('sb-name').textContent = user.name;
+document.getElementById('sb-dept').textContent = user.dept;
+
+/* ── Theme ── */
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  localStorage.setItem('toki_theme', theme);
+  const icon  = document.getElementById('theme-icon');
+  const label = document.getElementById('theme-label');
+  if (icon)  icon.className  = theme === 'light' ? 'ti ti-moon' : 'ti ti-sun';
+  if (label) label.textContent = theme === 'light' ? 'Dark Mode' : 'Light Mode';
+}
+function toggleTheme() {
+  const cur = document.documentElement.getAttribute('data-theme') || 'dark';
+  applyTheme(cur === 'dark' ? 'light' : 'dark');
+}
+applyTheme(localStorage.getItem('toki_theme') || 'dark');
+
+let state = {
+  event: null, checkinOpen: false, checkoutOpen: false,
+  checkinCode: null, checkoutCode: null,
+  checkinSecs: 300, checkoutSecs: 300,
+  ciTimer: null, coTimer: null,
+  attendance: [], orgLat: null, orgLng: null, gpsReady: false,
+};
+
+function save() {
+  localStorage.setItem('ae_state', JSON.stringify({
+    event: state.event, checkinCode: state.checkinCode, checkoutCode: state.checkoutCode,
+    checkinOpen: state.checkinOpen, checkoutOpen: state.checkoutOpen,
+    attendance: state.attendance, orgLat: state.orgLat, orgLng: state.orgLng,
+  }));
+}
+
+function load() {
+  const d = localStorage.getItem('ae_state');
+  if (!d) return;
+  const s = JSON.parse(d);
+  state.event         = s.event || null;
+  state.checkinCode   = s.checkinCode || null;
+  state.checkoutCode  = s.checkoutCode || null;
+  state.checkinOpen   = s.checkinOpen || false;
+  state.checkoutOpen  = s.checkoutOpen || false;
+  state.attendance    = s.attendance || [];
+  state.orgLat        = s.orgLat || null;
+  state.orgLng        = s.orgLng || null;
+}
+
+function initGPS() {
+  enableCreate();
+  if (!navigator.geolocation) return;
+  navigator.geolocation.getCurrentPosition(pos => {
+    state.orgLat = pos.coords.latitude;
+    state.orgLng = pos.coords.longitude;
+    state.gpsReady = true;
+    document.getElementById('event-gps-text').textContent = `Location captured (±${Math.round(pos.coords.accuracy)}m)`;
+    document.getElementById('event-gps-coords').textContent = `${pos.coords.latitude.toFixed(5)}, ${pos.coords.longitude.toFixed(5)}`;
+    document.getElementById('event-gps-bar').className = 'gps-bar ok';
+    save();
+  }, () => {
+    state.gpsReady = false;
+    document.getElementById('event-gps-text').textContent = 'Location unavailable — event will use code-only check-in';
+    document.getElementById('event-gps-bar').className = 'gps-bar warn';
+  }, { enableHighAccuracy: false, timeout: 8000 });
+}
+
+function enableCreate() {
+  document.getElementById('create-event-btn').disabled = false;
+}
+
+const pageTitles = {
+  dashboard:  ['Dashboard',          'Event overview and live stats'],
+  event:      ['Manage Event',       'Create or end your event'],
+  checkin:    ['Check-in',           'Open and manage the check-in window'],
+  checkout:   ['Check-out',          'Open and manage the check-out window'],
+  attendance: ['Attendance Records', 'View and export all attendance data'],
+  manual:     ['Manual Entry',       'Add students who cannot self check-in'],
+};
+
+function showPage(name, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  if (btn) btn.classList.add('active');
+  document.getElementById('top-title').textContent = pageTitles[name][0];
+  document.getElementById('top-sub').textContent   = pageTitles[name][1];
+  if (name === 'attendance') renderAttendance();
+  if (name === 'dashboard')  updateDashboard();
+  if (name === 'checkin')    refreshCheckinUI();
+  if (name === 'checkout')   refreshCheckoutUI();
+}
+
+function createEvent() {
+  const name   = document.getElementById('e-name').value.trim();
+  const venue  = document.getElementById('e-venue').value.trim();
+  const dept   = document.getElementById('e-dept').value.trim();
+  const radius = parseInt(document.getElementById('e-radius').value) || 120;
+  if (!name)  return alert('Enter an event name.');
+  if (!venue) return alert('Enter a venue.');
+  state.event        = { name, venue, dept, radius, date: new Date().toLocaleDateString(), time: new Date().toLocaleTimeString() };
+  state.attendance   = [];
+  state.checkinCode  = null;
+  state.checkoutCode = null;
+  state.checkinOpen  = false;
+  state.checkoutOpen = false;
+  save(); refreshAll();
+  showPage('dashboard', document.querySelector('.nav-item'));
+}
+
+function endEvent() {
+  if (!confirm('End this event? All data will be cleared.')) return;
+  localStorage.removeItem('ae_state');
+  state = { event: null, checkinOpen: false, checkoutOpen: false, checkinCode: null, checkoutCode: null, checkinSecs: 300, checkoutSecs: 300, ciTimer: null, coTimer: null, attendance: [], orgLat: state.orgLat, orgLng: state.orgLng, gpsReady: state.gpsReady };
+  clearInterval(state.ciTimer); clearInterval(state.coTimer);
+  refreshAll();
+}
+
+function genCode() { return String(Math.floor(1000 + Math.random() * 9000)); }
+
+function openCheckin() {
+  state.checkinCode = genCode(); state.checkinOpen = true; state.checkinSecs = 300;
+  save(); refreshCheckinUI(); runTimer('ci');
+  document.getElementById('nav-checkin-badge').style.display = 'inline-block';
+}
+function reopenCheckin() {
+  clearInterval(state.ciTimer);
+  state.checkinCode = genCode(); state.checkinSecs = 300; save();
+  document.getElementById('ci-code').textContent = state.checkinCode;
+  document.getElementById('ci-timer-fill').style.width = '100%';
+  runTimer('ci');
+}
+
+function refreshCheckinUI() {
+  const has = !!state.event;
+  document.getElementById('ci-no-event').style.display = has ? 'none' : 'block';
+  document.getElementById('ci-section').style.display  = has ? 'block' : 'none';
+  if (!has) return;
+  document.getElementById('ci-open-area').style.display   = state.checkinOpen ? 'none' : 'block';
+  document.getElementById('ci-code-area').style.display   = state.checkinOpen ? 'block' : 'none';
+  document.getElementById('ci-closed-area').style.display = 'none';
+  if (state.checkinOpen) {
+    document.getElementById('ci-code').textContent = state.checkinCode;
+    document.getElementById('ci-status-badge').innerHTML = '<span class="badge badge-green"><span class="dot pulse"></span> Open</span>';
+  } else {
+    document.getElementById('ci-status-badge').innerHTML = '<span class="badge badge-gray">Closed</span>';
+  }
+}
+
+function openCheckout() {
+  state.checkoutCode = genCode(); state.checkoutOpen = true; state.checkoutSecs = 300;
+  save(); refreshCheckoutUI(); runTimer('co');
+  document.getElementById('nav-checkout-badge').style.display = 'inline-block';
+}
+function reopenCheckout() {
+  clearInterval(state.coTimer);
+  state.checkoutCode = genCode(); state.checkoutSecs = 300; save();
+  document.getElementById('co-code').textContent = state.checkoutCode;
+  document.getElementById('co-timer-fill').style.width = '100%';
+  runTimer('co');
+}
+
+function refreshCheckoutUI() {
+  const has = !!state.event;
+  document.getElementById('co-no-event').style.display = has ? 'none' : 'block';
+  document.getElementById('co-section').style.display  = has ? 'block' : 'none';
+  if (!has) return;
+  document.getElementById('co-open-area').style.display   = state.checkoutOpen ? 'none' : 'block';
+  document.getElementById('co-code-area').style.display   = state.checkoutOpen ? 'block' : 'none';
+  document.getElementById('co-closed-area').style.display = 'none';
+  if (state.checkoutOpen) {
+    document.getElementById('co-code').textContent = state.checkoutCode;
+    document.getElementById('co-status-badge').innerHTML = '<span class="badge badge-green"><span class="dot pulse"></span> Open</span>';
+  } else {
+    document.getElementById('co-status-badge').innerHTML = '<span class="badge badge-gray">Closed</span>';
+  }
+}
+
+function runTimer(type) {
+  const isCI = type === 'ci';
+  const fillId = isCI ? 'ci-timer-fill' : 'co-timer-fill';
+  const textId = isCI ? 'ci-timer-text' : 'co-timer-text';
+  const interval = setInterval(() => {
+    if (isCI) state.checkinSecs--; else state.checkoutSecs--;
+    const secs = isCI ? state.checkinSecs : state.checkoutSecs;
+    const fill = document.getElementById(fillId);
+    const text = document.getElementById(textId);
+    if (!fill) { clearInterval(interval); return; }
+    fill.style.width = ((secs / 300) * 100) + '%';
+    const m = Math.floor(secs / 60), s = secs % 60;
+    text.textContent = `${m}:${s.toString().padStart(2,'0')}`;
+    if (secs <= 0) {
+      clearInterval(interval);
+      if (isCI) {
+        state.checkinOpen = false;
+        document.getElementById('nav-checkin-badge').style.display = 'none';
+        document.getElementById('ci-code-area').style.display   = 'none';
+        document.getElementById('ci-closed-area').style.display = 'block';
+        document.getElementById('ci-status-badge').innerHTML = '<span class="badge badge-red">Expired</span>';
+      } else {
+        state.checkoutOpen = false;
+        document.getElementById('nav-checkout-badge').style.display = 'none';
+        document.getElementById('co-code-area').style.display   = 'none';
+        document.getElementById('co-closed-area').style.display = 'block';
+        document.getElementById('co-status-badge').innerHTML = '<span class="badge badge-red">Expired</span>';
+      }
+      save();
+    }
+  }, 1000);
+  if (isCI) state.ciTimer = interval; else state.coTimer = interval;
+}
+
+function updateDashboard() {
+  const total  = state.attendance.filter(a => a.checkinTime).length;
+  const out    = state.attendance.filter(a => a.checkoutTime).length;
+  const inside = Math.max(0, total - out);
+  document.getElementById('d-total').textContent  = total;
+  document.getElementById('d-out').textContent    = out;
+  document.getElementById('d-inside').textContent = inside;
+  document.getElementById('d-time').textContent   = state.event ? state.event.time : '—';
+  document.getElementById('no-event-banner').style.display = state.event ? 'none' : 'block';
+  document.getElementById('event-badge').innerHTML = state.event
+    ? `<span class="badge badge-green"><span class="dot pulse"></span>${state.event.name}</span>`
+    : '<span class="badge badge-gray">No Active Event</span>';
+  document.getElementById('d-event-info').innerHTML = state.event ? `
+    <div style="display:flex;flex-direction:column;gap:9px;">
+      <div><span style="color:var(--text3);font-size:9px;text-transform:uppercase;letter-spacing:1.2px;font-weight:700;font-family:var(--font-display);">Name</span><br><strong>${state.event.name}</strong></div>
+      <div><span style="color:var(--text3);font-size:9px;text-transform:uppercase;letter-spacing:1.2px;font-weight:700;font-family:var(--font-display);">Venue</span><br>${state.event.venue}</div>
+      <div><span style="color:var(--text3);font-size:9px;text-transform:uppercase;letter-spacing:1.2px;font-weight:700;font-family:var(--font-display);">Date</span><br>${state.event.date} at ${state.event.time}</div>
+      <div><span style="color:var(--text3);font-size:9px;text-transform:uppercase;letter-spacing:1.2px;font-weight:700;font-family:var(--font-display);">GPS Radius</span><br>${state.event.radius}m ${state.orgLat ? '(active)' : '(disabled)'}</div>
+    </div>
+  ` : '<div style="color:var(--text3)">No event created yet.</div>';
+  document.getElementById('d-window-status').innerHTML = `
+    <div class="step ${state.checkinOpen ? 'active' : state.checkinCode ? 'done' : 'pending'}">
+      <span class="step-icon"><i class="ti ti-door-enter" aria-hidden="true"></i></span>
+      <div><div class="step-label">Check-in</div><div class="step-time">${state.checkinOpen ? 'Open now' : state.checkinCode ? 'Closed' : 'Not opened'}</div></div>
+      ${state.checkinOpen ? '<span class="badge badge-green" style="margin-left:auto"><span class="dot pulse"></span> Live</span>' : ''}
+    </div>
+    <div class="step ${state.checkoutOpen ? 'active' : state.checkoutCode ? 'done' : 'pending'}">
+      <span class="step-icon"><i class="ti ti-door-exit" aria-hidden="true"></i></span>
+      <div><div class="step-label">Check-out</div><div class="step-time">${state.checkoutOpen ? 'Open now' : state.checkoutCode ? 'Closed' : 'Not opened'}</div></div>
+      ${state.checkoutOpen ? '<span class="badge badge-green" style="margin-left:auto"><span class="dot pulse"></span> Live</span>' : ''}
+    </div>
+  `;
+  const recent = [...state.attendance].reverse().slice(0, 5);
+  document.getElementById('d-activity').innerHTML = recent.length === 0
+    ? `<div class="empty-state"><div class="icon"><i class="ti ti-inbox" aria-hidden="true"></i></div><p>No activity yet</p></div>`
+    : '<div class="feed">' + recent.map(a => `
+        <div class="feed-item">
+          <span class="feed-icon"><i class="ti ${a.checkoutTime ? 'ti-door-exit' : 'ti-circle-check'}" aria-hidden="true"></i></span>
+          <div><div class="feed-name">${a.name}</div><div style="font-size:10px;color:var(--text3);font-family:var(--font-mono);">${a.sid}</div></div>
+          <span class="feed-time">${a.checkoutTime || a.checkinTime}</span>
+        </div>`).join('') + '</div>';
+}
+
+function renderAttendance() {
+  const q = (document.getElementById('att-search')?.value || '').toLowerCase();
+  const list = state.attendance.filter(a => a.name.toLowerCase().includes(q) || a.sid.toLowerCase().includes(q));
+  document.getElementById('att-count').textContent = `${list.length} student${list.length !== 1 ? 's' : ''}`;
+  document.getElementById('att-tbody').innerHTML = list.length === 0
+    ? `<tr><td colspan="6"><div class="empty-state"><div class="icon"><i class="ti ti-inbox" aria-hidden="true"></i></div><p>No records</p></div></td></tr>`
+    : list.map(a => `
+      <tr>
+        <td><span style="font-family:var(--font-mono);font-size:11.5px;">${a.sid}</span></td>
+        <td><strong>${a.name}</strong></td>
+        <td><span style="font-family:var(--font-mono);font-size:11.5px;">${a.checkinTime || '—'}</span></td>
+        <td><span style="font-family:var(--font-mono);font-size:11.5px;">${a.checkoutTime || '—'}</span></td>
+        <td><span class="badge ${a.method === 'manual' ? 'badge-amber' : 'badge-blue'}">${a.method}</span></td>
+        <td><span class="badge ${a.checkoutTime ? 'badge-green' : 'badge-rose'}">${a.checkoutTime ? 'Complete' : 'Inside'}</span></td>
+      </tr>`).join('');
+}
+
+function exportCSV() {
+  if (!state.attendance.length) return alert('No data to export.');
+  const rows = ['Student Number,Name,Check-in,Check-out,Method',
+    ...state.attendance.map(a => `${a.sid},"${a.name}",${a.checkinTime||''},${a.checkoutTime||''},${a.method}`)
+  ].join('\n');
+  const blob = new Blob([rows], { type: 'text/csv' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = `${(state.event?.name || 'attendance').replace(/\s+/g,'-')}.csv`;
+  a.click();
+}
+
+function manualAdd(type) {
+  const sid  = document.getElementById('m-sid').value.trim();
+  const name = document.getElementById('m-name').value.trim();
+  document.getElementById('m-error').style.display   = 'none';
+  document.getElementById('m-success').style.display = 'none';
+  if (!state.event)   return showManualMsg('error', 'No active event.');
+  if (!sid || !name)  return showManualMsg('error', 'Please fill in both fields.');
+  let rec = state.attendance.find(a => a.sid === sid);
+  if (type === 'in') {
+    if (rec) return showManualMsg('error', 'Student already checked in.');
+    state.attendance.push({ sid, name, checkinTime: new Date().toLocaleTimeString(), checkoutTime: null, method: 'manual' });
+    showManualMsg('success', `${name} manually checked in.`);
+  } else {
+    if (!rec)             return showManualMsg('error', 'Student not checked in yet.');
+    if (rec.checkoutTime) return showManualMsg('error', 'Already checked out.');
+    rec.checkoutTime = new Date().toLocaleTimeString();
+    showManualMsg('success', `${name} manually checked out.`);
+  }
+  save(); updateDashboard();
+  document.getElementById('m-sid').value  = '';
+  document.getElementById('m-name').value = '';
+}
+
+function showManualMsg(type, msg) {
+  const el = document.getElementById(type === 'error' ? 'm-error' : 'm-success');
+  el.textContent = msg; el.style.display = 'block';
+}
+
+function refreshEventSection() {
+  document.getElementById('event-form-section').style.display  = state.event ? 'none' : 'block';
+  document.getElementById('event-active-section').style.display = state.event ? 'block' : 'none';
+  if (state.event) {
+    document.getElementById('event-detail-card').innerHTML = `
+      <div class="card-header"><div class="card-title">${state.event.name}</div></div>
+      <div style="display:flex;flex-direction:column;gap:9px;font-size:13px;">
+        <div class="flex-row"><span style="color:var(--text3);width:88px;font-weight:700;font-size:11px;font-family:var(--font-display);">Venue</span><span>${state.event.venue}</span></div>
+        <div class="flex-row"><span style="color:var(--text3);width:88px;font-weight:700;font-size:11px;font-family:var(--font-display);">Department</span><span>${state.event.dept || '—'}</span></div>
+        <div class="flex-row"><span style="color:var(--text3);width:88px;font-weight:700;font-size:11px;font-family:var(--font-display);">Date</span><span>${state.event.date}</span></div>
+        <div class="flex-row"><span style="color:var(--text3);width:88px;font-weight:700;font-size:11px;font-family:var(--font-display);">GPS Radius</span><span>${state.event.radius}m</span></div>
+        <div class="flex-row"><span style="color:var(--text3);width:88px;font-weight:700;font-size:11px;font-family:var(--font-display);">Attendees</span><span>${state.attendance.length}</span></div>
+      </div>`;
+  }
+}
+
+function refreshAll() {
+  updateDashboard(); refreshCheckinUI(); refreshCheckoutUI();
+  refreshEventSection(); renderAttendance();
+}
+
+function mobileNav(name, btn) {
+  document.querySelectorAll('.bottom-nav-item').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  showPage(name, null);
+}
+
+function logout() {
+  sessionStorage.removeItem('ae_user');
+  window.location.href = 'login.html';
+}
+
+load(); initGPS(); refreshAll();
+setInterval(() => { load(); updateDashboard(); renderAttendance(); }, 5000);
+</script>
+</body>
+</html>

@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AttendEase — Smart Event Attendance</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #13131a;
+    --surface2: #1c1c27;
+    --border: #2a2a3a;
+    --accent: #6c63ff;
+    --accent2: #ff6584;
+    --success: #43e97b;
+    --warning: #f9ca24;
+    --danger: #ff6b6b;
+    --text: #f0f0ff;
+    --muted: #7a7a9a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* BG effect */
+  body::before {
+    content: '';
+    position: fixed;
+    top: -200px; left: -200px;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(108,99,255,0.15) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    bottom: -200px; right: -200px;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(255,101,132,0.1) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 24px 20px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* HEADER */
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 32px;
+    animation: fadeDown 0.5s ease;
+  }
+
+  .logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 22px;
+    letter-spacing: -0.5px;
+  }
+
+  .logo span { color: var(--accent); }
+
+  .role-toggle {
+    display: flex;
+    background: var(--surface2);
+    border-radius: 20px;
+    padding: 4px;
+    gap: 2px;
+  }
+
+  .role-btn {
+    padding: 6px 14px;
+    border-radius: 16px;
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: transparent;
+    color: var(--muted);
+  }
+
+  .role-btn.active {
+    background: var(--accent);
+    color: white;
+  }
+
+  /* PAGES */
+  .page { display: none; animation: fadeUp 0.4s ease; }
+  .page.active { display: block; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* CARDS */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 24px;
+    margin-bottom: 16px;
+  }
+
+  .card-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  .card-sub {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 20px;
+    line-height: 1.5;
+  }
+
+  /* INPUTS */
+  .input-group { margin-bottom: 16px; }
+
+  .input-group label {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+  }
+
+  .input-group input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .input-group input:focus {
+    border-color: var(--accent);
+  }
+
+  .input-group input::placeholder { color: var(--muted); }
+
+  /* BUTTONS */
+  .btn {
+    width: 100%;
+    padding: 16px;
+    border-radius: 14px;
+    border: none;
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.3px;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: white;
+  }
+
+  .btn-primary:hover { background: #5a52e0; transform: translateY(-1px); }
+  .btn-primary:active { transform: translateY(0); }
+
+  .btn-success {
+    background: var(--success);
+    color: #0a2a1a;
+  }
+
+  .btn-success:hover { opacity: 0.9; transform: translateY(-1px); }
+
+  .btn-danger {
+    background: var(--danger);
+    color: white;
+  }
+
+  .btn-outline {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text);
+    margin-top: 10px;
+  }
+
+  .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+
+  .btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none !important;
+  }
+
+  /* STATUS BADGE */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .badge-success { background: rgba(67,233,123,0.15); color: var(--success); }
+  .badge-warning { background: rgba(249,202,36,0.15); color: var(--warning); }
+  .badge-danger { background: rgba(255,107,107,0.15); color: var(--danger); }
+  .badge-info { background: rgba(108,99,255,0.15); color: var(--accent); }
+
+  .dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+  .dot.pulse { animation: pulse 1.5s infinite; }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  /* GPS STATUS */
+  .gps-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--surface2);
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    font-size: 13px;
+  }
+
+  .gps-icon { font-size: 18px; }
+
+  /* CODE DISPLAY */
+  .code-display {
+    text-align: center;
+    background: var(--surface2);
+    border-radius: 16px;
+    padding: 24px;
+    margin: 16px 0;
+    border: 1px dashed var(--border);
+  }
+
+  .code-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+
+  .code-number {
+    font-family: 'Syne', sans-serif;
+    font-size: 52px;
+    font-weight: 800;
+    letter-spacing: 8px;
+    color: var(--accent);
+    line-height: 1;
+  }
+
+  .timer-bar {
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    margin-top: 16px;
+    overflow: hidden;
+  }
+
+  .timer-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 2px;
+    transition: width 1s linear, background 0.5s;
+  }
+
+  .timer-text { font-size: 12px; color: var(--muted); margin-top: 8px; }
+
+  /* ATTENDANCE LIST */
+  .attendance-list { margin-top: 16px; }
+
+  .attendance-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: var(--surface2);
+    border-radius: 12px;
+    margin-bottom: 8px;
+    animation: fadeUp 0.3s ease;
+  }
+
+  .att-name { font-weight: 500; font-size: 14px; }
+  .att-time { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .att-status { font-size: 11px; }
+
+  /* STATS ROW */
+  .stats-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .stat-box {
+    background: var(--surface2);
+    border-radius: 14px;
+    padding: 16px 12px;
+    text-align: center;
+  }
+
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+  }
+
+  .stat-label { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+  /* SUCCESS SCREEN */
+  .success-screen {
+    text-align: center;
+    padding: 32px 20px;
+  }
+
+  .success-icon {
+    font-size: 64px;
+    margin-bottom: 16px;
+    animation: bounceIn 0.5s ease;
+  }
+
+  @keyframes bounceIn {
+    0% { transform: scale(0); opacity: 0; }
+    60% { transform: scale(1.2); }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  .success-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 24px;
+    font-weight: 800;
+    margin-bottom: 8px;
+  }
+
+  .success-sub { color: var(--muted); font-size: 14px; line-height: 1.6; }
+
+  /* DIVIDER */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 20px 0;
+  }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+  }
+
+  /* ALERT */
+  .alert {
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-size: 13px;
+    margin-bottom: 16px;
+    line-height: 1.5;
+  }
+
+  .alert-info { background: rgba(108,99,255,0.1); border: 1px solid rgba(108,99,255,0.3); color: #a8a3ff; }
+  .alert-success { background: rgba(67,233,123,0.1); border: 1px solid rgba(67,233,123,0.3); color: var(--success); }
+  .alert-danger { background: rgba(255,107,107,0.1); border: 1px solid rgba(255,107,107,0.3); color: var(--danger); }
+
+  /* EVENT CARD */
+  .event-card {
+    background: linear-gradient(135deg, rgba(108,99,255,0.2), rgba(255,101,132,0.1));
+    border: 1px solid rgba(108,99,255,0.3);
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+
+  .event-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px;
+    font-weight: 800;
+    margin-bottom: 4px;
+  }
+
+  .event-meta { font-size: 13px; color: var(--muted); }
+
+  /* TABS */
+  .tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  .tab {
+    flex: 1;
+    padding: 10px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+  }
+
+  .tab.active {
+    background: var(--surface2);
+    border-color: var(--accent);
+    color: var(--text);
+  }
+
+  .tab-content { display: none; }
+  .tab-content.active { display: block; animation: fadeUp 0.3s ease; }
+
+  /* EMPTY STATE */
+  .empty {
+    text-align: center;
+    padding: 32px;
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  .empty-icon { font-size: 40px; margin-bottom: 12px; }
+
+  /* EXPORT BTN */
+  .btn-sm {
+    padding: 8px 16px;
+    border-radius: 10px;
+    font-size: 13px;
+    width: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .top-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  /* CHECKIN STATUS for student */
+  .checkin-status {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 16px 0;
+  }
+
+  .status-step {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    background: var(--surface2);
+    font-size: 14px;
+  }
+
+  .status-step.done { border: 1px solid rgba(67,233,123,0.3); }
+  .status-step.pending { border: 1px solid var(--border); opacity: 0.5; }
+  .status-step.active-step { border: 1px solid rgba(108,99,255,0.4); }
+
+  .step-icon { font-size: 20px; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <!-- HEADER -->
+  <div class="header">
+    <div class="logo">Attend<span>Ease</span></div>
+    <div class="role-toggle">
+      <button class="role-btn active" onclick="switchRole('student')">Student</button>
+      <button class="role-btn" onclick="switchRole('organizer')">Organizer</button>
+    </div>
+  </div>
+
+  <!-- ==================== STUDENT PAGE ==================== -->
+  <div class="page active" id="student-page">
+
+    <!-- No event state -->
+    <div id="student-no-event">
+      <div class="card">
+        <div class="success-screen">
+          <div class="success-icon">🎓</div>
+          <div class="success-title">Join an Event</div>
+          <div class="success-sub">Enter your student info and the event code given by your organizer to check in.</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Your Info</div>
+        <div class="card-sub">Enter your details once per session.</div>
+        <div class="input-group">
+          <label>Student Number</label>
+          <input type="text" id="s-id" placeholder="e.g. 2021-00123" />
+        </div>
+        <div class="input-group">
+          <label>Full Name</label>
+          <input type="text" id="s-name" placeholder="e.g. Juan dela Cruz" />
+        </div>
+        <div class="input-group">
+          <label>Event Code (4 digits)</label>
+          <input type="text" id="s-event-code" placeholder="e.g. 4827" maxlength="4" style="font-size:24px; letter-spacing:8px; font-family:'Syne',sans-serif; font-weight:700;" />
+        </div>
+
+        <div id="gps-status" class="gps-bar">
+          <span class="gps-icon">📍</span>
+          <span id="gps-text">Getting your location...</span>
+        </div>
+
+        <button class="btn btn-primary" id="checkin-btn" onclick="studentCheckIn()" disabled>
+          Check In to Event
+        </button>
+      </div>
+    </div>
+
+    <!-- Checked in state -->
+    <div id="student-checked-in" style="display:none;">
+      <div class="event-card" id="s-event-display"></div>
+
+      <div class="card">
+        <div class="checkin-status" id="checkin-steps"></div>
+        <div id="checkout-section" style="display:none; margin-top:16px;">
+          <button class="btn btn-success" onclick="studentCheckOut()">✅ Check Out Now</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Done state -->
+    <div id="student-done" style="display:none;">
+      <div class="card">
+        <div class="success-screen">
+          <div class="success-icon">🎉</div>
+          <div class="success-title">All Done!</div>
+          <div class="success-sub" id="done-message">Your attendance has been recorded successfully.</div>
+        </div>
+        <button class="btn btn-outline" onclick="resetStudent()">Join Another Event</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ==================== ORGANIZER PAGE ==================== -->
+  <div class="page" id="organizer-page">
+
+    <!-- No active event -->
+    <div id="org-no-event">
+      <div class="card">
+        <div class="card-title">Create Event</div>
+        <div class="card-sub">Set up your event to start tracking attendance.</div>
+        <div class="input-group">
+          <label>Event Name</label>
+          <input type="text" id="o-event-name" placeholder="e.g. General Assembly 2025" />
+        </div>
+        <div class="input-group">
+          <label>Venue / Location</label>
+          <input type="text" id="o-venue" placeholder="e.g. 8th Floor Auditorium" />
+        </div>
+        <div class="input-group">
+          <label>GPS Radius (meters)</label>
+          <input type="number" id="o-radius" placeholder="100" value="100" min="20" max="500" />
+        </div>
+        <button class="btn btn-primary" onclick="createEvent()">🚀 Create Event</button>
+      </div>
+    </div>
+
+    <!-- Active event dashboard -->
+    <div id="org-dashboard" style="display:none;">
+
+      <div class="event-card" id="o-event-display"></div>
+
+      <div class="stats-row">
+        <div class="stat-box">
+          <div class="stat-num" id="stat-total" style="color:var(--accent)">0</div>
+          <div class="stat-label">Checked In</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num" id="stat-out" style="color:var(--success)">0</div>
+          <div class="stat-label">Checked Out</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num" id="stat-inside" style="color:var(--warning)">0</div>
+          <div class="stat-label">Still Inside</div>
+        </div>
+      </div>
+
+      <!-- Check-in control -->
+      <div class="card" id="checkin-control">
+        <div class="top-row">
+          <div class="card-title">Check-in Window</div>
+          <div id="checkin-badge"></div>
+        </div>
+
+        <div id="code-area" style="display:none;">
+          <div class="code-display">
+            <div class="code-label">Share this code verbally</div>
+            <div class="code-number" id="active-code">----</div>
+            <div class="timer-bar"><div class="timer-fill" id="timer-fill"></div></div>
+            <div class="timer-text" id="timer-text">5:00 remaining</div>
+          </div>
+        </div>
+
+        <div id="checkin-open-btn">
+          <div class="alert alert-info">Open check-in when students are inside the venue. They have 5 minutes to check in.</div>
+          <button class="btn btn-primary" onclick="openCheckin()">🔓 Open Check-in (5 min)</button>
+        </div>
+
+        <div id="checkout-control" style="display:none; margin-top:16px;">
+          <hr class="divider">
+          <div class="top-row">
+            <div class="card-title">Check-out Window</div>
+            <div id="checkout-badge"></div>
+          </div>
+          <div id="checkout-open-btn">
+            <div class="alert alert-info">Open check-out near the end of the event.</div>
+            <button class="btn btn-success" onclick="openCheckout()">🔓 Open Check-out (5 min)</button>
+          </div>
+          <div id="checkout-code-area" style="display:none;">
+            <div class="code-display">
+              <div class="code-label">Check-out code</div>
+              <div class="code-number" id="checkout-code">----</div>
+              <div class="timer-bar"><div class="timer-fill" id="co-timer-fill"></div></div>
+              <div class="timer-text" id="co-timer-text">5:00 remaining</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Attendance List -->
+      <div class="card">
+        <div class="tabs">
+          <button class="tab active" onclick="switchTab('tab-in', this)">Checked In</button>
+          <button class="tab" onclick="switchTab('tab-out', this)">Checked Out</button>
+          <button class="tab" onclick="switchTab('tab-manual', this)">Manual</button>
+        </div>
+
+        <div class="tab-content active" id="tab-in">
+          <div class="top-row">
+            <div class="section-label">Attendees</div>
+            <button class="btn btn-outline btn-sm" onclick="exportCSV()">⬇ Export CSV</button>
+          </div>
+          <div class="attendance-list" id="att-list-in">
+            <div class="empty"><div class="empty-icon">👥</div>No check-ins yet</div>
+          </div>
+        </div>
+
+        <div class="tab-content" id="tab-out">
+          <div class="section-label">Checked Out</div>
+          <div class="attendance-list" id="att-list-out">
+            <div class="empty"><div class="empty-icon">🚪</div>No check-outs yet</div>
+          </div>
+        </div>
+
+        <div class="tab-content" id="tab-manual">
+          <div class="section-label">Manual Entry</div>
+          <div class="alert alert-info">For students with GPS issues or late arrivals.</div>
+          <div class="input-group">
+            <label>Student Number</label>
+            <input type="text" id="m-id" placeholder="e.g. 2021-00456" />
+          </div>
+          <div class="input-group">
+            <label>Full Name</label>
+            <input type="text" id="m-name" placeholder="e.g. Maria Santos" />
+          </div>
+          <button class="btn btn-primary" onclick="manualCheckin()">✅ Mark as Present</button>
+        </div>
+      </div>
+
+      <button class="btn btn-outline" onclick="endEvent()" style="border-color:var(--danger); color:var(--danger); margin-top:8px;">
+        🗑 End Event & Clear Data
+      </button>
+
+    </div>
+  </div>
+</div>
+
+<script>
+// ==================== STATE ====================
+let state = {
+  currentRole: 'student',
+  event: null,
+  checkinOpen: false,
+  checkoutOpen: false,
+  checkinCode: null,
+  checkoutCode: null,
+  checkinTimer: null,
+  checkoutTimer: null,
+  checkinSeconds: 300,
+  checkoutSeconds: 300,
+  studentInfo: null,
+  studentCheckedIn: false,
+  studentCheckedOut: false,
+  userLat: null,
+  userLng: null,
+  gpsReady: false,
+  attendance: [],
+  orgLat: null,
+  orgLng: null,
+};
+
+// ==================== INIT ====================
+window.onload = () => {
+  loadFromStorage();
+  getGPS();
+};
+
+function loadFromStorage() {
+  const saved = localStorage.getItem('attendease');
+  if (saved) {
+    const data = JSON.parse(saved);
+    state.event = data.event || null;
+    state.attendance = data.attendance || [];
+    state.checkinCode = data.checkinCode || null;
+    state.checkoutCode = data.checkoutCode || null;
+    state.checkinOpen = data.checkinOpen || false;
+    state.checkoutOpen = data.checkoutOpen || false;
+    state.orgLat = data.orgLat || null;
+    state.orgLng = data.orgLng || null;
+  }
+  if (state.event) {
+    showOrgDashboard();
+    updateStats();
+    renderAttendance();
+    if (state.checkinOpen) restoreCheckinUI();
+    if (state.checkoutOpen) restoreCheckoutUI();
+  }
+}
+
+function saveToStorage() {
+  localStorage.setItem('attendease', JSON.stringify({
+    event: state.event,
+    attendance: state.attendance,
+    checkinCode: state.checkinCode,
+    checkoutCode: state.checkoutCode,
+    checkinOpen: state.checkinOpen,
+    checkoutOpen: state.checkoutOpen,
+    orgLat: state.orgLat,
+    orgLng: state.orgLng,
+  }));
+}
+
+// ==================== GPS ====================
+function getGPS() {
+  if (!navigator.geolocation) {
+    document.getElementById('gps-text').textContent = '❌ GPS not supported on this device';
+    return;
+  }
+  navigator.geolocation.getCurrentPosition(
+    (pos) => {
+      state.userLat = pos.coords.latitude;
+      state.userLng = pos.coords.longitude;
+      state.gpsReady = true;
+      document.getElementById('gps-text').textContent = `✅ Location found (±${Math.round(pos.coords.accuracy)}m accuracy)`;
+      document.getElementById('gps-status').style.borderLeft = '3px solid var(--success)';
+      checkEnableCheckin();
+    },
+    (err) => {
+      state.gpsReady = false;
+      document.getElementById('gps-text').textContent = '⚠️ Location unavailable — organizer can mark you manually';
+      document.getElementById('gps-status').style.borderLeft = '3px solid var(--warning)';
+      // Still allow checkin with warning
+      checkEnableCheckin();
+    },
+    { enableHighAccuracy: true, timeout: 10000 }
+  );
+}
+
+function checkEnableCheckin() {
+  const btn = document.getElementById('checkin-btn');
+  if (btn) btn.disabled = false;
+}
+
+function getDistanceMeters(lat1, lng1, lat2, lng2) {
+  const R = 6371000;
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLng = (lng2 - lng1) * Math.PI / 180;
+  const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180) * Math.cos(lat2*Math.PI/180) * Math.sin(dLng/2)**2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+}
+
+// ==================== ROLE SWITCH ====================
+function switchRole(role) {
+  state.currentRole = role;
+  document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(role + '-page').classList.add('active');
+}
+
+// ==================== STUDENT ====================
+function studentCheckIn() {
+  const sid = document.getElementById('s-id').value.trim();
+  const name = document.getElementById('s-name').value.trim();
+  const code = document.getElementById('s-event-code').value.trim();
+
+  if (!sid || !name) { alert('Please enter your student number and name.'); return; }
+  if (!code || code.length !== 4) { alert('Please enter the 4-digit event code.'); return; }
+  if (!state.event) { alert('No active event found. Ask your organizer to create one.'); return; }
+  if (!state.checkinOpen) { alert('Check-in is not open yet. Wait for your organizer to open it.'); return; }
+  if (code !== state.checkinCode) { alert('Wrong event code. Please try again.'); return; }
+
+  // Check if already checked in
+  const existing = state.attendance.find(a => a.sid === sid);
+  if (existing && existing.checkinTime) { alert('You are already checked in!'); return; }
+
+  // GPS check
+  if (state.gpsReady && state.orgLat && state.userLat) {
+    const dist = getDistanceMeters(state.userLat, state.userLng, state.orgLat, state.orgLng);
+    const radius = state.event.radius || 100;
+    if (dist > radius + 50) { // +50m buffer for indoor GPS inaccuracy
+      alert(`⚠️ You appear to be ${Math.round(dist)}m away from the venue (allowed: ${radius}m). Please make sure you are inside the venue.`);
+      return;
+    }
+  }
+
+  const record = {
+    sid, name,
+    checkinTime: new Date().toLocaleTimeString(),
+    checkoutTime: null,
+    method: 'self'
+  };
+  state.attendance.push(record);
+  state.studentInfo = record;
+  state.studentCheckedIn = true;
+  saveToStorage();
+  updateStats();
+  renderAttendance();
+  showStudentCheckedIn();
+}
+
+function showStudentCheckedIn() {
+  document.getElementById('student-no-event').style.display = 'none';
+  document.getElementById('student-checked-in').style.display = 'block';
+
+  document.getElementById('s-event-display').innerHTML = `
+    <div class="event-name">${state.event.name}</div>
+    <div class="event-meta">📍 ${state.event.venue} &nbsp;•&nbsp; ${new Date().toLocaleDateString()}</div>
+  `;
+
+  renderCheckinSteps();
+
+  if (state.checkoutOpen) {
+    document.getElementById('checkout-section').style.display = 'block';
+  }
+}
+
+function renderCheckinSteps() {
+  const info = state.studentInfo;
+  document.getElementById('checkin-steps').innerHTML = `
+    <div class="status-step done">
+      <span class="step-icon">✅</span>
+      <div>
+        <div style="font-weight:600">Checked In</div>
+        <div style="font-size:12px;color:var(--muted)">${info.checkinTime}</div>
+      </div>
+    </div>
+    <div class="status-step ${state.studentCheckedOut ? 'done' : (state.checkoutOpen ? 'active-step' : 'pending')}">
+      <span class="step-icon">${state.studentCheckedOut ? '✅' : '🚪'}</span>
+      <div>
+        <div style="font-weight:600">Check Out</div>
+        <div style="font-size:12px;color:var(--muted)">${state.studentCheckedOut ? info.checkoutTime : (state.checkoutOpen ? 'Open now!' : 'Waiting for organizer...')}</div>
+      </div>
+    </div>
+  `;
+}
+
+function studentCheckOut() {
+  if (!state.checkoutOpen) { alert('Check-out is not open yet.'); return; }
+
+  const record = state.attendance.find(a => a.sid === state.studentInfo.sid);
+  if (record) {
+    record.checkoutTime = new Date().toLocaleTimeString();
+    state.studentInfo.checkoutTime = record.checkoutTime;
+  }
+  state.studentCheckedOut = true;
+  saveToStorage();
+  updateStats();
+  renderAttendance();
+
+  document.getElementById('student-checked-in').style.display = 'none';
+  document.getElementById('student-done').style.display = 'block';
+  document.getElementById('done-message').textContent = `Checked in at ${state.studentInfo.checkinTime} · Checked out at ${state.studentInfo.checkoutTime}. See you next time!`;
+}
+
+function resetStudent() {
+  state.studentInfo = null;
+  state.studentCheckedIn = false;
+  state.studentCheckedOut = false;
+  document.getElementById('student-no-event').style.display = 'block';
+  document.getElementById('student-checked-in').style.display = 'none';
+  document.getElementById('student-done').style.display = 'none';
+  document.getElementById('s-id').value = '';
+  document.getElementById('s-name').value = '';
+  document.getElementById('s-event-code').value = '';
+}
+
+// ==================== ORGANIZER ====================
+function createEvent() {
+  const name = document.getElementById('o-event-name').value.trim();
+  const venue = document.getElementById('o-venue').value.trim();
+  const radius = parseInt(document.getElementById('o-radius').value) || 100;
+
+  if (!name || !venue) { alert('Please fill in event name and venue.'); return; }
+
+  // Get organizer GPS as venue center
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        state.orgLat = pos.coords.latitude;
+        state.orgLng = pos.coords.longitude;
+        finishCreateEvent(name, venue, radius);
+      },
+      () => {
+        state.orgLat = null;
+        state.orgLng = null;
+        finishCreateEvent(name, venue, radius);
+      },
+      { enableHighAccuracy: true, timeout: 8000 }
+    );
+  } else {
+    finishCreateEvent(name, venue, radius);
+  }
+}
+
+function finishCreateEvent(name, venue, radius) {
+  state.event = {
+    name, venue, radius,
+    date: new Date().toLocaleDateString(),
+    createdAt: new Date().toLocaleTimeString()
+  };
+  state.attendance = [];
+  saveToStorage();
+  showOrgDashboard();
+}
+
+function showOrgDashboard() {
+  document.getElementById('org-no-event').style.display = 'none';
+  document.getElementById('org-dashboard').style.display = 'block';
+  document.getElementById('o-event-display').innerHTML = `
+    <div class="event-name">${state.event.name}</div>
+    <div class="event-meta">📍 ${state.event.venue} &nbsp;•&nbsp; 📅 ${state.event.date}</div>
+  `;
+  document.getElementById('checkout-control').style.display = 'block';
+}
+
+// ==================== CHECK-IN WINDOW ====================
+function generateCode() {
+  return String(Math.floor(1000 + Math.random() * 9000));
+}
+
+function openCheckin() {
+  state.checkinCode = generateCode();
+  state.checkinOpen = true;
+  state.checkinSeconds = 300;
+  saveToStorage();
+  document.getElementById('checkin-open-btn').style.display = 'none';
+  document.getElementById('code-area').style.display = 'block';
+  document.getElementById('active-code').textContent = state.checkinCode;
+  document.getElementById('checkin-badge').innerHTML = '<span class="badge badge-success"><span class="dot pulse"></span>Open</span>';
+
+  runTimer('checkin');
+}
+
+function openCheckout() {
+  state.checkoutCode = generateCode();
+  state.checkoutOpen = true;
+  state.checkoutSeconds = 300;
+  saveToStorage();
+
+  // Notify student page if open
+  if (state.studentCheckedIn && !state.studentCheckedOut) {
+    document.getElementById('checkout-section').style.display = 'block';
+    renderCheckinSteps();
+  }
+
+  document.getElementById('checkout-open-btn').style.display = 'none';
+  document.getElementById('checkout-code-area').style.display = 'block';
+  document.getElementById('checkout-code').textContent = state.checkoutCode;
+  document.getElementById('checkout-badge').innerHTML = '<span class="badge badge-success"><span class="dot pulse"></span>Open</span>';
+
+  runTimer('checkout');
+}
+
+function runTimer(type) {
+  const isCheckin = type === 'checkin';
+  const fillId = isCheckin ? 'timer-fill' : 'co-timer-fill';
+  const textId = isCheckin ? 'timer-text' : 'co-timer-text';
+  const totalSecs = 300;
+
+  const interval = setInterval(() => {
+    if (isCheckin) state.checkinSeconds--; else state.checkoutSeconds--;
+    const secs = isCheckin ? state.checkinSeconds : state.checkoutSeconds;
+
+    const pct = (secs / totalSecs) * 100;
+    const fill = document.getElementById(fillId);
+    const text = document.getElementById(textId);
+    if (!fill) { clearInterval(interval); return; }
+
+    fill.style.width = pct + '%';
+    fill.style.background = pct > 50 ? 'var(--accent)' : pct > 20 ? 'var(--warning)' : 'var(--danger)';
+
+    const m = Math.floor(secs / 60);
+    const s = secs % 60;
+    text.textContent = `${m}:${s.toString().padStart(2,'0')} remaining`;
+
+    if (secs <= 0) {
+      clearInterval(interval);
+      if (isCheckin) {
+        state.checkinOpen = false;
+        document.getElementById('checkin-badge').innerHTML = '<span class="badge badge-danger">Closed</span>';
+        document.getElementById('code-area').style.display = 'none';
+        document.getElementById('checkin-open-btn').style.display = 'block';
+      } else {
+        state.checkoutOpen = false;
+        document.getElementById('checkout-badge').innerHTML = '<span class="badge badge-danger">Closed</span>';
+        document.getElementById('checkout-code-area').style.display = 'none';
+        document.getElementById('checkout-open-btn').style.display = 'block';
+      }
+      saveToStorage();
+    }
+  }, 1000);
+
+  if (isCheckin) state.checkinTimer = interval;
+  else state.checkoutTimer = interval;
+}
+
+function restoreCheckinUI() {
+  document.getElementById('checkin-open-btn').style.display = 'none';
+  document.getElementById('code-area').style.display = 'block';
+  document.getElementById('active-code').textContent = state.checkinCode;
+  document.getElementById('checkin-badge').innerHTML = '<span class="badge badge-warning">Restored</span>';
+}
+
+function restoreCheckoutUI() {
+  document.getElementById('checkout-open-btn').style.display = 'none';
+  document.getElementById('checkout-code-area').style.display = 'block';
+  document.getElementById('checkout-code').textContent = state.checkoutCode;
+  document.getElementById('checkout-badge').innerHTML = '<span class="badge badge-warning">Restored</span>';
+}
+
+// ==================== ATTENDANCE ====================
+function updateStats() {
+  const checkedIn = state.attendance.filter(a => a.checkinTime).length;
+  const checkedOut = state.attendance.filter(a => a.checkoutTime).length;
+  const inside = checkedIn - checkedOut;
+  document.getElementById('stat-total').textContent = checkedIn;
+  document.getElementById('stat-out').textContent = checkedOut;
+  document.getElementById('stat-inside').textContent = Math.max(0, inside);
+}
+
+function renderAttendance() {
+  const listIn = document.getElementById('att-list-in');
+  const listOut = document.getElementById('att-list-out');
+  if (!listIn || !listOut) return;
+
+  const checked = state.attendance.filter(a => a.checkinTime);
+  const outed = state.attendance.filter(a => a.checkoutTime);
+
+  if (checked.length === 0) {
+    listIn.innerHTML = '<div class="empty"><div class="empty-icon">👥</div>No check-ins yet</div>';
+  } else {
+    listIn.innerHTML = checked.map(a => `
+      <div class="attendance-item">
+        <div>
+          <div class="att-name">${a.name}</div>
+          <div class="att-time">${a.sid} · ${a.checkinTime}</div>
+        </div>
+        <span class="badge ${a.checkoutTime ? 'badge-success' : 'badge-info'}">${a.checkoutTime ? 'Out' : 'Inside'}</span>
+      </div>
+    `).join('');
+  }
+
+  if (outed.length === 0) {
+    listOut.innerHTML = '<div class="empty"><div class="empty-icon">🚪</div>No check-outs yet</div>';
+  } else {
+    listOut.innerHTML = outed.map(a => `
+      <div class="attendance-item">
+        <div>
+          <div class="att-name">${a.name}</div>
+          <div class="att-time">${a.sid} · Out: ${a.checkoutTime}</div>
+        </div>
+        <span class="badge badge-success">✓</span>
+      </div>
+    `).join('');
+  }
+}
+
+function manualCheckin() {
+  const sid = document.getElementById('m-id').value.trim();
+  const name = document.getElementById('m-name').value.trim();
+  if (!sid || !name) { alert('Please enter student number and name.'); return; }
+
+  const existing = state.attendance.find(a => a.sid === sid);
+  if (existing) { alert('Student already checked in.'); return; }
+
+  state.attendance.push({
+    sid, name,
+    checkinTime: new Date().toLocaleTimeString(),
+    checkoutTime: null,
+    method: 'manual'
+  });
+  saveToStorage();
+  updateStats();
+  renderAttendance();
+  document.getElementById('m-id').value = '';
+  document.getElementById('m-name').value = '';
+  alert(`✅ ${name} marked as present manually.`);
+}
+
+function exportCSV() {
+  if (state.attendance.length === 0) { alert('No attendance data to export.'); return; }
+  const header = 'Student Number,Name,Check-in Time,Check-out Time,Method\n';
+  const rows = state.attendance.map(a =>
+    `${a.sid},"${a.name}",${a.checkinTime || ''},${a.checkoutTime || ''},${a.method}`
+  ).join('\n');
+  const blob = new Blob([header + rows], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `${state.event.name.replace(/\s+/g,'-')}-attendance.csv`;
+  link.click();
+}
+
+function endEvent() {
+  if (!confirm('End this event and clear all data? This cannot be undone.')) return;
+  localStorage.removeItem('attendease');
+  state.event = null;
+  state.attendance = [];
+  state.checkinOpen = false;
+  state.checkoutOpen = false;
+  state.checkinCode = null;
+  state.checkoutCode = null;
+  clearInterval(state.checkinTimer);
+  clearInterval(state.checkoutTimer);
+  document.getElementById('org-no-event').style.display = 'block';
+  document.getElementById('org-dashboard').style.display = 'none';
+  document.getElementById('o-event-name').value = '';
+  document.getElementById('o-venue').value = '';
+}
+
+// ==================== TABS ====================
+function switchTab(tabId, btn) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(tabId).classList.add('active');
+  btn.classList.add('active');
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TOKI — How It Works</title>
+  <link rel="stylesheet" href="toki.css" />
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="logo">TOKI</div>
+    <nav class="nav" aria-label="Main navigation">
+      <a href="index.html">Home</a>
+      <a href="features.html">Features</a>
+      <a href="about.html">About</a>
+    </nav>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <button class="topbar-theme-btn" onclick="toggleTheme()" aria-label="Toggle theme">
+        <i class="ti ti-moon" id="topbar-theme-icon"></i>
+      </button>
+      <a href="login.html" class="btn btn-primary btn-sm">Sign In</a>
+    </div>
+  </header>
+
+  <main class="page-landing">
+    <h1>How It Works</h1>
+
+    <!-- Organizer flow -->
+    <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--strawberry);margin-bottom:12px;display:flex;align-items:center;gap:8px;">
+      <i class="ti ti-microphone"></i> Organizer Flow
+    </div>
+
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:14px;">
+        <div style="width:36px;height:36px;border-radius:50%;background:var(--grad-primary);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:white;flex-shrink:0;">1</div>
+        <div>
+          <h2>Create an Event</h2>
+          <p>Sign in as an organizer, navigate to Manage Event, and fill in the event details. TOKI captures your GPS position as the venue center for geofencing.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:14px;">
+        <div style="width:36px;height:36px;border-radius:50%;background:var(--grad-primary);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:white;flex-shrink:0;">2</div>
+        <div>
+          <h2>Open Check-in Window</h2>
+          <p>When students are physically inside the venue, open the check-in window. A 4-digit code appears — announce it verbally. Students have 5 minutes to enter it.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:14px;">
+        <div style="width:36px;height:36px;border-radius:50%;background:var(--grad-primary);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:white;flex-shrink:0;">3</div>
+        <div>
+          <h2>Open Check-out Window</h2>
+          <p>Before the event ends, open the check-out window and announce the new code. Students who are still present can check out, confirming they stayed for the duration.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:14px;">
+        <div style="width:36px;height:36px;border-radius:50%;background:var(--grad-primary);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:white;flex-shrink:0;">4</div>
+        <div>
+          <h2>View Records &amp; Export</h2>
+          <p>The Attendance List shows every student's check-in and check-out times. Use Manual Entry for any corrections, and Announcements to post event details.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Student flow -->
+    <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--matcha);margin:28px 0 12px;display:flex;align-items:center;gap:8px;">
+      <i class="ti ti-school"></i> Student Flow
+    </div>
+
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:14px;">
+        <div style="width:36px;height:36px;border-radius:50%;background:var(--grad-matcha);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:white;flex-shrink:0;">1</div>
+        <div>
+          <h2>Sign In &amp; Check Dashboard</h2>
+          <p>Log in with your student number and password. Your dashboard shows the active event, your current status, and quick action buttons.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:14px;">
+        <div style="width:36px;height:36px;border-radius:50%;background:var(--grad-matcha);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:white;flex-shrink:0;">2</div>
+        <div>
+          <h2>Enter Check-in Code</h2>
+          <p>When the organizer announces the verbal code, go to Check-in, enter the 4-digit code, and allow GPS access. TOKI verifies your location and records your arrival time.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:14px;">
+        <div style="width:36px;height:36px;border-radius:50%;background:var(--grad-matcha);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:white;flex-shrink:0;">3</div>
+        <div>
+          <h2>Check Out Before You Leave</h2>
+          <p>Before leaving, go to Check-out and enter the departure code. This confirms your attendance for the full duration of the event.</p>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:32px;text-align:center;">
+      <a href="login.html" class="btn btn-primary btn-lg">
+        <i class="ti ti-login"></i> Try It Now
+      </a>
+    </div>
+  </main>
+
+  <script src="toki.js"></script>
+  <script>
+    function applyTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      localStorage.setItem('toki_theme', theme);
+      const icon = document.getElementById('topbar-theme-icon');
+      if (icon) icon.className = theme === 'dark' ? 'ti ti-sun' : 'ti ti-moon';
+    }
+    function toggleTheme() {
+      const cur = document.documentElement.getAttribute('data-theme') || 'dark';
+      applyTheme(cur === 'dark' ? 'light' : 'dark');
+    }
+    applyTheme(localStorage.getItem('toki_theme') || 'dark');
+  </script>
+</body>
+</html>

@@ -1,294 +1,259 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TOKI — Login</title>
-<link rel="stylesheet" href="shared.css">
-<style>
-  body { overflow: auto; }
-
-  .bg-scene {
-    position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden;
-  }
-
-  .orb {
-    position: absolute; border-radius: 50%; filter: blur(90px);
-  }
-
-  .orb-1 {
-    width: 520px; height: 520px;
-    top: -180px; left: -120px;
-    background: radial-gradient(circle, rgba(232,68,122,0.14) 0%, transparent 70%);
-    animation: drift1 9s ease-in-out infinite;
-  }
-
-  .orb-2 {
-    width: 420px; height: 420px;
-    bottom: -140px; right: -80px;
-    background: radial-gradient(circle, rgba(156,77,204,0.13) 0%, transparent 70%);
-    animation: drift2 11s ease-in-out infinite;
-  }
-
-  .orb-3 {
-    width: 280px; height: 280px;
-    top: 55%; left: 58%;
-    background: radial-gradient(circle, rgba(46,158,110,0.07) 0%, transparent 70%);
-    animation: drift3 14s ease-in-out infinite;
-  }
-
-  [data-theme="light"] .orb-1 { background: radial-gradient(circle, rgba(192,64,94,0.1) 0%, transparent 70%); }
-  [data-theme="light"] .orb-2 { background: radial-gradient(circle, rgba(120,60,170,0.1) 0%, transparent 70%); }
-  [data-theme="light"] .orb-3 { background: radial-gradient(circle, rgba(30,122,90,0.05) 0%, transparent 70%); }
-
-  @keyframes drift1 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(28px,18px)} }
-  @keyframes drift2 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-22px,-28px)} }
-  @keyframes drift3 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-12px,22px)} }
-
-  .login-page { position: relative; z-index: 1; }
-
-  .login-box { animation: fadeUp 0.5s cubic-bezier(0.16,1,0.3,1); }
-
-  /* Demo accounts */
-  .demo-section {
-    margin-top: 20px; padding: 14px;
-    background: rgba(255,255,255,0.025);
-    border-radius: var(--r-sm);
-    border: 1px solid var(--border);
-  }
-
-  [data-theme="light"] .demo-section { background: rgba(120,60,140,0.04); }
-
-  .demo-label {
-    font-size: 9px; font-weight: 700;
-    color: var(--text4); text-transform: uppercase;
-    letter-spacing: 2px; margin-bottom: 10px;
-  }
-
-  .demo-row {
-    display: flex; align-items: center;
-    justify-content: space-between;
-    padding: 9px 11px; border-radius: var(--r-xs);
-    background: rgba(255,255,255,0.03);
-    margin-bottom: 6px; cursor: pointer;
-    border: 1px solid transparent; transition: all 0.18s;
-  }
-
-  [data-theme="light"] .demo-row { background: rgba(120,60,140,0.03); }
-
-  .demo-row:last-child { margin-bottom: 0; }
-
-  .demo-row:hover {
-    background: rgba(192,64,94,0.07);
-    border-color: rgba(192,64,94,0.18);
-    transform: translateX(2px);
-  }
-
-  .demo-name  { font-weight: 700; font-size: 12.5px; }
-  .demo-creds { font-family: var(--font-mono); font-size: 10px; color: var(--text3); margin-top: 1px; }
-
-  .demo-use {
-    font-size: 11px; font-weight: 700;
-    background: linear-gradient(90deg, var(--rose2), var(--violet2));
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  .divider {
-    display: flex; align-items: center; gap: 10px;
-    margin: 18px 0; color: var(--text4);
-    font-size: 10px; font-weight: 600;
-    text-transform: uppercase; letter-spacing: 1.2px;
-  }
-  .divider::before, .divider::after {
-    content: ''; flex: 1; height: 1px; background: var(--border);
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TOKI — Sign In</title>
+  <link rel="stylesheet" href="toki.css" />
 </head>
 <body>
 
-<div class="bg-scene">
-  <div class="orb orb-1"></div>
-  <div class="orb orb-2"></div>
-  <div class="orb orb-3"></div>
-</div>
-
-<div class="login-page">
-  <div class="login-box">
-
-    <!-- Theme toggle -->
-    <button class="login-theme-toggle" onclick="toggleTheme()" title="Toggle theme" aria-label="Toggle light/dark mode">
-      <i class="ti ti-sun" id="theme-icon"></i>
-    </button>
-
-    <div class="login-logo">
-      <div class="logo-icon">
-        <img src="icon.png" alt="Logo" />
-      </div>
-      <div>
-        <div class="logo-text"><span class="logo-accent">TOKI</span></div>
-        <div class="logo-sub">Timing is Everything</div>
-      </div>
-    </div>
-
-    <div class="role-tabs">
-      <button class="role-tab active" onclick="switchRole('organizer', this)">
-        <i class="ti ti-microphone" aria-hidden="true" style="margin-right:5px;"></i>Organizer
-      </button>
-      <button class="role-tab" onclick="switchRole('student', this)">
-        <i class="ti ti-school" aria-hidden="true" style="margin-right:5px;"></i>Student
-      </button>
-    </div>
-
-    <div id="login-error" class="login-error"></div>
-
-    <div class="form-group">
-      <label class="form-label" id="id-label">Organizer ID</label>
-      <input type="text" class="form-input" id="input-id" placeholder="Enter your ID" />
-    </div>
-
-    <div class="form-group">
-      <label class="form-label">Password</label>
-      <input type="password" class="form-input" id="input-pass" placeholder="Enter your password"
-             onkeydown="if(event.key==='Enter') doLogin()" />
-    </div>
-
-    <button class="btn btn-primary btn-full btn-lg" onclick="doLogin()" style="margin-top:4px;">
-      Sign In <i class="ti ti-arrow-right" aria-hidden="true"></i>
-    </button>
-
-    <div class="divider">demo accounts</div>
-
-    <div class="demo-section">
-      <div class="demo-label">Click to auto-fill</div>
-
-      <div id="demo-organizers">
-        <div class="demo-row" onclick="fillDemo('ORG001','org123','organizer')">
-          <div>
-            <div class="demo-name">Dr. Santos</div>
-            <div class="demo-creds">ORG001 / org123</div>
-          </div>
-          <span class="demo-use">Use <i class="ti ti-arrow-right" aria-hidden="true"></i></span>
-        </div>
-        <div class="demo-row" onclick="fillDemo('ORG002','org456','organizer')">
-          <div>
-            <div class="demo-name">Prof. Reyes</div>
-            <div class="demo-creds">ORG002 / org456</div>
-          </div>
-          <span class="demo-use">Use <i class="ti ti-arrow-right" aria-hidden="true"></i></span>
-        </div>
-      </div>
-
-      <div id="demo-students" style="display:none;">
-        <div class="demo-row" onclick="fillDemo('2021-00123','pass123','student')">
-          <div>
-            <div class="demo-name">Juan dela Cruz</div>
-            <div class="demo-creds">2021-00123 / pass123</div>
-          </div>
-          <span class="demo-use">Use <i class="ti ti-arrow-right" aria-hidden="true"></i></span>
-        </div>
-        <div class="demo-row" onclick="fillDemo('2022-00456','pass456','student')">
-          <div>
-            <div class="demo-name">Maria Santos</div>
-            <div class="demo-creds">2022-00456 / pass456</div>
-          </div>
-          <span class="demo-use">Use <i class="ti ti-arrow-right" aria-hidden="true"></i></span>
-        </div>
-        <div class="demo-row" onclick="fillDemo('2023-00789','pass789','student')">
-          <div>
-            <div class="demo-name">Jose Reyes</div>
-            <div class="demo-creds">2023-00789 / pass789</div>
-          </div>
-          <span class="demo-use">Use <i class="ti ti-arrow-right" aria-hidden="true"></i></span>
-        </div>
-      </div>
-    </div>
-
+  <!-- Ambient background orbs -->
+  <div class="bg-scene" aria-hidden="true">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
   </div>
-</div>
 
-<script>
-const ORGANIZERS = {
-  'ORG001': { password: 'org123', name: 'Dr. Santos', dept: 'College of Engineering' },
-  'ORG002': { password: 'org456', name: 'Prof. Reyes', dept: 'College of IT' },
-};
+  <div class="login-page">
+    <div class="login-box">
 
-const STUDENTS = {
-  '2021-00123': { password: 'pass123', name: 'Juan dela Cruz', course: 'BSIT 3-A' },
-  '2022-00456': { password: 'pass456', name: 'Maria Santos', course: 'BSCS 2-B' },
-  '2023-00789': { password: 'pass789', name: 'Jose Reyes', course: 'BSIT 1-C' },
-};
+      <!-- Theme toggle -->
+      <button class="login-theme-toggle" onclick="toggleTheme()" title="Toggle theme" aria-label="Toggle light/dark mode">
+        <i class="ti ti-sun" id="theme-icon"></i>
+      </button>
 
-let currentRole = 'organizer';
+      <!-- Logo -->
+      <div class="login-logo">
+        <div class="logo-icon">
+          <img src="icon.png" alt="TOKI Logo" />
+        </div>
+        <div>
+          <div class="logo-text"><span class="logo-accent">TOKI</span></div>
+          <div class="logo-sub">Timing is Everything</div>
+        </div>
+      </div>
 
-/* ── Theme ── */
-function applyTheme(theme) {
-  document.documentElement.setAttribute('data-theme', theme);
-  localStorage.setItem('kairos_theme', theme);
-  const icon = document.getElementById('theme-icon');
-  if (icon) icon.className = theme === 'light' ? 'ti ti-moon' : 'ti ti-sun';
-}
+      <!-- Role tabs -->
+      <div class="role-tabs" role="tablist">
+        <button class="role-tab active" role="tab" aria-selected="true" onclick="switchRole('organizer', this)">
+          <i class="ti ti-microphone" aria-hidden="true"></i>
+          Organizer
+        </button>
+        <button class="role-tab" role="tab" aria-selected="false" onclick="switchRole('student', this)">
+          <i class="ti ti-school" aria-hidden="true"></i>
+          Student
+        </button>
+      </div>
 
-function toggleTheme() {
-  const cur = document.documentElement.getAttribute('data-theme') || 'dark';
-  applyTheme(cur === 'dark' ? 'light' : 'dark');
-}
+      <!-- Error -->
+      <div id="login-error" class="login-error" role="alert" aria-live="polite"></div>
 
-// Init from storage
-applyTheme(localStorage.getItem('kairos_theme') || 'dark');
+      <!-- Fields -->
+      <div class="form-group">
+        <label class="form-label" id="id-label" for="input-id">Organizer ID</label>
+        <input
+          type="text"
+          class="form-input"
+          id="input-id"
+          placeholder="Enter your ID"
+          autocomplete="username"
+        />
+      </div>
 
-function switchRole(role, btn) {
-  currentRole = role;
-  document.querySelectorAll('.role-tab').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('id-label').textContent = role === 'organizer' ? 'Organizer ID' : 'Student Number';
-  document.getElementById('input-id').placeholder = role === 'organizer' ? 'e.g. ORG001' : 'e.g. 2021-00123';
-  document.getElementById('demo-organizers').style.display = role === 'organizer' ? 'block' : 'none';
-  document.getElementById('demo-students').style.display   = role === 'student'   ? 'block' : 'none';
-  document.getElementById('input-id').value   = '';
-  document.getElementById('input-pass').value = '';
-  hideError();
-}
+      <div class="form-group">
+        <label class="form-label" for="input-pass">Password</label>
+        <div style="position:relative;">
+          <input
+            type="password"
+            class="form-input"
+            id="input-pass"
+            placeholder="Enter your password"
+            autocomplete="current-password"
+            onkeydown="if(event.key==='Enter') doLogin()"
+            style="padding-right:42px;"
+          />
+          <button
+            style="position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:16px;transition:color var(--fast);"
+            onclick="togglePassword()"
+            aria-label="Show password"
+            id="pw-toggle"
+          >
+            <i class="ti ti-eye" id="pw-toggle-icon"></i>
+          </button>
+        </div>
+      </div>
 
-function fillDemo(id, pass, role) {
-  const tabs = document.querySelectorAll('.role-tab');
-  tabs.forEach(t => t.classList.remove('active'));
-  tabs[role === 'organizer' ? 0 : 1].classList.add('active');
-  currentRole = role;
-  document.getElementById('id-label').textContent = role === 'organizer' ? 'Organizer ID' : 'Student Number';
-  document.getElementById('demo-organizers').style.display = role === 'organizer' ? 'block' : 'none';
-  document.getElementById('demo-students').style.display   = role === 'student'   ? 'block' : 'none';
-  document.getElementById('input-id').value   = id;
-  document.getElementById('input-pass').value = pass;
-  hideError();
-}
+      <button class="btn btn-primary btn-full btn-lg" onclick="doLogin()" style="margin-top:4px;">
+        Sign In <i class="ti ti-arrow-right" aria-hidden="true"></i>
+      </button>
 
-function doLogin() {
-  const id   = document.getElementById('input-id').value.trim();
-  const pass = document.getElementById('input-pass').value.trim();
-  if (!id || !pass) return showError('Please enter your ID and password.');
+      <div class="divider">demo accounts</div>
 
-  if (currentRole === 'organizer') {
-    const org = ORGANIZERS[id];
-    if (!org) return showError('Organizer ID not found.');
-    if (org.password !== pass) return showError('Incorrect password.');
-    sessionStorage.setItem('ae_user', JSON.stringify({ role: 'organizer', id, name: org.name, dept: org.dept }));
-    window.location.href = 'oDashboard.html';
-  } else {
-    const stu = STUDENTS[id];
-    if (!stu) return showError('Student number not found.');
-    if (stu.password !== pass) return showError('Incorrect password.');
-    sessionStorage.setItem('ae_user', JSON.stringify({ role: 'student', id, name: stu.name, course: stu.course }));
-    window.location.href = 'sDashboard.html';
-  }
-}
+      <div class="demo-section">
+        <div class="demo-label">Click to auto-fill credentials</div>
 
-function showError(msg) {
-  const el = document.getElementById('login-error');
-  el.textContent = msg;
-  el.style.display = 'block';
-}
-function hideError() { document.getElementById('login-error').style.display = 'none'; }
-</script>
+        <div id="demo-organizers">
+          <div class="demo-row" onclick="fillDemo('ORG001','org123','organizer')" tabindex="0" role="button" aria-label="Sign in as Dr. Santos">
+            <div>
+              <div class="demo-name">Dr. Santos</div>
+              <div class="demo-creds">ORG001 / org123</div>
+            </div>
+            <span class="demo-use">Use <i class="ti ti-arrow-right" aria-hidden="true"></i></span>
+          </div>
+          <div class="demo-row" onclick="fillDemo('ORG002','org456','organizer')" tabindex="0" role="button" aria-label="Sign in as Prof. Reyes">
+            <div>
+              <div class="demo-name">Prof. Reyes</div>
+              <div class="demo-creds">ORG002 / org456</div>
+            </div>
+            <span class="demo-use">Use <i class="ti ti-arrow-right" aria-hidden="true"></i></span>
+          </div>
+        </div>
+
+        <div id="demo-students" style="display:none;">
+          <div class="demo-row" onclick="fillDemo('2021-00123','pass123','student')" tabindex="0" role="button">
+            <div>
+              <div class="demo-name">Juan dela Cruz</div>
+              <div class="demo-creds">2021-00123 / pass123</div>
+            </div>
+            <span class="demo-use">Use <i class="ti ti-arrow-right"></i></span>
+          </div>
+          <div class="demo-row" onclick="fillDemo('2022-00456','pass456','student')" tabindex="0" role="button">
+            <div>
+              <div class="demo-name">Maria Santos</div>
+              <div class="demo-creds">2022-00456 / pass456</div>
+            </div>
+            <span class="demo-use">Use <i class="ti ti-arrow-right"></i></span>
+          </div>
+          <div class="demo-row" onclick="fillDemo('2023-00789','pass789','student')" tabindex="0" role="button">
+            <div>
+              <div class="demo-name">Jose Reyes</div>
+              <div class="demo-creds">2023-00789 / pass789</div>
+            </div>
+            <span class="demo-use">Use <i class="ti ti-arrow-right"></i></span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    const ORGANIZERS = {
+      'ORG001': { password: 'org123', name: 'Dr. Santos', dept: 'College of Engineering' },
+      'ORG002': { password: 'org456', name: 'Prof. Reyes', dept: 'College of IT' },
+    };
+    const STUDENTS = {
+      '2021-00123': { password: 'pass123', name: 'Juan dela Cruz', course: 'BSIT 3-A' },
+      '2022-00456': { password: 'pass456', name: 'Maria Santos', course: 'BSCS 2-B' },
+      '2023-00789': { password: 'pass789', name: 'Jose Reyes', course: 'BSIT 1-C' },
+    };
+
+    let currentRole = 'organizer';
+
+    // Theme
+    function applyTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      localStorage.setItem('toki_theme', theme);
+      const icon = document.getElementById('theme-icon');
+      if (icon) icon.className = theme === 'light' ? 'ti ti-moon' : 'ti ti-sun';
+    }
+    function toggleTheme() {
+      const cur = document.documentElement.getAttribute('data-theme') || 'dark';
+      applyTheme(cur === 'dark' ? 'light' : 'dark');
+    }
+    applyTheme(localStorage.getItem('toki_theme') || 'dark');
+
+    // Password show/hide
+    function togglePassword() {
+      const input = document.getElementById('input-pass');
+      const icon  = document.getElementById('pw-toggle-icon');
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.className = 'ti ti-eye-off';
+      } else {
+        input.type = 'password';
+        icon.className = 'ti ti-eye';
+      }
+    }
+
+    // Role switch
+    function switchRole(role, btn) {
+      currentRole = role;
+      document.querySelectorAll('.role-tab').forEach(b => {
+        b.classList.remove('active');
+        b.setAttribute('aria-selected', 'false');
+      });
+      btn.classList.add('active');
+      btn.setAttribute('aria-selected', 'true');
+      document.getElementById('id-label').textContent = role === 'organizer' ? 'Organizer ID' : 'Student Number';
+      document.getElementById('input-id').placeholder = role === 'organizer' ? 'e.g. ORG001' : 'e.g. 2021-00123';
+      document.getElementById('demo-organizers').style.display = role === 'organizer' ? 'flex' : 'none';
+      document.getElementById('demo-students').style.display   = role === 'student'   ? 'flex' : 'none';
+      document.getElementById('demo-organizers').style.flexDirection = 'column';
+      document.getElementById('demo-students').style.flexDirection = 'column';
+      document.getElementById('input-id').value = '';
+      document.getElementById('input-pass').value = '';
+      hideError();
+    }
+
+    function fillDemo(id, pass, role) {
+      const tabs = document.querySelectorAll('.role-tab');
+      tabs.forEach(t => { t.classList.remove('active'); t.setAttribute('aria-selected','false'); });
+      const idx = role === 'organizer' ? 0 : 1;
+      tabs[idx].classList.add('active');
+      tabs[idx].setAttribute('aria-selected', 'true');
+      currentRole = role;
+      document.getElementById('id-label').textContent = role === 'organizer' ? 'Organizer ID' : 'Student Number';
+      document.getElementById('demo-organizers').style.display = role === 'organizer' ? 'flex' : 'none';
+      document.getElementById('demo-students').style.display   = role === 'student'   ? 'flex' : 'none';
+      document.getElementById('demo-organizers').style.flexDirection = 'column';
+      document.getElementById('demo-students').style.flexDirection = 'column';
+      document.getElementById('input-id').value   = id;
+      document.getElementById('input-pass').value = pass;
+      hideError();
+    }
+
+    function doLogin() {
+      const id   = document.getElementById('input-id').value.trim();
+      const pass = document.getElementById('input-pass').value.trim();
+      if (!id || !pass) return showError('Please enter your ID and password.');
+
+      if (currentRole === 'organizer') {
+        const org = ORGANIZERS[id];
+        if (!org) return showError('Organizer ID not found.');
+        if (org.password !== pass) return showError('Incorrect password.');
+        sessionStorage.setItem('ae_user', JSON.stringify({ role: 'organizer', id, name: org.name, dept: org.dept }));
+        window.location.href = 'oDashboard.html';
+      } else {
+        const stu = STUDENTS[id];
+        if (!stu) return showError('Student number not found.');
+        if (stu.password !== pass) return showError('Incorrect password.');
+        sessionStorage.setItem('ae_user', JSON.stringify({ role: 'student', id, name: stu.name, course: stu.course }));
+        window.location.href = 'sDashboard.html';
+      }
+    }
+
+    function showError(msg) {
+      const el = document.getElementById('login-error');
+      el.textContent = msg;
+      el.style.display = 'block';
+    }
+    function hideError() {
+      document.getElementById('login-error').style.display = 'none';
+    }
+
+    // Keyboard on demo rows
+    document.querySelectorAll('.demo-row').forEach(row => {
+      row.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') row.click(); });
+    });
+
+    // Init demo-organizers flex
+    document.getElementById('demo-organizers').style.display = 'flex';
+    document.getElementById('demo-organizers').style.flexDirection = 'column';
+    document.getElementById('demo-organizers').style.gap = '8px';
+    document.getElementById('demo-students').style.flexDirection = 'column';
+    document.getElementById('demo-students').style.gap = '8px';
+  </script>
 </body>
 </html>

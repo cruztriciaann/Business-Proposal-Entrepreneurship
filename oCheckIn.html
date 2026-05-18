@@ -1,18 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TOKI — Check-in</title>
-<link rel="stylesheet" href="shared.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TOKI — Check-in</title>
+  <link rel="stylesheet" href="toki.css" />
 </head>
 <body>
 <div class="app-layout">
 
-  <!-- ═══ SIDEBAR ═══ -->
   <aside class="sidebar">
     <div class="sidebar-logo">
-      <div class="logo-icon"><img src="icon.png" alt="Logo" /></div>
+      <div class="logo-icon"><img src="icon.png" alt="TOKI Logo" /></div>
       <div>
         <div class="logo-text"><span class="logo-accent">TOKI</span></div>
         <div class="logo-sub">Timing is Everything</div>
@@ -23,50 +22,32 @@
     </div>
     <div class="sidebar-user">
       <div class="user-name" id="sb-name">—</div>
-      <div class="user-id"   id="sb-dept">—</div>
+      <div class="user-id" id="sb-dept">—</div>
     </div>
-    <nav class="sidebar-nav">
+    <nav class="sidebar-nav" aria-label="Organizer navigation">
       <div class="nav-section-label">Main</div>
-      <a class="nav-item" href="oDashboard.html">
-        <span class="nav-icon"><i class="ti ti-layout-dashboard"></i></span> Dashboard
-      </a>
-      <a class="nav-item" href="oManageEvent.html">
-        <span class="nav-icon"><i class="ti ti-calendar-event"></i></span> Manage Event
-      </a>
-      <a class="nav-item active" href="oCheckIn.html">
-        <span class="nav-icon"><i class="ti ti-door-enter"></i></span> Check-in
-      </a>
-      <a class="nav-item" href="oCheckOut.html">
-        <span class="nav-icon"><i class="ti ti-door-exit"></i></span> Check-out
-      </a>
+      <a class="nav-item" href="oDashboard.html"><span class="nav-icon"><i class="ti ti-layout-dashboard"></i></span> Dashboard</a>
+      <a class="nav-item" href="oManageEvent.html"><span class="nav-icon"><i class="ti ti-calendar-event"></i></span> Manage Event</a>
+      <a class="nav-item active" href="oCheckIn.html"><span class="nav-icon"><i class="ti ti-door-enter"></i></span> Check-in</a>
+      <a class="nav-item" href="oCheckOut.html"><span class="nav-icon"><i class="ti ti-door-exit"></i></span> Check-out</a>
       <div class="nav-section-label">Records</div>
-      <a class="nav-item" href="oAttendanceList.html">
-        <span class="nav-icon"><i class="ti ti-clipboard-list"></i></span> Attendance List
-      </a>
-      <a class="nav-item" href="oManualEntry.html">
-        <span class="nav-icon"><i class="ti ti-edit"></i></span> Manual Entry
-      </a>
+      <a class="nav-item" href="oAttendanceList.html"><span class="nav-icon"><i class="ti ti-clipboard-list"></i></span> Attendance List</a>
+      <a class="nav-item" href="oManualEntry.html"><span class="nav-icon"><i class="ti ti-edit"></i></span> Manual Entry</a>
       <div class="nav-section-label">Communication</div>
-      <a class="nav-item" href="oAnnouncements.html">
-        <span class="nav-icon"><i class="ti ti-speakerphone"></i></span> Announcements
-      </a>
-    </nav>
+      <a class="nav-item" href="oAnnouncements.html"><span class="nav-icon"><i class="ti ti-speakerphone"></i></span> Announcements</a>
     </nav>
     <div class="sidebar-bottom">
-      <button class="theme-toggle" onclick="TOKI.toggleTheme()">
+      <button class="theme-toggle" onclick="TOKI.toggleTheme()" aria-label="Toggle theme">
         <span style="display:flex;align-items:center;gap:8px;">
           <i class="ti" id="theme-icon"></i>
           <span id="theme-label">Light Mode</span>
         </span>
         <div class="toggle-switch"></div>
       </button>
-      <button class="logout-btn" onclick="TOKI.logout()">
-        <i class="ti ti-logout"></i> Sign Out
-      </button>
+      <button class="logout-btn" onclick="TOKI.logout()"><i class="ti ti-logout"></i> Sign Out</button>
     </div>
   </aside>
 
-  <!-- ═══ MAIN ═══ -->
   <div class="main-content">
     <div class="top-bar">
       <div>
@@ -79,92 +60,95 @@
     </div>
 
     <div class="content-scroll">
-      <div class="page active oCheckIn">
 
-        <!-- No event -->
-        <div id="ci-no-event" class="alert alert-warning" style="display:none;">
-          <i class="ti ti-alert-triangle"></i>
-          Create an event first.
-          <a href="oManageEvent.html" style="color:inherit;font-weight:700;"> Go to Manage Event →</a>
-        </div>
+      <div id="ci-no-event" class="alert alert-warning" style="display:none;">
+        <i class="ti ti-alert-triangle"></i>
+        Create an event first.
+        <a href="oManageEvent.html" style="color:inherit;font-weight:700;text-decoration:underline;"> Go to Manage Event →</a>
+      </div>
 
-        <div id="ci-section" style="display:none;">
-          <div class="card">
-            <div class="card-header">
-              <div>
-                <div class="card-title">Check-in Window</div>
-                <div class="card-sub">Open when students are physically inside the venue</div>
-              </div>
-              <div id="ci-status-badge"></div>
+      <div id="ci-section" style="display:none;">
+        <div class="card" style="max-width:520px;">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Check-in Window</div>
+              <div class="card-sub">Open when students are physically inside the venue</div>
             </div>
+            <div id="ci-status-badge"></div>
+          </div>
 
-            <!-- Prompt to open -->
-            <div id="ci-open-area">
-              <div class="alert alert-info">
-                <i class="ti ti-speakerphone"></i>
-                Once opened, a 4-digit code appears. Announce it verbally — do NOT share in group chats. Students have <strong>5 minutes</strong> to enter it.
-              </div>
-              <button class="btn btn-primary" onclick="openCheckin()">
-                <i class="ti ti-door-enter"></i> Open Check-in Window
-              </button>
+          <!-- Prompt to open -->
+          <div id="ci-open-area">
+            <div class="alert alert-info">
+              <i class="ti ti-volume"></i>
+              Once opened, a 4-digit code appears. <strong>Announce it verbally</strong> — do NOT share in group chats. Students have <strong>5 minutes</strong> to enter it.
             </div>
+            <button class="btn btn-primary" onclick="openCheckin()">
+              <i class="ti ti-door-enter"></i> Open Check-in Window
+            </button>
+          </div>
 
-            <!-- Code display -->
-            <div id="ci-code-area" style="display:none;">
-              <div class="alert alert-warning">
-                <i class="ti ti-volume"></i>
-                Announce this code out loud to everyone inside the venue only!
-              </div>
-              <div class="code-display">
-                <div class="code-label">Verbal check-in code</div>
-                <div class="code-big" id="ci-code">----</div>
-                <div class="timer-bar"><div class="timer-fill" id="ci-timer-fill" style="width:100%"></div></div>
-                <div class="timer-label" id="ci-timer-text">5:00</div>
-              </div>
-              <button class="btn btn-ghost btn-sm mt-10" onclick="reopenCheckin()">
+          <!-- Code display -->
+          <div id="ci-code-area" style="display:none;">
+            <div class="alert alert-warning">
+              <i class="ti ti-volume"></i>
+              Announce this code <strong>out loud</strong> to everyone inside the venue only!
+            </div>
+            <div class="code-display">
+              <div class="code-label">Verbal check-in code</div>
+              <div class="code-big" id="ci-code" aria-live="polite">----</div>
+              <div class="timer-bar"><div class="timer-fill" id="ci-timer-fill" style="width:100%"></div></div>
+              <div class="timer-label" id="ci-timer-text">5:00</div>
+            </div>
+            <div style="display:flex;gap:10px;margin-top:14px;">
+              <button class="btn btn-ghost btn-sm" onclick="reopenCheckin()">
                 <i class="ti ti-refresh"></i> Generate New Code
               </button>
-            </div>
-
-            <!-- Expired -->
-            <div id="ci-closed-area" style="display:none;">
-              <div class="alert alert-danger">
-                <i class="ti ti-clock-x"></i>
-                Check-in window has closed.
-              </div>
-              <button class="btn btn-primary" onclick="openCheckin()">
-                <i class="ti ti-door-enter"></i> Re-open Check-in
+              <button class="btn btn-danger btn-sm" onclick="closeCheckin()">
+                <i class="ti ti-x"></i> Close Window
               </button>
             </div>
           </div>
+
+          <!-- Expired -->
+          <div id="ci-closed-area" style="display:none;">
+            <div class="alert alert-danger">
+              <i class="ti ti-clock-x"></i>
+              Check-in window has closed. You can re-open it with a new code.
+            </div>
+            <button class="btn btn-primary" onclick="openCheckin()">
+              <i class="ti ti-door-enter"></i> Re-open Check-in
+            </button>
+          </div>
         </div>
 
-      </div><!-- .oCheckIn -->
-    </div><!-- .content-scroll -->
-  </div><!-- .main-content -->
+        <!-- Live count card -->
+        <div class="card" style="max-width:520px;margin-top:16px;">
+          <div class="card-header">
+            <div class="card-title">Check-in Count</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:16px;">
+            <div style="font-size:48px;font-weight:700;color:var(--strawberry);" id="ci-count">0</div>
+            <div style="color:var(--text3);font-size:13px;">students checked in so far</div>
+          </div>
+        </div>
+      </div>
 
-  <!-- ═══ MOBILE BOTTOM NAV ═══ -->
-  <nav class="bottom-nav">
-    <a class="bottom-nav-item" href="oDashboard.html">
-      <span class="bn-icon"><i class="ti ti-layout-dashboard"></i></span><span>Home</span>
-    </a>
-    <a class="bottom-nav-item" href="oManageEvent.html">
-      <span class="bn-icon"><i class="ti ti-calendar-event"></i></span><span>Event</span>
-    </a>
-    <a class="bottom-nav-item active" href="oCheckIn.html">
-      <span class="bn-icon"><i class="ti ti-door-enter"></i></span><span>Check-in</span>
-    </a>
-    <a class="bottom-nav-item" href="oCheckOut.html">
-      <span class="bn-icon"><i class="ti ti-door-exit"></i></span><span>Check-out</span>
-    </a>
-    <a class="bottom-nav-item" href="oAttendanceList.html">
-      <span class="bn-icon"><i class="ti ti-clipboard-list"></i></span><span>Records</span>
-    </a>
+    </div>
+  </div>
+
+  <nav class="bottom-nav" aria-label="Mobile navigation">
+    <a class="bottom-nav-item" href="oDashboard.html"><span class="bn-icon"><i class="ti ti-layout-dashboard"></i></span><span>Home</span></a>
+    <a class="bottom-nav-item" href="oManageEvent.html"><span class="bn-icon"><i class="ti ti-calendar-event"></i></span><span>Event</span></a>
+    <a class="bottom-nav-item active" href="oCheckIn.html"><span class="bn-icon"><i class="ti ti-door-enter"></i></span><span>Check-in</span></a>
+    <a class="bottom-nav-item" href="oCheckOut.html"><span class="bn-icon"><i class="ti ti-door-exit"></i></span><span>Check-out</span></a>
+    <a class="bottom-nav-item" href="oAttendanceList.html"><span class="bn-icon"><i class="ti ti-clipboard-list"></i></span><span>Records</span></a>
   </nav>
 
-</div><!-- .app-layout -->
+</div>
 
 <script src="shared-state.js"></script>
+<script src="toki.js"></script>
 <script>
   const user = TOKI.requireOrganizer();
   TOKI.initTheme();
@@ -194,11 +178,12 @@
     const open = st.checkinOpen;
     document.getElementById('ci-open-area').style.display   = (!open && !ciTimer) ? 'block' : 'none';
     document.getElementById('ci-code-area').style.display   = open ? 'block' : 'none';
-    document.getElementById('ci-closed-area').style.display = 'none';
+    document.getElementById('ci-closed-area').style.display = (!open && ciTimer === null && st.checkinCode) ? 'block' : 'none';
     document.getElementById('ci-status-badge').innerHTML    = open
       ? '<span class="badge badge-green"><span class="dot pulse"></span> Open</span>'
       : '<span class="badge badge-gray">Closed</span>';
     if (open) document.getElementById('ci-code').textContent = st.checkinCode;
+    document.getElementById('ci-count').textContent = st.attendance.filter(a => a.checkinTime).length;
   }
 
   function openCheckin() {
@@ -209,6 +194,7 @@
     ciSecs = 300;
     refreshUI();
     startTimer();
+    showToast('Check-in window opened! Announce the code verbally.', 'success');
   }
 
   function reopenCheckin() {
@@ -222,6 +208,16 @@
     document.getElementById('ci-timer-fill').style.width = '100%';
     document.getElementById('ci-timer-text').textContent = '5:00';
     startTimer();
+    showToast('New code generated!', 'info');
+  }
+
+  function closeCheckin() {
+    clearInterval(ciTimer); ciTimer = null;
+    const st = TOKI.load();
+    st.checkinOpen = false;
+    TOKI.save(st);
+    refreshUI();
+    showToast('Check-in window closed.', 'info');
   }
 
   function startTimer() {
@@ -243,9 +239,17 @@
         document.getElementById('ci-open-area').style.display   = 'none';
         document.getElementById('ci-closed-area').style.display = 'block';
         document.getElementById('ci-status-badge').innerHTML    = '<span class="badge badge-red">Expired</span>';
+        showToast('Check-in code expired.', 'warning');
       }
     }, 1000);
   }
+
+  // Auto-refresh count every 5s
+  setInterval(() => {
+    const st = TOKI.load();
+    const el = document.getElementById('ci-count');
+    if (el) el.textContent = st.attendance.filter(a => a.checkinTime).length;
+  }, 5000);
 
   refreshUI();
 </script>

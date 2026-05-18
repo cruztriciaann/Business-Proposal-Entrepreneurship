@@ -1,59 +1,44 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TOKI — Dashboard</title>
-<link rel="stylesheet" href="shared.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TOKI — Dashboard</title>
+  <link rel="stylesheet" href="toki.css" />
 </head>
 <body>
-
 <div class="app-layout">
 
-  <!-- SIDEBAR -->
   <aside class="sidebar">
     <div class="sidebar-logo">
-      <div class="logo-icon">
-        <i class="ti ti-clock" aria-hidden="true"></i>
-      </div>
+      <div class="logo-icon"><img src="icon.png" alt="TOKI Logo" /></div>
       <div>
         <div class="logo-text"><span class="logo-accent">TOKI</span></div>
         <div class="logo-sub">Timing is Everything</div>
       </div>
     </div>
-
     <div class="sidebar-role">
-      <span class="role-pill student">
-        <i class="ti ti-school" aria-hidden="true"></i> Student
-      </span>
+      <span class="role-pill student"><i class="ti ti-school" aria-hidden="true"></i> Student</span>
     </div>
-
     <div class="sidebar-user">
       <div class="user-name" id="sb-name">—</div>
       <div class="user-id" id="sb-id">—</div>
       <div class="user-id" id="sb-course" style="margin-top:1px;">—</div>
     </div>
-
-    <nav class="sidebar-nav">
-      <div class="nav-section-label">Main</div>
-      <a class="nav-item active" href="sDashboard.html">
-        <span class="nav-icon"><i class="ti ti-layout-dashboard" aria-hidden="true"></i></span> Dashboard
-      </a>
-      <a class="nav-item" href="sCheckIn.html">
-        <span class="nav-icon"><i class="ti ti-circle-check" aria-hidden="true"></i></span> Check-in
-      </a>
-      <a class="nav-item" href="sCheckOut.html">
-        <span class="nav-icon"><i class="ti ti-door-exit" aria-hidden="true"></i></span> Check-out
-      </a>
-      <a class="nav-item" href="sMyHistory.html">
-        <span class="nav-icon"><i class="ti ti-clipboard-list" aria-hidden="true"></i></span> My History
-      </a>
-      <div class="nav-section-label">Info</div>
-      <a class="nav-item" href="sHowItWorks.html">
-        <span class="nav-icon"><i class="ti ti-help-circle" aria-hidden="true"></i></span> How It Works
-      </a>
+    <nav class="sidebar-nav" aria-label="Student navigation">
+      <div class="nav-section-label">Attendance</div>
+      <a class="nav-item active" href="sDashboard.html"><span class="nav-icon"><i class="ti ti-layout-dashboard"></i></span> Dashboard</a>
+      <a class="nav-item" href="sCheckIn.html"><span class="nav-icon"><i class="ti ti-circle-check"></i></span> Check-in</a>
+      <a class="nav-item" href="sCheckOut.html"><span class="nav-icon"><i class="ti ti-door-exit"></i></span> Check-out</a>
+      <div class="nav-section-label">Records</div>
+      <a class="nav-item" href="sMyHistory.html"><span class="nav-icon"><i class="ti ti-clipboard-list"></i></span> My History</a>
+      <a class="nav-item" href="sAttendanceList.html"><span class="nav-icon"><i class="ti ti-users"></i></span> Class Attendance</a>
+      <div class="nav-section-label">Event</div>
+      <a class="nav-item" href="sEvent.html"><span class="nav-icon"><i class="ti ti-calendar-event"></i></span> Event Info</a>
+      <a class="nav-item" href="sAnnouncements.html"><span class="nav-icon"><i class="ti ti-speakerphone"></i></span> Announcements</a>
+      <div class="nav-section-label">Help</div>
+      <a class="nav-item" href="sHowItWorks.html"><span class="nav-icon"><i class="ti ti-help-circle"></i></span> How It Works</a>
     </nav>
-
     <div class="sidebar-bottom">
       <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
         <span style="display:flex;align-items:center;gap:8px;">
@@ -62,22 +47,18 @@
         </span>
         <div class="toggle-switch"></div>
       </button>
-      <button class="logout-btn" onclick="logout()">
-        <i class="ti ti-logout" aria-hidden="true"></i> Sign Out
-      </button>
+      <button class="logout-btn" onclick="logout()"><i class="ti ti-logout"></i> Sign Out</button>
     </div>
   </aside>
 
-  <!-- MAIN -->
   <div class="main-content">
-
     <div class="top-bar">
       <div>
         <div class="page-title">Dashboard</div>
         <div class="page-sub">Your attendance overview</div>
       </div>
       <div class="top-bar-right">
-        <div id="event-badge" class="badge badge-gray">No Active Event</div>
+        <div id="event-badge"></div>
       </div>
     </div>
 
@@ -85,17 +66,17 @@
 
       <div class="stat-grid" style="grid-template-columns:repeat(3,1fr);">
         <div class="stat-card rose">
-          <div class="stat-icon"><i class="ti ti-target" aria-hidden="true"></i></div>
+          <div class="stat-icon"><i class="ti ti-target"></i></div>
           <div class="stat-num" id="d-status" style="font-size:18px;letter-spacing:0;">—</div>
           <div class="stat-label">My Status</div>
         </div>
         <div class="stat-card dark">
-          <div class="stat-icon"><i class="ti ti-clock" aria-hidden="true"></i></div>
+          <div class="stat-icon"><i class="ti ti-clock"></i></div>
           <div class="stat-num" id="d-checkin-time" style="font-size:15px;letter-spacing:0;">—</div>
           <div class="stat-label">Checked In At</div>
         </div>
         <div class="stat-card emerald">
-          <div class="stat-icon"><i class="ti ti-flag" aria-hidden="true"></i></div>
+          <div class="stat-icon"><i class="ti ti-flag"></i></div>
           <div class="stat-num" id="d-checkout-time" style="font-size:15px;letter-spacing:0;">—</div>
           <div class="stat-label">Checked Out At</div>
         </div>
@@ -121,11 +102,11 @@
           </div>
           <div class="status-steps" id="d-steps">
             <div class="step pending">
-              <span class="step-icon"><i class="ti ti-circle-check" aria-hidden="true"></i></span>
+              <span class="step-icon"><i class="ti ti-circle-check"></i></span>
               <div><div class="step-label">Check In</div><div class="step-time">Not yet</div></div>
             </div>
             <div class="step pending">
-              <span class="step-icon"><i class="ti ti-door-exit" aria-hidden="true"></i></span>
+              <span class="step-icon"><i class="ti ti-door-exit"></i></span>
               <div><div class="step-label">Check Out</div><div class="step-time">Not yet</div></div>
             </div>
           </div>
@@ -138,110 +119,96 @@
         </div>
         <div class="grid-2">
           <a class="btn btn-primary" href="sCheckIn.html">
-            <i class="ti ti-circle-check" aria-hidden="true"></i> Go to Check-in
+            <i class="ti ti-circle-check"></i> Go to Check-in
           </a>
           <a class="btn btn-success" href="sCheckOut.html">
-            <i class="ti ti-door-exit" aria-hidden="true"></i> Go to Check-out
+            <i class="ti ti-door-exit"></i> Go to Check-out
           </a>
         </div>
       </div>
 
-    </div><!-- content-scroll -->
-  </div><!-- main-content -->
+    </div>
+  </div>
 
-  <!-- MOBILE BOTTOM NAV -->
-  <nav class="bottom-nav">
-    <a class="bottom-nav-item active" href="sDashboard.html">
-      <span class="bn-icon"><i class="ti ti-layout-dashboard" aria-hidden="true"></i></span><span>Home</span>
-    </a>
-    <a class="bottom-nav-item" href="sCheckIn.html">
-      <span class="bn-icon"><i class="ti ti-circle-check" aria-hidden="true"></i></span><span>Check In</span>
-    </a>
-    <a class="bottom-nav-item" href="sCheckOut.html">
-      <span class="bn-icon"><i class="ti ti-door-exit" aria-hidden="true"></i></span><span>Check Out</span>
-    </a>
-    <a class="bottom-nav-item" href="sMyHistory.html">
-      <span class="bn-icon"><i class="ti ti-clipboard-list" aria-hidden="true"></i></span><span>History</span>
-    </a>
-    <a class="bottom-nav-item" href="sHowItWorks.html">
-      <span class="bn-icon"><i class="ti ti-help-circle" aria-hidden="true"></i></span><span>Help</span>
-    </a>
+  <nav class="bottom-nav" aria-label="Mobile navigation">
+    <a class="bottom-nav-item active" href="sDashboard.html"><span class="bn-icon"><i class="ti ti-layout-dashboard"></i></span><span>Home</span></a>
+    <a class="bottom-nav-item" href="sCheckIn.html"><span class="bn-icon"><i class="ti ti-circle-check"></i></span><span>Check In</span></a>
+    <a class="bottom-nav-item" href="sEvent.html"><span class="bn-icon"><i class="ti ti-calendar-event"></i></span><span>Event</span></a>
+    <a class="bottom-nav-item" href="sAnnouncements.html"><span class="bn-icon"><i class="ti ti-speakerphone"></i></span><span>Posts</span></a>
+    <a class="bottom-nav-item" href="sMyHistory.html"><span class="bn-icon"><i class="ti ti-clipboard-list"></i></span><span>History</span></a>
   </nav>
 
 </div>
 
+<script src="toki.js"></script>
 <script>
-const user = JSON.parse(sessionStorage.getItem('ae_user') || 'null');
-if (!user || user.role !== 'student') window.location.href = 'login.html';
+  const user = JSON.parse(sessionStorage.getItem('ae_user') || 'null');
+  if (!user || user.role !== 'student') window.location.href = 'login.html';
 
-document.getElementById('sb-name').textContent   = user.name;
-document.getElementById('sb-id').textContent     = user.id;
-document.getElementById('sb-course').textContent = user.course;
+  document.getElementById('sb-name').textContent   = user.name;
+  document.getElementById('sb-id').textContent     = user.id;
+  document.getElementById('sb-course').textContent = user.course;
 
-/* ── Theme ── */
-function applyTheme(theme) {
-  document.documentElement.setAttribute('data-theme', theme);
-  localStorage.setItem('toki_theme', theme);
-  const icon  = document.getElementById('theme-icon');
-  const label = document.getElementById('theme-label');
-  if (icon)  icon.className  = theme === 'light' ? 'ti ti-moon' : 'ti ti-sun';
-  if (label) label.textContent = theme === 'light' ? 'Dark Mode' : 'Light Mode';
-}
-function toggleTheme() {
-  const cur = document.documentElement.getAttribute('data-theme') || 'dark';
-  applyTheme(cur === 'dark' ? 'light' : 'dark');
-}
-applyTheme(localStorage.getItem('toki_theme') || 'dark');
+  function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('toki_theme', theme);
+    const icon  = document.getElementById('theme-icon');
+    const label = document.getElementById('theme-label');
+    if (icon)  icon.className    = theme === 'light' ? 'ti ti-moon' : 'ti ti-sun';
+    if (label) label.textContent = theme === 'light' ? 'Dark Mode' : 'Light Mode';
+  }
+  function toggleTheme() {
+    const cur = document.documentElement.getAttribute('data-theme') || 'dark';
+    applyTheme(cur === 'dark' ? 'light' : 'dark');
+  }
+  applyTheme(localStorage.getItem('toki_theme') || 'dark');
 
-function getState() {
-  const d = localStorage.getItem('ae_state'); return d ? JSON.parse(d) : null;
-}
-function getMyRecord(s) { return (s.attendance || []).find(a => a.sid === user.id) || null; }
+  function getState() { const d = localStorage.getItem('ae_state'); return d ? JSON.parse(d) : null; }
+  function getMyRecord(s) { return (s.attendance || []).find(a => a.sid === user.id) || null; }
 
-function refreshUI() {
-  const s = getState();
-  const event = s?.event || null;
-  const myRecord = s ? getMyRecord(s) : null;
+  function refreshUI() {
+    const s = getState();
+    const event = s?.event || null;
+    const myRecord = s ? getMyRecord(s) : null;
 
-  document.getElementById('event-badge').innerHTML = event
-    ? `<span class="badge badge-green"><span class="dot pulse"></span>${event.name}</span>`
-    : '<span class="badge badge-gray">No Active Event</span>';
+    document.getElementById('event-badge').innerHTML = event
+      ? `<span class="badge badge-green"><span class="dot pulse"></span>${event.name}</span>`
+      : '<span class="badge badge-gray">No Active Event</span>';
 
-  document.getElementById('d-status').textContent       = !myRecord ? '—' : myRecord.checkoutTime ? 'Complete' : 'Inside';
-  document.getElementById('d-checkin-time').textContent  = myRecord?.checkinTime  || '—';
-  document.getElementById('d-checkout-time').textContent = myRecord?.checkoutTime || '—';
+    document.getElementById('d-status').textContent       = !myRecord ? '—' : myRecord.checkoutTime ? 'Complete' : 'Inside';
+    document.getElementById('d-checkin-time').textContent  = myRecord?.checkinTime  || '—';
+    document.getElementById('d-checkout-time').textContent = myRecord?.checkoutTime || '—';
 
-  document.getElementById('d-event-info').innerHTML = event ? `
-    <div style="display:flex;flex-direction:column;gap:9px;font-size:13px;">
-      <div><span style="color:var(--text3);font-size:9px;text-transform:uppercase;letter-spacing:1.2px;font-weight:700;font-family:var(--font-display);">Name</span><br><strong>${event.name}</strong></div>
-      <div><span style="color:var(--text3);font-size:9px;text-transform:uppercase;letter-spacing:1.2px;font-weight:700;font-family:var(--font-display);">Venue</span><br>${event.venue}</div>
-      <div><span style="color:var(--text3);font-size:9px;text-transform:uppercase;letter-spacing:1.2px;font-weight:700;font-family:var(--font-display);">Date</span><br>${event.date}</div>
-      <div><span style="color:var(--text3);font-size:9px;text-transform:uppercase;letter-spacing:1.2px;font-weight:700;font-family:var(--font-display);">GPS Radius</span><br>${event.radius}m</div>
-    </div>
-  ` : '<div style="color:var(--text3)">No active event. Ask your organizer.</div>';
-
-  document.getElementById('d-steps').innerHTML = `
-    <div class="step ${myRecord?.checkinTime ? 'done' : event ? 'active' : 'pending'}">
-      <span class="step-icon"><i class="ti ${myRecord?.checkinTime ? 'ti-circle-check' : 'ti-clock'}" aria-hidden="true"></i></span>
-      <div>
-        <div class="step-label">Check In</div>
-        <div class="step-time">${myRecord?.checkinTime || (event ? 'Waiting for code...' : 'No event')}</div>
+    document.getElementById('d-event-info').innerHTML = event ? `
+      <div style="display:flex;flex-direction:column;gap:9px;font-size:13px;">
+        <div><span style="color:var(--text3);font-size:9px;text-transform:uppercase;letter-spacing:1.2px;font-weight:700;">Name</span><br><strong>${event.name}</strong></div>
+        <div><span style="color:var(--text3);font-size:9px;text-transform:uppercase;letter-spacing:1.2px;font-weight:700;">Venue</span><br>${event.venue}</div>
+        <div><span style="color:var(--text3);font-size:9px;text-transform:uppercase;letter-spacing:1.2px;font-weight:700;">Date</span><br>${event.date}</div>
+        <div><span style="color:var(--text3);font-size:9px;text-transform:uppercase;letter-spacing:1.2px;font-weight:700;">GPS Radius</span><br>${event.radius}m</div>
       </div>
-    </div>
-    <div class="step ${myRecord?.checkoutTime ? 'done' : myRecord?.checkinTime ? 'active' : 'pending'}">
-      <span class="step-icon"><i class="ti ${myRecord?.checkoutTime ? 'ti-circle-check' : 'ti-door-exit'}" aria-hidden="true"></i></span>
-      <div>
-        <div class="step-label">Check Out</div>
-        <div class="step-time">${myRecord?.checkoutTime || (myRecord?.checkinTime ? 'Waiting for code...' : 'Not yet')}</div>
+    ` : '<div style="color:var(--text3)">No active event. Ask your organizer.</div>';
+
+    document.getElementById('d-steps').innerHTML = `
+      <div class="step ${myRecord?.checkinTime ? 'done' : event ? 'active' : 'pending'}">
+        <span class="step-icon"><i class="ti ${myRecord?.checkinTime ? 'ti-circle-check' : 'ti-clock'}"></i></span>
+        <div>
+          <div class="step-label">Check In</div>
+          <div class="step-time">${myRecord?.checkinTime || (event ? 'Waiting for code…' : 'No event')}</div>
+        </div>
       </div>
-    </div>
-  `;
-}
+      <div class="step ${myRecord?.checkoutTime ? 'done' : myRecord?.checkinTime ? 'active' : 'pending'}">
+        <span class="step-icon"><i class="ti ${myRecord?.checkoutTime ? 'ti-circle-check' : 'ti-door-exit'}"></i></span>
+        <div>
+          <div class="step-label">Check Out</div>
+          <div class="step-time">${myRecord?.checkoutTime || (myRecord?.checkinTime ? 'Waiting for code…' : 'Not yet')}</div>
+        </div>
+      </div>`;
+  }
 
-function logout() { sessionStorage.removeItem('ae_user'); window.location.href = 'login.html'; }
+  function logout() { sessionStorage.removeItem('ae_user'); window.location.href = 'login.html'; }
 
-refreshUI();
-setInterval(() => refreshUI(), 5000);
+  refreshUI();
+  setInterval(refreshUI, 5000);
 </script>
 </body>
 </html>

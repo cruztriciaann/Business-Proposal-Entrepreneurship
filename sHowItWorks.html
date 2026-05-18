@@ -1,195 +1,244 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TOKI — How It Works</title>
-<link rel="stylesheet" href="shared.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TOKI — How It Works</title>
+  <link rel="stylesheet" href="toki.css" />
 </head>
 <body>
-
 <div class="app-layout">
 
-  <!-- SIDEBAR -->
   <aside class="sidebar">
     <div class="sidebar-logo">
-      <div class="logo-icon">
-        <i class="ti ti-clock" aria-hidden="true"></i>
-      </div>
+      <div class="logo-icon"><img src="icon.png" alt="TOKI Logo" /></div>
       <div>
         <div class="logo-text"><span class="logo-accent">TOKI</span></div>
         <div class="logo-sub">Timing is Everything</div>
       </div>
     </div>
-
     <div class="sidebar-role">
-      <span class="role-pill student">
-        <i class="ti ti-school" aria-hidden="true"></i> Student
-      </span>
+      <span class="role-pill student"><i class="ti ti-school"></i> Student</span>
     </div>
-
     <div class="sidebar-user">
       <div class="user-name" id="sb-name">—</div>
       <div class="user-id" id="sb-id">—</div>
-      <div class="user-id" id="sb-course" style="margin-top:1px;">—</div>
+      <div class="user-id" id="sb-course">—</div>
     </div>
-
-    <nav class="sidebar-nav">
-      <div class="nav-section-label">Main</div>
-      <a class="nav-item" href="sDashboard.html">
-        <span class="nav-icon"><i class="ti ti-layout-dashboard" aria-hidden="true"></i></span> Dashboard
-      </a>
-      <a class="nav-item" href="sCheckIn.html">
-        <span class="nav-icon"><i class="ti ti-circle-check" aria-hidden="true"></i></span> Check-in
-      </a>
-      <a class="nav-item" href="sCheckOut.html">
-        <span class="nav-icon"><i class="ti ti-door-exit" aria-hidden="true"></i></span> Check-out
-      </a>
-      <a class="nav-item" href="sMyHistory.html">
-        <span class="nav-icon"><i class="ti ti-clipboard-list" aria-hidden="true"></i></span> My History
-      </a>
-      <div class="nav-section-label">Info</div>
-      <a class="nav-item active" href="sHowItWorks.html">
-        <span class="nav-icon"><i class="ti ti-help-circle" aria-hidden="true"></i></span> How It Works
-      </a>
+    <nav class="sidebar-nav" aria-label="Student navigation">
+      <div class="nav-section-label">Attendance</div>
+      <a class="nav-item" href="sDashboard.html"><span class="nav-icon"><i class="ti ti-layout-dashboard"></i></span> Dashboard</a>
+      <a class="nav-item" href="sCheckIn.html"><span class="nav-icon"><i class="ti ti-circle-check"></i></span> Check-in</a>
+      <a class="nav-item" href="sCheckOut.html"><span class="nav-icon"><i class="ti ti-door-exit"></i></span> Check-out</a>
+      <div class="nav-section-label">Records</div>
+      <a class="nav-item" href="sMyHistory.html"><span class="nav-icon"><i class="ti ti-clipboard-list"></i></span> My History</a>
+      <a class="nav-item" href="sAttendanceList.html"><span class="nav-icon"><i class="ti ti-users"></i></span> Class Attendance</a>
+      <div class="nav-section-label">Event</div>
+      <a class="nav-item" href="sEvent.html"><span class="nav-icon"><i class="ti ti-calendar-event"></i></span> Event Info</a>
+      <a class="nav-item" href="sAnnouncements.html"><span class="nav-icon"><i class="ti ti-speakerphone"></i></span> Announcements</a>
+      <div class="nav-section-label">Help</div>
+      <a class="nav-item active" href="sHowItWorks.html"><span class="nav-icon"><i class="ti ti-help-circle"></i></span> How It Works</a>
     </nav>
-
     <div class="sidebar-bottom">
       <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
         <span style="display:flex;align-items:center;gap:8px;">
-          <i class="ti" id="theme-icon" aria-hidden="true"></i>
+          <i class="ti" id="theme-icon"></i>
           <span id="theme-label">Light Mode</span>
         </span>
         <div class="toggle-switch"></div>
       </button>
-      <button class="logout-btn" onclick="logout()">
-        <i class="ti ti-logout" aria-hidden="true"></i> Sign Out
-      </button>
+      <button class="logout-btn" onclick="logout()"><i class="ti ti-logout"></i> Sign Out</button>
     </div>
   </aside>
 
-  <!-- MAIN -->
   <div class="main-content">
-
     <div class="top-bar">
       <div>
         <div class="page-title">How It Works</div>
-        <div class="page-sub">Guide to using TOKI</div>
-      </div>
-      <div class="top-bar-right">
-        <div id="event-badge" class="badge badge-gray">No Active Event</div>
+        <div class="page-sub">A quick guide to TOKI attendance</div>
       </div>
     </div>
 
     <div class="content-scroll">
 
-      <div class="card" style="max-width:540px;">
-        <div class="card-title" style="margin-bottom:18px;">How It Works</div>
-        <div class="status-steps">
-          <div class="step done">
-            <span class="step-icon"><i class="ti ti-map-pin" aria-hidden="true"></i></span>
-            <div>
-              <div class="step-label">Arrive at the Event</div>
-              <div class="step-time">Make sure you are physically inside the venue</div>
-            </div>
-          </div>
-          <div class="step done">
-            <span class="step-icon"><i class="ti ti-speakerphone" aria-hidden="true"></i></span>
-            <div>
-              <div class="step-label">Wait for the Organizer to Open Check-in</div>
-              <div class="step-time">They will announce a 4-digit code verbally</div>
-            </div>
-          </div>
-          <div class="step done">
-            <span class="step-icon"><i class="ti ti-keyboard" aria-hidden="true"></i></span>
-            <div>
-              <div class="step-label">Enter the Code in Check-in Tab</div>
-              <div class="step-time">You have 5 minutes from when the code is given</div>
-            </div>
-          </div>
-          <div class="step done">
-            <span class="step-icon"><i class="ti ti-map-pin" aria-hidden="true"></i></span>
-            <div>
-              <div class="step-label">Stay for the Event</div>
-              <div class="step-time">GPS confirms you are near the venue</div>
-            </div>
-          </div>
-          <div class="step done">
-            <span class="step-icon"><i class="ti ti-flag" aria-hidden="true"></i></span>
-            <div>
-              <div class="step-label">Check Out When Event Ends</div>
-              <div class="step-time">Organizer gives another code — enter it in Check-out tab</div>
-            </div>
-          </div>
+      <!-- Steps -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Your 3-Step Process</div>
+          <div class="card-sub">Simple, fast, tamper-proof</div>
         </div>
-        <div class="alert alert-warning mt-10">
-          <i class="ti ti-alert-triangle" aria-hidden="true"></i>
-          <strong>Important:</strong> Do NOT share the code with anyone outside the venue. The system checks your GPS location to verify you are physically present.
+        <div class="status-steps">
+          <div class="step active">
+            <span class="step-icon" style="background:rgba(216,103,143,0.15);color:var(--strawberry);font-size:16px;font-weight:700;font-family:var(--font-display);">1</span>
+            <div>
+              <div class="step-label">Arrive at the Venue</div>
+              <div class="step-time">Be physically present before the window closes</div>
+            </div>
+          </div>
+          <div class="step active">
+            <span class="step-icon" style="background:rgba(159,170,116,0.15);color:var(--matcha);font-size:16px;font-weight:700;font-family:var(--font-display);">2</span>
+            <div>
+              <div class="step-label">Enter the Verbal Code</div>
+              <div class="step-time">Listen for the 4-digit code announced by your organizer</div>
+            </div>
+          </div>
+          <div class="step active">
+            <span class="step-icon" style="background:rgba(232,168,90,0.15);color:var(--amber);font-size:16px;font-weight:700;font-family:var(--font-display);">3</span>
+            <div>
+              <div class="step-label">Check Out Before Leaving</div>
+              <div class="step-time">Enter the departure code to confirm you attended the full event</div>
+            </div>
+          </div>
         </div>
       </div>
 
-    </div><!-- content-scroll -->
-  </div><!-- main-content -->
+      <!-- Important rules -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><i class="ti ti-shield-check" style="color:var(--strawberry);margin-right:8px;"></i>Important Rules</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <div class="alert alert-danger" style="margin-bottom:0;">
+            <i class="ti ti-x"></i>
+            <div>
+              <strong>Do NOT share the code</strong><br>
+              <span style="font-size:12px;">The verbal code must stay inside the venue. Sharing it counts as attendance fraud.</span>
+            </div>
+          </div>
+          <div class="alert alert-warning" style="margin-bottom:0;">
+            <i class="ti ti-clock"></i>
+            <div>
+              <strong>5-Minute Window</strong><br>
+              <span style="font-size:12px;">You have exactly 5 minutes after the code is announced to submit it. After that, the window closes.</span>
+            </div>
+          </div>
+          <div class="alert alert-info" style="margin-bottom:0;">
+            <i class="ti ti-map-pin"></i>
+            <div>
+              <strong>GPS Verification</strong><br>
+              <span style="font-size:12px;">TOKI verifies your physical location. You must be within the venue's GPS radius to check in successfully.</span>
+            </div>
+          </div>
+          <div class="alert alert-success" style="margin-bottom:0;">
+            <i class="ti ti-circle-check"></i>
+            <div>
+              <strong>Always Check Out</strong><br>
+              <span style="font-size:12px;">Checking in without checking out marks your attendance as incomplete. Always use the check-out code before you leave.</span>
+            </div>
+          </div>
+        </div>
+      </div>
 
-  <!-- MOBILE BOTTOM NAV -->
-  <nav class="bottom-nav">
-    <a class="bottom-nav-item" href="sDashboard.html">
-      <span class="bn-icon"><i class="ti ti-layout-dashboard" aria-hidden="true"></i></span><span>Home</span>
-    </a>
-    <a class="bottom-nav-item" href="sCheckIn.html">
-      <span class="bn-icon"><i class="ti ti-circle-check" aria-hidden="true"></i></span><span>Check In</span>
-    </a>
-    <a class="bottom-nav-item" href="sCheckOut.html">
-      <span class="bn-icon"><i class="ti ti-door-exit" aria-hidden="true"></i></span><span>Check Out</span>
-    </a>
-    <a class="bottom-nav-item" href="sMyHistory.html">
-      <span class="bn-icon"><i class="ti ti-clipboard-list" aria-hidden="true"></i></span><span>History</span>
-    </a>
-    <a class="bottom-nav-item active" href="sHowItWorks.html">
-      <span class="bn-icon"><i class="ti ti-help-circle" aria-hidden="true"></i></span><span>Help</span>
-    </a>
+      <!-- FAQ -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><i class="ti ti-help-circle" style="color:var(--matcha);margin-right:8px;"></i>FAQ</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:0;">
+          <div class="sHowItWorks-faq-item" style="padding:14px 0;border-bottom:1px solid var(--border);cursor:pointer;" onclick="toggleFAQ(this)">
+            <div style="display:flex;align-items:center;justify-content:space-between;font-size:13px;font-weight:600;color:var(--text);">
+              <span>What if I missed the check-in window?</span>
+              <i class="ti ti-chevron-down" style="transition:transform var(--med);flex-shrink:0;color:var(--text3);"></i>
+            </div>
+            <div style="display:none;font-size:13px;color:var(--text2);padding-top:10px;line-height:1.65;">
+              Contact your organizer immediately. They can manually add your check-in from the Manual Entry page if they can verify your presence.
+            </div>
+          </div>
+          <div class="sHowItWorks-faq-item" style="padding:14px 0;border-bottom:1px solid var(--border);cursor:pointer;" onclick="toggleFAQ(this)">
+            <div style="display:flex;align-items:center;justify-content:space-between;font-size:13px;font-weight:600;color:var(--text);">
+              <span>My GPS says I'm outside the venue but I'm inside — what do I do?</span>
+              <i class="ti ti-chevron-down" style="transition:transform var(--med);flex-shrink:0;color:var(--text3);"></i>
+            </div>
+            <div style="display:none;font-size:13px;color:var(--text2);padding-top:10px;line-height:1.65;">
+              GPS accuracy can vary indoors. Try moving closer to a window or open area. If it still fails, ask your organizer for a manual entry.
+            </div>
+          </div>
+          <div class="sHowItWorks-faq-item" style="padding:14px 0;border-bottom:1px solid var(--border);cursor:pointer;" onclick="toggleFAQ(this)">
+            <div style="display:flex;align-items:center;justify-content:space-between;font-size:13px;font-weight:600;color:var(--text);">
+              <span>Can I check in for someone else?</span>
+              <i class="ti ti-chevron-down" style="transition:transform var(--med);flex-shrink:0;color:var(--text3);"></i>
+            </div>
+            <div style="display:none;font-size:13px;color:var(--text2);padding-top:10px;line-height:1.65;">
+              No. Each account is tied to a student number. Checking in for someone else is attendance fraud and may result in disciplinary action.
+            </div>
+          </div>
+          <div class="sHowItWorks-faq-item" style="padding:14px 0;cursor:pointer;" onclick="toggleFAQ(this)">
+            <div style="display:flex;align-items:center;justify-content:space-between;font-size:13px;font-weight:600;color:var(--text);">
+              <span>What does "Complete" attendance mean?</span>
+              <i class="ti ti-chevron-down" style="transition:transform var(--med);flex-shrink:0;color:var(--text3);"></i>
+            </div>
+            <div style="display:none;font-size:13px;color:var(--text2);padding-top:10px;line-height:1.65;">
+              "Complete" means you both checked in AND checked out. If only checked in, your record shows "Inside" — incomplete attendance.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick actions -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Ready to Go?</div>
+        </div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+          <a href="sCheckIn.html" class="btn btn-primary">
+            <i class="ti ti-circle-check"></i> Check In Now
+          </a>
+          <a href="sCheckOut.html" class="btn btn-success">
+            <i class="ti ti-door-exit"></i> Check Out Now
+          </a>
+          <a href="sDashboard.html" class="btn btn-ghost">
+            <i class="ti ti-layout-dashboard"></i> Dashboard
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <nav class="bottom-nav" aria-label="Mobile navigation">
+    <a class="bottom-nav-item" href="sDashboard.html"><span class="bn-icon"><i class="ti ti-layout-dashboard"></i></span><span>Home</span></a>
+    <a class="bottom-nav-item" href="sCheckIn.html"><span class="bn-icon"><i class="ti ti-circle-check"></i></span><span>Check In</span></a>
+    <a class="bottom-nav-item" href="sEvent.html"><span class="bn-icon"><i class="ti ti-calendar-event"></i></span><span>Event</span></a>
+    <a class="bottom-nav-item" href="sAnnouncements.html"><span class="bn-icon"><i class="ti ti-speakerphone"></i></span><span>Posts</span></a>
+    <a class="bottom-nav-item" href="sMyHistory.html"><span class="bn-icon"><i class="ti ti-clipboard-list"></i></span><span>History</span></a>
   </nav>
 
 </div>
 
+<script src="toki.js"></script>
 <script>
-const user = JSON.parse(sessionStorage.getItem('ae_user') || 'null');
-if (!user || user.role !== 'student') window.location.href = 'login.html';
+  const user = JSON.parse(sessionStorage.getItem('ae_user') || 'null');
+  if (!user || user.role !== 'student') window.location.href = 'login.html';
 
-document.getElementById('sb-name').textContent   = user.name;
-document.getElementById('sb-id').textContent     = user.id;
-document.getElementById('sb-course').textContent = user.course;
+  document.getElementById('sb-name').textContent   = user.name;
+  document.getElementById('sb-id').textContent     = user.id;
+  document.getElementById('sb-course').textContent = user.course;
 
-/* ── Theme ── */
-function applyTheme(theme) {
-  document.documentElement.setAttribute('data-theme', theme);
-  localStorage.setItem('toki_theme', theme);
-  const icon  = document.getElementById('theme-icon');
-  const label = document.getElementById('theme-label');
-  if (icon)  icon.className  = theme === 'light' ? 'ti ti-moon' : 'ti ti-sun';
-  if (label) label.textContent = theme === 'light' ? 'Dark Mode' : 'Light Mode';
-}
-function toggleTheme() {
-  const cur = document.documentElement.getAttribute('data-theme') || 'dark';
-  applyTheme(cur === 'dark' ? 'light' : 'dark');
-}
-applyTheme(localStorage.getItem('toki_theme') || 'dark');
+  function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('toki_theme', theme);
+    const icon  = document.getElementById('theme-icon');
+    const label = document.getElementById('theme-label');
+    if (icon)  icon.className    = theme === 'light' ? 'ti ti-moon' : 'ti ti-sun';
+    if (label) label.textContent = theme === 'light' ? 'Dark Mode'  : 'Light Mode';
+  }
+  function toggleTheme() {
+    const cur = document.documentElement.getAttribute('data-theme') || 'dark';
+    applyTheme(cur === 'dark' ? 'light' : 'dark');
+  }
+  applyTheme(localStorage.getItem('toki_theme') || 'dark');
 
-function getState() {
-  const d = localStorage.getItem('ae_state'); return d ? JSON.parse(d) : null;
-}
+  function toggleFAQ(item) {
+    const answer = item.querySelector('div[style*="display"]');
+    const icon   = item.querySelector('.ti-chevron-down, .ti-chevron-up');
+    const open   = answer.style.display === 'block';
+    answer.style.display = open ? 'none' : 'block';
+    if (icon) {
+      icon.style.transform = open ? 'rotate(0deg)' : 'rotate(180deg)';
+    }
+  }
 
-function refreshUI() {
-  const s = getState();
-  const event = s?.event || null;
-  document.getElementById('event-badge').innerHTML = event
-    ? `<span class="badge badge-green"><span class="dot pulse"></span>${event.name}</span>`
-    : '<span class="badge badge-gray">No Active Event</span>';
-}
-
-function logout() { sessionStorage.removeItem('ae_user'); window.location.href = 'login.html'; }
-
-refreshUI();
+  function logout() { sessionStorage.removeItem('ae_user'); window.location.href = 'login.html'; }
 </script>
 </body>
 </html>

@@ -1,369 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TOKI — Announcements</title>
-<link rel="stylesheet" href="shared.css">
-<style>
-  .audience-box {
-    background: var(--glass);
-    border: 1px solid var(--border2);
-    border-radius: var(--r-lg);
-    padding: 14px 16px;
-    margin-bottom: 14px;
-  }
-
-  .aud-box-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 10px;
-  }
-
-  .aud-box-label {
-    font-size: 10px;
-    font-weight: 700;
-    color: var(--text3);
-    text-transform: uppercase;
-    letter-spacing: 1.2px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .aud-box-label i { font-size: 13px; color: var(--strawberry); }
-
-  .all-toggle {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 11px;
-    color: var(--text3);
-    cursor: pointer;
-    user-select: none;
-  }
-
-  .all-toggle input {
-    accent-color: var(--strawberry);
-    width: 13px;
-    height: 13px;
-    cursor: pointer;
-  }
-
-  .pill-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-  }
-
-  .pill {
-    padding: 5px 12px;
-    border-radius: 30px;
-    font-size: 11px;
-    font-weight: 600;
-    cursor: pointer;
-    border: 1px solid transparent;
-    background: transparent;
-    transition: all 0.15s ease;
-    user-select: none;
-  }
-
-  .pill:hover { filter: brightness(1.15); }
-
-  .pill.p-pink   { color: var(--strawberry-light); border-color: rgba(216,103,143,0.30); }
-  .pill.p-pink.sel { background: rgba(216,103,143,0.16); border-color: rgba(216,103,143,0.45); }
-
-  .pill.p-matcha { color: var(--matcha-light); border-color: rgba(159,170,116,0.30); }
-  .pill.p-matcha.sel { background: rgba(159,170,116,0.18); border-color: rgba(159,170,116,0.45); }
-
-  .pill.p-blush  { color: var(--blush); border-color: rgba(244,199,208,0.30); }
-  .pill.p-blush.sel { background: rgba(244,199,208,0.13); border-color: rgba(244,199,208,0.45); }
-
-  .pill.p-red    { color: #d87880; border-color: rgba(180,50,70,0.30); }
-  .pill.p-red.sel { background: rgba(180,50,70,0.14); border-color: rgba(180,50,70,0.45); }
-
-  .pill.p-plum   { color: #c07acc; border-color: rgba(166,86,137,0.30); }
-  .pill.p-plum.sel { background: rgba(166,86,137,0.14); border-color: rgba(166,86,137,0.45); }
-
-  .pill.p-gray   { color: var(--text2); border-color: var(--border2); }
-  .pill.p-gray.sel { background: var(--glass2); border-color: var(--border3); }
-
-  .pill.disabled { opacity: 0.35; pointer-events: none; }
-
-  /* type pills */
-  .type-row { display: flex; flex-wrap: wrap; gap: 6px; }
-
-  /* Announcement cards */
-  .ann-card {
-    background: var(--glass);
-    border: 1px solid var(--border2);
-    border-radius: var(--r-xl);
-    padding: 18px;
-    margin-bottom: 14px;
-    transition: border-color 0.15s, transform 0.2s;
-    animation: feedIn 0.3s ease both;
-  }
-
-  .ann-card:hover {
-    border-color: var(--border3);
-    transform: translateY(-1px);
-  }
-
-  .ann-card.t-seminar    { border-left: 3px solid var(--matcha); border-radius: 0; border-radius: var(--r-xl); border-left-width: 3px; }
-  .ann-card.t-orientation{ border-left: 3px solid var(--strawberry); }
-  .ann-card.t-assembly   { border-left: 3px solid var(--blush); }
-  .ann-card.t-sports     { border-left: 3px solid #d87880; }
-  .ann-card.t-other      { border-left: 3px solid var(--border3); }
-
-  .ann-top {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    margin-bottom: 12px;
-  }
-
-  .ann-title {
-    font-size: 15px;
-    font-weight: 700;
-    color: var(--text);
-    line-height: 1.3;
-  }
-
-  .ann-type-badge {
-    padding: 2px 9px;
-    border-radius: 30px;
-    font-size: 9.5px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    margin-top: 4px;
-    display: inline-block;
-  }
-
-  .tb-seminar    { background: rgba(159,170,116,0.15); color: var(--matcha-light); }
-  .tb-orientation{ background: rgba(216,103,143,0.15); color: var(--strawberry-light); }
-  .tb-assembly   { background: rgba(244,199,208,0.13); color: var(--blush); }
-  .tb-sports     { background: rgba(180,50,70,0.13); color: #d87880; }
-  .tb-other      { background: var(--glass2); color: var(--text3); }
-
-  .ann-del-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 15px;
-    color: var(--text4);
-    transition: color 0.12s;
-    padding: 3px 5px;
-    flex-shrink: 0;
-  }
-  .ann-del-btn:hover { color: #d87880; }
-
-  .ann-details { display: flex; flex-direction: column; gap: 6px; }
-
-  .ann-row {
-    display: flex;
-    align-items: center;
-    gap: 9px;
-    font-size: 12.5px;
-    color: var(--text2);
-  }
-
-  .ann-row i {
-    font-size: 14px;
-    color: var(--text3);
-    width: 15px;
-    text-align: center;
-    flex-shrink: 0;
-  }
-
-  .ann-audience {
-    margin-top: 10px;
-    padding-top: 10px;
-    border-top: 1px solid var(--border);
-  }
-
-  .ann-aud-label {
-    font-size: 9px;
-    font-weight: 700;
-    color: var(--text3);
-    text-transform: uppercase;
-    letter-spacing: 1.2px;
-    margin-bottom: 6px;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-  }
-
-  .ann-aud-label i { font-size: 12px; color: var(--strawberry); }
-
-  .aud-tags { display: flex; flex-wrap: wrap; gap: 5px; }
-
-  .aud-tag {
-    padding: 3px 9px;
-    border-radius: 30px;
-    font-size: 10px;
-    font-weight: 600;
-    background: rgba(216,103,143,0.12);
-    color: var(--strawberry-light);
-    border: 1px solid rgba(216,103,143,0.22);
-  }
-
-  .aud-tag.all {
-    background: rgba(159,170,116,0.12);
-    color: var(--matcha-light);
-    border-color: rgba(159,170,116,0.22);
-  }
-
-  .ann-notes {
-    font-size: 12px;
-    color: var(--text2);
-    line-height: 1.55;
-    margin-top: 10px;
-    padding-top: 10px;
-    border-top: 1px solid var(--border);
-  }
-
-  .ann-footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: 12px;
-    padding-top: 10px;
-    border-top: 1px solid var(--border);
-  }
-
-  .ann-timestamp {
-    font-size: 10px;
-    color: var(--text3);
-    font-family: var(--font-mono);
-  }
-
-  .pub-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    padding: 2px 8px;
-    border-radius: 30px;
-    font-size: 9.5px;
-    font-weight: 600;
-    background: rgba(159,170,116,0.12);
-    color: var(--matcha-light);
-    border: 1px solid rgba(159,170,116,0.22);
-  }
-
-  /* Two-col layout for main area */
-  .ann-layout {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 18px;
-    align-items: start;
-  }
-
-  .ann-form-card {
-    background: var(--glass);
-    border: 1px solid var(--border2);
-    border-radius: var(--r-xl);
-    overflow: hidden;
-    position: sticky;
-    top: 0;
-  }
-
-  .ann-form-header {
-    padding: 16px 20px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--text2);
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-  }
-
-  .ann-form-header i { font-size: 15px; color: var(--strawberry); }
-
-  .ann-form-body { padding: 18px 20px; }
-
-  .ann-form-footer {
-    padding: 14px 20px;
-    border-top: 1px solid var(--border);
-    display: flex;
-    gap: 8px;
-  }
-
-  .section-divider {
-    font-size: 9px;
-    font-weight: 700;
-    color: var(--text4);
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    padding: 10px 0 6px;
-    border-top: 1px solid var(--border);
-    margin-top: 6px;
-    display: flex;
-    align-items: center;
-    gap: 7px;
-  }
-
-  .section-divider i { font-size: 12px; color: var(--strawberry); }
-
-  .feed-area-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 14px;
-  }
-
-  .feed-area-title {
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--text3);
-    text-transform: uppercase;
-    letter-spacing: 1.2px;
-    display: flex;
-    align-items: center;
-    gap: 7px;
-  }
-
-  .feed-area-title i { font-size: 14px; color: var(--strawberry); }
-
-  @keyframes feedIn {
-    from { opacity: 0; transform: translateY(-10px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  /* Light mode adjustments */
-  [data-theme="light"] .ann-form-card {
-    background: rgba(255,255,255,0.72);
-  }
-
-  [data-theme="light"] .audience-box {
-    background: rgba(255,255,255,0.55);
-  }
-
-  [data-theme="light"] .ann-card {
-    background: rgba(255,255,255,0.72);
-  }
-
-  @media (max-width: 900px) {
-    .ann-layout {
-      grid-template-columns: 1fr;
-    }
-    .ann-form-card {
-      position: static;
-    }
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TOKI — Announcements</title>
+  <link rel="stylesheet" href="toki.css" />
 </head>
 <body>
 <div class="app-layout">
 
-  <!-- ═══ SIDEBAR ═══ -->
   <aside class="sidebar">
     <div class="sidebar-logo">
-      <div class="logo-icon"><img src="icon.png" alt="Logo" /></div>
+      <div class="logo-icon"><img src="icon.png" alt="TOKI Logo" /></div>
       <div>
         <div class="logo-text"><span class="logo-accent">TOKI</span></div>
         <div class="logo-sub">Timing is Everything</div>
@@ -376,47 +24,30 @@
       <div class="user-name" id="sb-name">—</div>
       <div class="user-id" id="sb-dept">—</div>
     </div>
-    <nav class="sidebar-nav">
+    <nav class="sidebar-nav" aria-label="Organizer navigation">
       <div class="nav-section-label">Main</div>
-      <a class="nav-item" href="oDashboard.html">
-        <span class="nav-icon"><i class="ti ti-layout-dashboard"></i></span> Dashboard
-      </a>
-      <a class="nav-item" href="oManageEvent.html">
-        <span class="nav-icon"><i class="ti ti-calendar-event"></i></span> Manage Event
-      </a>
-      <a class="nav-item" href="oCheckIn.html">
-        <span class="nav-icon"><i class="ti ti-door-enter"></i></span> Check-in
-      </a>
-      <a class="nav-item" href="oCheckOut.html">
-        <span class="nav-icon"><i class="ti ti-door-exit"></i></span> Check-out
-      </a>
+      <a class="nav-item" href="oDashboard.html"><span class="nav-icon"><i class="ti ti-layout-dashboard"></i></span> Dashboard</a>
+      <a class="nav-item" href="oManageEvent.html"><span class="nav-icon"><i class="ti ti-calendar-event"></i></span> Manage Event</a>
+      <a class="nav-item" href="oCheckIn.html"><span class="nav-icon"><i class="ti ti-door-enter"></i></span> Check-in</a>
+      <a class="nav-item" href="oCheckOut.html"><span class="nav-icon"><i class="ti ti-door-exit"></i></span> Check-out</a>
       <div class="nav-section-label">Records</div>
-      <a class="nav-item" href="oAttendanceList.html">
-        <span class="nav-icon"><i class="ti ti-clipboard-list"></i></span> Attendance List
-      </a>
-      <a class="nav-item" href="oManualEntry.html">
-        <span class="nav-icon"><i class="ti ti-edit"></i></span> Manual Entry
-      </a>
+      <a class="nav-item" href="oAttendanceList.html"><span class="nav-icon"><i class="ti ti-clipboard-list"></i></span> Attendance List</a>
+      <a class="nav-item" href="oManualEntry.html"><span class="nav-icon"><i class="ti ti-edit"></i></span> Manual Entry</a>
       <div class="nav-section-label">Communication</div>
-      <a class="nav-item active" href="oAnnouncements.html">
-        <span class="nav-icon"><i class="ti ti-speakerphone"></i></span> Announcements
-      </a>
+      <a class="nav-item active" href="oAnnouncements.html"><span class="nav-icon"><i class="ti ti-speakerphone"></i></span> Announcements</a>
     </nav>
     <div class="sidebar-bottom">
-      <button class="theme-toggle" onclick="TOKI.toggleTheme()">
+      <button class="theme-toggle" onclick="TOKI.toggleTheme()" aria-label="Toggle theme">
         <span style="display:flex;align-items:center;gap:8px;">
           <i class="ti" id="theme-icon"></i>
           <span id="theme-label">Light Mode</span>
         </span>
         <div class="toggle-switch"></div>
       </button>
-      <button class="logout-btn" onclick="TOKI.logout()">
-        <i class="ti ti-logout"></i> Sign Out
-      </button>
+      <button class="logout-btn" onclick="TOKI.logout()"><i class="ti ti-logout"></i> Sign Out</button>
     </div>
   </aside>
 
-  <!-- ═══ MAIN ═══ -->
   <div class="main-content">
     <div class="top-bar">
       <div>
@@ -429,189 +60,170 @@
     </div>
 
     <div class="content-scroll">
-      <div class="page active">
 
-        <div class="ann-layout">
+      <div class="oAnnouncements-layout">
 
-          <!-- ── LEFT: Form ── -->
-          <div class="ann-form-card">
-            <div class="ann-form-header">
-              <i class="ti ti-calendar-plus"></i> New announcement
-            </div>
-            <div class="ann-form-body">
-
-              <!-- Title -->
-              <div class="form-group">
-                <label class="form-label">Event title</label>
-                <input class="form-input" id="f-title" type="text" placeholder="e.g. PLP Foundation Day 2025">
-              </div>
-
-              <!-- Type -->
-              <div class="form-group">
-                <label class="form-label">Event type</label>
-                <div class="type-row" id="type-row">
-                  <span class="pill p-matcha sel" data-type="seminar"     onclick="selType(this)">Seminar</span>
-                  <span class="pill p-pink"       data-type="orientation" onclick="selType(this)">Orientation</span>
-                  <span class="pill p-blush"      data-type="assembly"    onclick="selType(this)">Assembly</span>
-                  <span class="pill p-red"        data-type="sports"      onclick="selType(this)">Sports</span>
-                  <span class="pill p-gray"       data-type="other"       onclick="selType(this)">Other</span>
-                </div>
-              </div>
-
-              <!-- Venue -->
-              <div class="form-group">
-                <label class="form-label">Venue / Location</label>
-                <input class="form-input" id="f-venue" type="text" placeholder="e.g. Function Hall, PLP Main Campus">
-              </div>
-
-              <!-- Date + Time -->
-              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-                <div class="form-group">
-                  <label class="form-label">Date</label>
-                  <input class="form-input" id="f-date" type="date">
-                </div>
-                <div class="form-group">
-                  <label class="form-label">Time</label>
-                  <input class="form-input" id="f-time" type="time">
-                </div>
-              </div>
-
-              <!-- Count + Attire -->
-              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-                <div class="form-group">
-                  <label class="form-label">Expected attendees</label>
-                  <input class="form-input" id="f-count" type="number" placeholder="e.g. 200" min="1">
-                </div>
-                <div class="form-group">
-                  <label class="form-label">Dress code</label>
-                  <input class="form-input" id="f-attire" type="text" placeholder="e.g. Smart Casual">
-                </div>
-              </div>
-
-              <!-- Audience divider -->
-              <div class="section-divider">
-                <i class="ti ti-target"></i> Target audience
-              </div>
-
-              <!-- Courses -->
-              <div class="audience-box">
-                <div class="aud-box-header">
-                  <span class="aud-box-label"><i class="ti ti-school"></i> Courses</span>
-                  <label class="all-toggle">
-                    <input type="checkbox" id="all-courses" onchange="toggleGroup('all-courses','course-row')">
-                    All courses
-                  </label>
-                </div>
-                <div class="pill-row" id="course-row">
-                  <span class="pill p-pink"   data-val="BSIT"   onclick="multiSel(this)">BSIT</span>
-                  <span class="pill p-matcha" data-val="BSN"    onclick="multiSel(this)">BSN</span>
-                  <span class="pill p-blush"  data-val="BSBA"   onclick="multiSel(this)">BSBA</span>
-                  <span class="pill p-red"    data-val="BSED"   onclick="multiSel(this)">BSED</span>
-                  <span class="pill p-plum"   data-val="BSCRIM" onclick="multiSel(this)">BSCRIM</span>
-                  <span class="pill p-gray"   data-val="BSME"   onclick="multiSel(this)">BSME</span>
-                  <span class="pill p-gray"   data-val="BSPSYCH" onclick="multiSel(this)">BSPSYCH</span>
-                </div>
-              </div>
-
-              <!-- Year Level -->
-              <div class="audience-box">
-                <div class="aud-box-header">
-                  <span class="aud-box-label"><i class="ti ti-layers-difference"></i> Year level</span>
-                  <label class="all-toggle">
-                    <input type="checkbox" id="all-years" onchange="toggleGroup('all-years','year-row')">
-                    All years
-                  </label>
-                </div>
-                <div class="pill-row" id="year-row">
-                  <span class="pill p-pink"   data-val="1st Year" onclick="multiSel(this)">1st Year</span>
-                  <span class="pill p-matcha" data-val="2nd Year" onclick="multiSel(this)">2nd Year</span>
-                  <span class="pill p-blush"  data-val="3rd Year" onclick="multiSel(this)">3rd Year</span>
-                  <span class="pill p-red"    data-val="4th Year" onclick="multiSel(this)">4th Year</span>
-                </div>
-              </div>
-
-              <!-- Section -->
-              <div class="audience-box">
-                <div class="aud-box-header">
-                  <span class="aud-box-label"><i class="ti ti-layout-grid"></i> Section</span>
-                  <label class="all-toggle">
-                    <input type="checkbox" id="all-sections" onchange="toggleGroup('all-sections','section-row')">
-                    All sections
-                  </label>
-                </div>
-                <div class="pill-row" id="section-row">
-                  <span class="pill p-pink"   data-val="A" onclick="multiSel(this)">A</span>
-                  <span class="pill p-matcha" data-val="B" onclick="multiSel(this)">B</span>
-                  <span class="pill p-blush"  data-val="C" onclick="multiSel(this)">C</span>
-                  <span class="pill p-red"    data-val="D" onclick="multiSel(this)">D</span>
-                  <span class="pill p-plum"   data-val="E" onclick="multiSel(this)">E</span>
-                  <span class="pill p-gray"   data-val="F" onclick="multiSel(this)">F</span>
-                </div>
-              </div>
-
-              <!-- Notes -->
-              <div class="form-group">
-                <label class="form-label">Additional notes</label>
-                <textarea class="form-input" id="f-notes" rows="3"
-                  placeholder="Reminders, instructions, or special announcements…"
-                  style="resize:none;line-height:1.55;"></textarea>
-              </div>
-
-            </div>
-            <div class="ann-form-footer">
-              <button class="btn btn-ghost" onclick="clearForm()">
-                <i class="ti ti-refresh"></i> Clear
-              </button>
-              <button class="btn btn-primary" style="flex:1;" onclick="postAnnouncement()">
-                <i class="ti ti-speakerphone"></i> Post Announcement
-              </button>
-            </div>
+        <!-- ══ FORM ══ -->
+        <div class="oAnnouncements-form-card">
+          <div class="oAnnouncements-form-header">
+            <i class="ti ti-calendar-plus"></i>
+            New Announcement
           </div>
 
-          <!-- ── RIGHT: Feed ── -->
-          <div>
-            <div class="feed-area-header">
-              <div class="feed-area-title">
-                <i class="ti ti-layout-list"></i> Posted announcements
-              </div>
-              <span class="badge badge-gray" id="ann-count">0 posts</span>
+          <div class="oAnnouncements-form-body">
+
+            <div class="form-group">
+              <label class="form-label" for="f-title">Event Title</label>
+              <input class="form-input" id="f-title" type="text" placeholder="e.g. PLP Foundation Day 2025" />
             </div>
-            <div id="ann-feed">
-              <div class="empty-state">
-                <div class="icon"><i class="ti ti-speakerphone"></i></div>
-                <p>No announcements yet. Fill the form and post one.</p>
+
+            <div class="form-group">
+              <label class="form-label">Event Type</label>
+              <div class="oAnnouncements-type-row" id="type-row">
+                <span class="oAnnouncements-pill sel" data-type="seminar" onclick="selType(this)">Seminar</span>
+                <span class="oAnnouncements-pill" data-type="orientation" onclick="selType(this)">Orientation</span>
+                <span class="oAnnouncements-pill" data-type="assembly" onclick="selType(this)">Assembly</span>
+                <span class="oAnnouncements-pill" data-type="sports" onclick="selType(this)">Sports</span>
+                <span class="oAnnouncements-pill" data-type="other" onclick="selType(this)">Other</span>
               </div>
             </div>
+
+            <div class="form-group">
+              <label class="form-label" for="f-venue">Venue / Location</label>
+              <input class="form-input" id="f-venue" type="text" placeholder="e.g. Function Hall, PLP Main Campus" />
+            </div>
+
+            <div class="oAnnouncements-grid2">
+              <div class="form-group">
+                <label class="form-label" for="f-date">Date</label>
+                <input class="form-input" id="f-date" type="date" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="f-time">Time</label>
+                <input class="form-input" id="f-time" type="time" />
+              </div>
+            </div>
+
+            <div class="oAnnouncements-grid2">
+              <div class="form-group">
+                <label class="form-label" for="f-count">Expected Attendees</label>
+                <input class="form-input" id="f-count" type="number" min="1" placeholder="e.g. 200" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="f-attire">Dress Code</label>
+                <input class="form-input" id="f-attire" type="text" placeholder="e.g. Smart Casual" />
+              </div>
+            </div>
+
+            <div class="oAnnouncements-divider">
+              <i class="ti ti-target"></i> Target Audience
+            </div>
+
+            <div class="oAnnouncements-audience-box">
+              <div class="oAnnouncements-audience-header">
+                <span class="oAnnouncements-audience-label"><i class="ti ti-school"></i> Courses</span>
+                <label class="oAnnouncements-toggle">
+                  <input type="checkbox" id="all-courses" onchange="toggleGroup('all-courses','course-row')">
+                  All Courses
+                </label>
+              </div>
+              <div class="oAnnouncements-pill-row" id="course-row">
+                <span class="oAnnouncements-pill" data-val="BSIT" onclick="multiSel(this)">BSIT</span>
+                <span class="oAnnouncements-pill" data-val="BSN" onclick="multiSel(this)">BSN</span>
+                <span class="oAnnouncements-pill" data-val="BSBA" onclick="multiSel(this)">BSBA</span>
+                <span class="oAnnouncements-pill" data-val="BSED" onclick="multiSel(this)">BSED</span>
+                <span class="oAnnouncements-pill" data-val="BSCRIM" onclick="multiSel(this)">BSCRIM</span>
+                <span class="oAnnouncements-pill" data-val="BSME" onclick="multiSel(this)">BSME</span>
+                <span class="oAnnouncements-pill" data-val="BSPSYCH" onclick="multiSel(this)">BSPSYCH</span>
+              </div>
+            </div>
+
+            <div class="oAnnouncements-audience-box">
+              <div class="oAnnouncements-audience-header">
+                <span class="oAnnouncements-audience-label"><i class="ti ti-layers-difference"></i> Year Level</span>
+                <label class="oAnnouncements-toggle">
+                  <input type="checkbox" id="all-years" onchange="toggleGroup('all-years','year-row')">
+                  All Years
+                </label>
+              </div>
+              <div class="oAnnouncements-pill-row" id="year-row">
+                <span class="oAnnouncements-pill" data-val="1st Year" onclick="multiSel(this)">1st Year</span>
+                <span class="oAnnouncements-pill" data-val="2nd Year" onclick="multiSel(this)">2nd Year</span>
+                <span class="oAnnouncements-pill" data-val="3rd Year" onclick="multiSel(this)">3rd Year</span>
+                <span class="oAnnouncements-pill" data-val="4th Year" onclick="multiSel(this)">4th Year</span>
+              </div>
+            </div>
+
+            <div class="oAnnouncements-audience-box">
+              <div class="oAnnouncements-audience-header">
+                <span class="oAnnouncements-audience-label"><i class="ti ti-layout-grid"></i> Section</span>
+                <label class="oAnnouncements-toggle">
+                  <input type="checkbox" id="all-sections" onchange="toggleGroup('all-sections','section-row')">
+                  All Sections
+                </label>
+              </div>
+              <div class="oAnnouncements-pill-row" id="section-row">
+                <span class="oAnnouncements-pill" data-val="A" onclick="multiSel(this)">A</span>
+                <span class="oAnnouncements-pill" data-val="B" onclick="multiSel(this)">B</span>
+                <span class="oAnnouncements-pill" data-val="C" onclick="multiSel(this)">C</span>
+                <span class="oAnnouncements-pill" data-val="D" onclick="multiSel(this)">D</span>
+                <span class="oAnnouncements-pill" data-val="E" onclick="multiSel(this)">E</span>
+                <span class="oAnnouncements-pill" data-val="F" onclick="multiSel(this)">F</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="f-notes">Additional Notes</label>
+              <textarea class="form-input" id="f-notes" rows="3"
+                placeholder="Reminders, instructions, or special announcements…"></textarea>
+            </div>
+
           </div>
 
+          <div class="oAnnouncements-form-footer">
+            <button class="btn btn-ghost" onclick="clearForm()">
+              <i class="ti ti-refresh"></i> Clear
+            </button>
+            <button class="btn btn-primary" style="flex:1;" onclick="postAnnouncement()">
+              <i class="ti ti-speakerphone"></i> Post Announcement
+            </button>
+          </div>
+        </div>
+
+        <!-- ══ FEED ══ -->
+        <div>
+          <div class="oAnnouncements-feed-header">
+            <div class="oAnnouncements-feed-title">
+              <i class="ti ti-layout-list"></i>
+              Posted Announcements
+            </div>
+            <span class="badge badge-gray" id="ann-count">0 posts</span>
+          </div>
+          <div id="ann-feed">
+            <div class="empty-state">
+              <div class="icon"><i class="ti ti-speakerphone"></i></div>
+              <p>No announcements yet. Fill the form and post one.</p>
+            </div>
+          </div>
         </div>
 
       </div>
+
     </div>
   </div>
 
-  <!-- ═══ MOBILE BOTTOM NAV ═══ -->
-  <nav class="bottom-nav">
-    <a class="bottom-nav-item" href="oDashboard.html">
-      <span class="bn-icon"><i class="ti ti-layout-dashboard"></i></span><span>Home</span>
-    </a>
-    <a class="bottom-nav-item" href="oManageEvent.html">
-      <span class="bn-icon"><i class="ti ti-calendar-event"></i></span><span>Event</span>
-    </a>
-    <a class="bottom-nav-item" href="oCheckIn.html">
-      <span class="bn-icon"><i class="ti ti-door-enter"></i></span><span>Check-in</span>
-    </a>
-    <a class="bottom-nav-item" href="oCheckOut.html">
-      <span class="bn-icon"><i class="ti ti-door-exit"></i></span><span>Check-out</span>
-    </a>
-    <a class="bottom-nav-item active" href="oAnnouncements.html">
-      <span class="bn-icon"><i class="ti ti-speakerphone"></i></span><span>Posts</span>
-    </a>
+  <nav class="bottom-nav" aria-label="Mobile navigation">
+    <a class="bottom-nav-item" href="oDashboard.html"><span class="bn-icon"><i class="ti ti-layout-dashboard"></i></span><span>Home</span></a>
+    <a class="bottom-nav-item" href="oManageEvent.html"><span class="bn-icon"><i class="ti ti-calendar-event"></i></span><span>Event</span></a>
+    <a class="bottom-nav-item" href="oCheckIn.html"><span class="bn-icon"><i class="ti ti-door-enter"></i></span><span>Check-in</span></a>
+    <a class="bottom-nav-item" href="oCheckOut.html"><span class="bn-icon"><i class="ti ti-door-exit"></i></span><span>Check-out</span></a>
+    <a class="bottom-nav-item active" href="oAnnouncements.html"><span class="bn-icon"><i class="ti ti-speakerphone"></i></span><span>Posts</span></a>
   </nav>
 
 </div>
 
 <script src="shared-state.js"></script>
+<script src="toki.js"></script>
 <script>
   const user = TOKI.requireOrganizer();
   TOKI.initTheme();
@@ -620,7 +232,6 @@
     document.getElementById('sb-dept').textContent = user.dept;
   }
 
-  /* ── Event badge ── */
   (function() {
     const st = TOKI.load();
     document.getElementById('event-badge').innerHTML = st.event
@@ -628,128 +239,92 @@
       : `<span class="badge badge-gray">No Active Event</span>`;
   })();
 
-  /* ── Type single-select ── */
   function selType(el) {
-    document.querySelectorAll('#type-row .pill').forEach(p => p.classList.remove('sel'));
+    document.querySelectorAll('#type-row .oAnnouncements-pill').forEach(p => p.classList.remove('sel'));
     el.classList.add('sel');
   }
-
-  /* ── Multi-select pills ── */
   function multiSel(el) {
     if (el.classList.contains('disabled')) return;
     el.classList.toggle('sel');
   }
-
-  /* ── All-toggle for a group ── */
   function toggleGroup(checkboxId, rowId) {
     const checked = document.getElementById(checkboxId).checked;
-    document.querySelectorAll('#' + rowId + ' .pill').forEach(p => {
-      if (checked) {
-        p.classList.add('sel', 'disabled');
-      } else {
-        p.classList.remove('sel', 'disabled');
-      }
+    document.querySelectorAll('#' + rowId + ' .oAnnouncements-pill').forEach(p => {
+      if (checked) { p.classList.add('sel', 'disabled'); }
+      else         { p.classList.remove('sel', 'disabled'); }
     });
   }
-
-  /* ── Helpers ── */
   function getType() {
-    const sel = document.querySelector('#type-row .pill.sel');
+    const sel = document.querySelector('#type-row .oAnnouncements-pill.sel');
     return sel ? sel.dataset.type : 'other';
   }
-
   function getSelVals(rowId) {
-    return [...document.querySelectorAll('#' + rowId + ' .pill.sel')].map(p => p.dataset.val);
+    return [...document.querySelectorAll('#' + rowId + ' .oAnnouncements-pill.sel')].map(p => p.dataset.val);
   }
-
   function fmtDate(d) {
     if (!d) return '';
     const [y, m, day] = d.split('-');
-    const months = ['January','February','March','April','May','June',
-                    'July','August','September','October','November','December'];
+    const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
     return months[parseInt(m) - 1] + ' ' + parseInt(day) + ', ' + y;
   }
-
   function fmtTime(t) {
     if (!t) return '';
     const [h, m] = t.split(':').map(Number);
-    const ampm = h >= 12 ? 'PM' : 'AM';
-    const hh = h % 12 || 12;
-    return hh + ':' + String(m).padStart(2, '0') + ' ' + ampm;
+    return (h % 12 || 12) + ':' + String(m).padStart(2, '0') + ' ' + (h >= 12 ? 'PM' : 'AM');
   }
+  function esc(s) { return String(s).replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  function loadAnns() { try { return JSON.parse(localStorage.getItem('toki_announcements') || '[]'); } catch(e) { return []; } }
+  function saveAnns(l) { localStorage.setItem('toki_announcements', JSON.stringify(l)); }
 
-  function esc(s) { return s.replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
-
-  function timeAgo() { return new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}); }
-
-  /* ── Announcements storage ── */
-  function loadAnns() {
-    try { return JSON.parse(localStorage.getItem('toki_announcements') || '[]'); } catch(e) { return []; }
-  }
-
-  function saveAnns(list) {
-    localStorage.setItem('toki_announcements', JSON.stringify(list));
-  }
-
-  /* ── Render feed ── */
   const typeLabels = { seminar:'Seminar', orientation:'Orientation', assembly:'Assembly', sports:'Sports', other:'Other' };
 
   function renderFeed() {
     const list = loadAnns();
-    const feed = document.getElementById('ann-feed');
     document.getElementById('ann-count').textContent = list.length + (list.length === 1 ? ' post' : ' posts');
-
-    if (list.length === 0) {
-      feed.innerHTML = `<div class="empty-state">
-        <div class="icon"><i class="ti ti-speakerphone"></i></div>
-        <p>No announcements yet. Fill the form and post one.</p>
-      </div>`;
+    const feed = document.getElementById('ann-feed');
+    if (!list.length) {
+      feed.innerHTML = `<div class="empty-state"><div class="icon"><i class="ti ti-speakerphone"></i></div><p>No announcements yet. Fill the form and post one.</p></div>`;
       return;
     }
-
     feed.innerHTML = list.slice().reverse().map((ann, revIdx) => {
       const idx = list.length - 1 - revIdx;
       const audTags = [
-        ...(ann.allCourses  ? ['All courses']  : ann.courses),
-        ...(ann.allYears    ? ['All years']    : ann.years),
-        ...(ann.allSections ? ['All sections'] : ann.sections.map(s => 'Section ' + s))
+        ...(ann.allCourses ? ['All Courses'] : ann.courses),
+        ...(ann.allYears ? ['All Years'] : ann.years),
+        ...(ann.allSections ? ['All Sections'] : ann.sections.map(s => 'Section ' + s))
       ];
-      const isAll = s => s === 'All courses' || s === 'All years' || s === 'All sections';
-
-      return `<div class="ann-card t-${ann.type}">
-        <div class="ann-top">
-          <div>
-            <div class="ann-title">${esc(ann.title)}</div>
-            <span class="ann-type-badge tb-${ann.type}">${typeLabels[ann.type] || 'Other'}</span>
+      return `
+        <div class="oAnnouncements-card">
+          <div class="oAnnouncements-top">
+            <div>
+              <div class="oAnnouncements-title">${esc(ann.title)}</div>
+              <span class="oAnnouncements-type-badge">${typeLabels[ann.type] || 'Other'}</span>
+            </div>
+            <button class="oAnnouncements-delete-btn" onclick="deleteAnn(${idx})" aria-label="Delete announcement">
+              <i class="ti ti-trash"></i>
+            </button>
           </div>
-          <button class="ann-del-btn" onclick="deleteAnn(${idx})" aria-label="Delete">
-            <i class="ti ti-trash"></i>
-          </button>
-        </div>
-        <div class="ann-details">
-          <div class="ann-row"><i class="ti ti-map-pin"></i> ${esc(ann.venue)}</div>
-          <div class="ann-row"><i class="ti ti-calendar"></i> ${fmtDate(ann.date)}</div>
-          <div class="ann-row"><i class="ti ti-clock"></i> ${fmtTime(ann.time)}</div>
-          ${ann.count  ? `<div class="ann-row"><i class="ti ti-users"></i> ${esc(ann.count)} expected attendees</div>` : ''}
-          ${ann.attire ? `<div class="ann-row"><i class="ti ti-shirt"></i> ${esc(ann.attire)}</div>` : ''}
-        </div>
-        ${audTags.length ? `
-        <div class="ann-audience">
-          <div class="ann-aud-label"><i class="ti ti-target"></i> Target audience</div>
-          <div class="aud-tags">
-            ${audTags.map(t => `<span class="aud-tag${isAll(t) ? ' all' : ''}">${t}</span>`).join('')}
+          <div class="oAnnouncements-details">
+            <div class="oAnnouncements-row"><i class="ti ti-map-pin"></i>${esc(ann.venue)}</div>
+            <div class="oAnnouncements-row"><i class="ti ti-calendar"></i>${fmtDate(ann.date)}</div>
+            <div class="oAnnouncements-row"><i class="ti ti-clock"></i>${fmtTime(ann.time)}</div>
+            ${ann.count ? `<div class="oAnnouncements-row"><i class="ti ti-users"></i>${esc(ann.count)} expected attendees</div>` : ''}
+            ${ann.attire ? `<div class="oAnnouncements-row"><i class="ti ti-shirt"></i>${esc(ann.attire)}</div>` : ''}
           </div>
-        </div>` : ''}
-        ${ann.notes ? `<div class="ann-notes">${esc(ann.notes)}</div>` : ''}
-        <div class="ann-footer">
-          <span class="ann-timestamp">${ann.postedAt}</span>
-          <span class="pub-chip"><i class="ti ti-circle-check"></i> Published</span>
-        </div>
-      </div>`;
+          ${audTags.length ? `
+            <div class="oAnnouncements-audience">
+              <div class="oAnnouncements-audience-mini-label"><i class="ti ti-target"></i> Target Audience</div>
+              <div class="oAnnouncements-tags">${audTags.map(t => `<span class="oAnnouncements-tag">${t}</span>`).join('')}</div>
+            </div>` : ''}
+          ${ann.notes ? `<div class="oAnnouncements-notes">${esc(ann.notes)}</div>` : ''}
+          <div class="oAnnouncements-footer">
+            <span class="oAnnouncements-timestamp">${ann.postedAt}</span>
+            <span class="oAnnouncements-published"><i class="ti ti-circle-check"></i> Published</span>
+          </div>
+        </div>`;
     }).join('');
   }
 
-  /* ── Post ── */
   function postAnnouncement() {
     const title = document.getElementById('f-title').value.trim();
     const venue = document.getElementById('f-venue').value.trim();
@@ -757,31 +332,24 @@
     const time  = document.getElementById('f-time').value;
 
     if (!title || !venue || !date || !time) {
-      alert('Please fill in Event title, Venue, Date, and Time.');
+      showToast('Please fill in Title, Venue, Date, and Time.', 'error');
+      if (!title) document.getElementById('f-title').classList.add('error');
+      if (!venue) document.getElementById('f-venue').classList.add('error');
       return;
     }
 
-    const allCourses  = document.getElementById('all-courses').checked;
-    const allYears    = document.getElementById('all-years').checked;
-    const allSections = document.getElementById('all-sections').checked;
-
     const ann = {
-      id:          Date.now(),
-      title,
-      type:        getType(),
-      venue,
-      date,
-      time,
-      count:       document.getElementById('f-count').value.trim(),
-      attire:      document.getElementById('f-attire').value.trim(),
-      notes:       document.getElementById('f-notes').value.trim(),
-      allCourses,
-      allYears,
-      allSections,
-      courses:     allCourses  ? [] : getSelVals('course-row'),
-      years:       allYears    ? [] : getSelVals('year-row'),
-      sections:    allSections ? [] : getSelVals('section-row'),
-      postedAt:    timeAgo(),
+      id: Date.now(), title, type: getType(), venue, date, time,
+      count: document.getElementById('f-count').value.trim(),
+      attire: document.getElementById('f-attire').value.trim(),
+      notes: document.getElementById('f-notes').value.trim(),
+      allCourses: document.getElementById('all-courses').checked,
+      allYears: document.getElementById('all-years').checked,
+      allSections: document.getElementById('all-sections').checked,
+      courses: document.getElementById('all-courses').checked ? [] : getSelVals('course-row'),
+      years: document.getElementById('all-years').checked ? [] : getSelVals('year-row'),
+      sections: document.getElementById('all-sections').checked ? [] : getSelVals('section-row'),
+      postedAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
     };
 
     const list = loadAnns();
@@ -789,26 +357,27 @@
     saveAnns(list);
     renderFeed();
     clearForm();
+    showToast('Announcement posted!', 'success');
   }
 
-  /* ── Delete ── */
   function deleteAnn(idx) {
     const list = loadAnns();
     list.splice(idx, 1);
     saveAnns(list);
     renderFeed();
+    showToast('Announcement deleted.', 'info');
   }
 
-  /* ── Clear form ── */
   function clearForm() {
-    ['f-title','f-venue','f-date','f-time','f-count','f-attire','f-notes']
-      .forEach(id => document.getElementById(id).value = '');
-    ['all-courses','all-years','all-sections']
-      .forEach(id => { document.getElementById(id).checked = false; });
-    document.querySelectorAll('.pill').forEach(p => {
-      p.classList.remove('sel', 'disabled');
+    ['f-title','f-venue','f-date','f-time','f-count','f-attire','f-notes'].forEach(id => {
+      document.getElementById(id).value = '';
+      document.getElementById(id).classList.remove('error');
     });
-    document.querySelector('#type-row .pill').classList.add('sel');
+    ['all-courses','all-years','all-sections'].forEach(id => {
+      document.getElementById(id).checked = false;
+    });
+    document.querySelectorAll('.oAnnouncements-pill').forEach(p => p.classList.remove('sel','disabled'));
+    document.querySelector('#type-row .oAnnouncements-pill').classList.add('sel');
   }
 
   renderFeed();

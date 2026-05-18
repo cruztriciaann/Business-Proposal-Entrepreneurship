@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TOKI — Class Attendance</title>
+  <link rel="stylesheet" href="toki.css" />
+  <style>
+    .sAttendanceList-you {
+      background: rgba(216,103,143,0.06) !important;
+      border-left: 3px solid var(--strawberry);
+    }
+    .sAttendanceList-you td:first-child {
+      color: var(--strawberry);
+    }
+    .sAttendanceList-filter-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .sAttendanceList-summary {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+    .sAttendanceList-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      background: var(--glass);
+      border: 1px solid var(--border2);
+      color: var(--text2);
+    }
+    .sAttendanceList-chip.rose   { background: rgba(216,103,143,0.10); border-color: rgba(216,103,143,0.25); color: var(--strawberry); }
+    .sAttendanceList-chip.green  { background: var(--success-bg); border-color: rgba(110,200,138,0.25); color: var(--success); }
+    .sAttendanceList-chip.amber  { background: var(--warning-bg); border-color: rgba(232,200,106,0.25); color: var(--warning); }
+  </style>
+</head>
+<body>
+<div class="app-layout">
+
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon"><img src="icon.png" alt="TOKI Logo" /></div>
+      <div>
+        <div class="logo-text"><span class="logo-accent">TOKI</span></div>
+        <div class="logo-sub">Timing is Everything</div>
+      </div>
+    </div>
+    <div class="sidebar-role">
+      <span class="role-pill student"><i class="ti ti-school"></i> Student</span>
+    </div>
+    <div class="sidebar-user">
+      <div class="user-name" id="sb-name">—</div>
+      <div class="user-id" id="sb-id">—</div>
+      <div class="user-id" id="sb-course">—</div>
+    </div>
+    <nav class="sidebar-nav" aria-label="Student navigation">
+      <div class="nav-section-label">Attendance</div>
+      <a class="nav-item" href="sDashboard.html"><span class="nav-icon"><i class="ti ti-layout-dashboard"></i></span> Dashboard</a>
+      <a class="nav-item" href="sCheckIn.html"><span class="nav-icon"><i class="ti ti-circle-check"></i></span> Check-in</a>
+      <a class="nav-item" href="sCheckOut.html"><span class="nav-icon"><i class="ti ti-door-exit"></i></span> Check-out</a>
+      <div class="nav-section-label">Records</div>
+      <a class="nav-item" href="sMyHistory.html"><span class="nav-icon"><i class="ti ti-clipboard-list"></i></span> My History</a>
+      <a class="nav-item active" href="sAttendanceList.html"><span class="nav-icon"><i class="ti ti-users"></i></span> Class Attendance</a>
+      <div class="nav-section-label">Event</div>
+      <a class="nav-item" href="sEvent.html"><span class="nav-icon"><i class="ti ti-calendar-event"></i></span> Event Info</a>
+      <a class="nav-item" href="sAnnouncements.html"><span class="nav-icon"><i class="ti ti-speakerphone"></i></span> Announcements</a>
+      <div class="nav-section-label">Help</div>
+      <a class="nav-item" href="sHowItWorks.html"><span class="nav-icon"><i class="ti ti-help-circle"></i></span> How It Works</a>
+    </nav>
+    <div class="sidebar-bottom">
+      <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+        <span style="display:flex;align-items:center;gap:8px;">
+          <i class="ti" id="theme-icon"></i>
+          <span id="theme-label">Light Mode</span>
+        </span>
+        <div class="toggle-switch"></div>
+      </button>
+      <button class="logout-btn" onclick="logout()"><i class="ti ti-logout"></i> Sign Out</button>
+    </div>
+  </aside>
+
+  <div class="main-content">
+    <div class="top-bar">
+      <div>
+        <div class="page-title">Class Attendance</div>
+        <div class="page-sub">See who's checked in for this event</div>
+      </div>
+      <div class="top-bar-right">
+        <div id="event-badge"></div>
+      </div>
+    </div>
+
+    <div class="content-scroll">
+
+      <!-- Summary chips -->
+      <div class="sAttendanceList-summary" id="sal-summary"></div>
+
+      <!-- My row highlight banner -->
+      <div id="sal-my-banner" class="alert alert-info" style="display:none;margin-bottom:16px;">
+        <i class="ti ti-user-check"></i>
+        <span>Your row is <strong style="color:var(--strawberry);">highlighted in pink</strong> for easy reference.</span>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Attendance List</div>
+            <div class="card-sub" id="sal-count">0 students</div>
+          </div>
+          <div class="sAttendanceList-filter-bar">
+            <input
+              type="search"
+              class="form-input"
+              id="sal-search"
+              placeholder="Search name or ID…"
+              oninput="renderTable()"
+              style="width:180px;padding:8px 12px;font-size:12.5px;"
+              aria-label="Search attendance list"
+            />
+            <select class="form-input" id="sal-filter" onchange="renderTable()"
+              style="width:130px;padding:8px 12px;font-size:12.5px;">
+              <option value="all">All</option>
+              <option value="in">Checked In</option>
+              <option value="complete">Complete</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="overflow-x:auto;border-radius:var(--r-md);border:1px solid var(--border);">
+          <table class="toki-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Student No.</th>
+                <th>Name</th>
+                <th>Check-in</th>
+                <th>Check-out</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="sal-tbody"></tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile bottom nav -->
+  <nav class="bottom-nav" aria-label="Mobile navigation">
+    <a class="bottom-nav-item" href="sDashboard.html"><span class="bn-icon"><i class="ti ti-layout-dashboard"></i></span><span>Home</span></a>
+    <a class="bottom-nav-item" href="sCheckIn.html"><span class="bn-icon"><i class="ti ti-circle-check"></i></span><span>Check In</span></a>
+    <a class="bottom-nav-item" href="sEvent.html"><span class="bn-icon"><i class="ti ti-calendar-event"></i></span><span>Event</span></a>
+    <a class="bottom-nav-item active" href="sAttendanceList.html"><span class="bn-icon"><i class="ti ti-users"></i></span><span>Class</span></a>
+    <a class="bottom-nav-item" href="sMyHistory.html"><span class="bn-icon"><i class="ti ti-clipboard-list"></i></span><span>History</span></a>
+  </nav>
+
+</div>
+
+<script src="toki.js"></script>
+<script>
+  const user = JSON.parse(sessionStorage.getItem('ae_user') || 'null');
+  if (!user || user.role !== 'student') window.location.href = 'login.html';
+
+  document.getElementById('sb-name').textContent   = user.name;
+  document.getElementById('sb-id').textContent     = user.id;
+  document.getElementById('sb-course').textContent = user.course;
+
+  function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('toki_theme', theme);
+    const icon  = document.getElementById('theme-icon');
+    const label = document.getElementById('theme-label');
+    if (icon)  icon.className    = theme === 'light' ? 'ti ti-moon' : 'ti ti-sun';
+    if (label) label.textContent = theme === 'light' ? 'Dark Mode'  : 'Light Mode';
+  }
+  function toggleTheme() {
+    const cur = document.documentElement.getAttribute('data-theme') || 'dark';
+    applyTheme(cur === 'dark' ? 'light' : 'dark');
+  }
+  applyTheme(localStorage.getItem('toki_theme') || 'dark');
+
+  function getState() {
+    try { return JSON.parse(localStorage.getItem('ae_state') || 'null'); } catch { return null; }
+  }
+
+  function renderTable() {
+    const s       = getState();
+    const event   = s?.event || null;
+    const q       = (document.getElementById('sal-search').value || '').toLowerCase();
+    const filter  = document.getElementById('sal-filter').value;
+    const list    = s?.attendance || [];
+
+    // Badge
+    document.getElementById('event-badge').innerHTML = event
+      ? `<span class="badge badge-green"><span class="dot pulse"></span>${event.name}</span>`
+      : '<span class="badge badge-gray">No Active Event</span>';
+
+    // Summary chips
+    const total    = list.length;
+    const complete = list.filter(a => a.checkoutTime).length;
+    const inside   = list.filter(a => a.checkinTime && !a.checkoutTime).length;
+    document.getElementById('sal-summary').innerHTML = total === 0 ? '' : `
+      <span class="sAttendanceList-chip rose"><i class="ti ti-users"></i> ${total} Checked In</span>
+      <span class="sAttendanceList-chip green"><i class="ti ti-circle-check"></i> ${complete} Complete</span>
+      <span class="sAttendanceList-chip amber"><i class="ti ti-home"></i> ${inside} Still Inside</span>`;
+
+    // My row banner
+    const myRec = list.find(a => a.sid === user.id);
+    document.getElementById('sal-my-banner').style.display = myRec ? 'flex' : 'none';
+
+    // Filter
+    let filtered = list.filter(a => {
+      const matchQ = a.name.toLowerCase().includes(q) || a.sid.toLowerCase().includes(q);
+      const matchF =
+        filter === 'all'      ? true :
+        filter === 'in'       ? !!a.checkinTime :
+        filter === 'complete' ? !!a.checkoutTime : true;
+      return matchQ && matchF;
+    });
+
+    document.getElementById('sal-count').textContent =
+      `${filtered.length} student${filtered.length !== 1 ? 's' : ''}${q || filter !== 'all' ? ' (filtered)' : ''}`;
+
+    const tbody = document.getElementById('sal-tbody');
+
+    if (!event) {
+      tbody.innerHTML = `<tr><td colspan="6">
+        <div class="empty-state">
+          <div class="icon"><i class="ti ti-calendar-x"></i></div>
+          <p>No active event. Ask your organizer to create one.</p>
+        </div></td></tr>`;
+      return;
+    }
+
+    if (filtered.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="6">
+        <div class="empty-state">
+          <div class="icon"><i class="ti ti-inbox"></i></div>
+          <p>${q || filter !== 'all' ? 'No results matching your search.' : 'No check-ins yet.'}</p>
+        </div></td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = filtered.map((a, i) => {
+      const isMe = a.sid === user.id;
+      return `
+        <tr class="${isMe ? 'sAttendanceList-you' : ''}">
+          <td style="color:var(--text3);font-family:var(--font-mono);font-size:11px;">${i + 1}</td>
+          <td>
+            <span class="text-mono" style="font-size:12px;">${a.sid}</span>
+            ${isMe ? '<span class="badge badge-gray" style="margin-left:6px;font-size:9px;">You</span>' : ''}
+          </td>
+          <td><strong>${a.name}</strong></td>
+          <td><span class="text-mono" style="font-size:12px;">${a.checkinTime || '—'}</span></td>
+          <td><span class="text-mono" style="font-size:12px;">${a.checkoutTime || '—'}</span></td>
+          <td><span class="badge ${a.checkoutTime ? 'badge-green' : 'badge-amber'}">${a.checkoutTime ? 'Complete' : 'Inside'}</span></td>
+        </tr>`;
+    }).join('');
+  }
+
+  function logout() { sessionStorage.removeItem('ae_user'); window.location.href = 'login.html'; }
+
+  renderTable();
+  setInterval(renderTable, 5000);
+</script>
+</body>
+</html>

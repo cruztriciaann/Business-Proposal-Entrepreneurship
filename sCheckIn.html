@@ -1,112 +1,120 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TOKI — Check In</title>
-<link rel="stylesheet" href="shared.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TOKI — Check In</title>
+  <link rel="stylesheet" href="toki.css" />
+  <style>
+    .code-input {
+      text-align: center;
+      font-family: var(--font-mono);
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: 12px;
+      padding: 16px;
+      color: var(--strawberry);
+    }
+    .code-input::placeholder { color: var(--text4); font-size: 28px; letter-spacing: 12px; }
+  </style>
 </head>
 <body>
-
 <div class="app-layout">
 
-  <!-- SIDEBAR -->
   <aside class="sidebar">
     <div class="sidebar-logo">
-      <div class="logo-icon">
-        <i class="ti ti-clock" aria-hidden="true"></i>
-      </div>
+      <div class="logo-icon"><img src="icon.png" alt="TOKI Logo" /></div>
       <div>
         <div class="logo-text"><span class="logo-accent">TOKI</span></div>
         <div class="logo-sub">Timing is Everything</div>
       </div>
     </div>
-
     <div class="sidebar-role">
-      <span class="role-pill student">
-        <i class="ti ti-school" aria-hidden="true"></i> Student
-      </span>
+      <span class="role-pill student"><i class="ti ti-school"></i> Student</span>
     </div>
-
     <div class="sidebar-user">
       <div class="user-name" id="sb-name">—</div>
       <div class="user-id" id="sb-id">—</div>
-      <div class="user-id" id="sb-course" style="margin-top:1px;">—</div>
+      <div class="user-id" id="sb-course">—</div>
     </div>
-
-    <nav class="sidebar-nav">
-      <div class="nav-section-label">Main</div>
-      <a class="nav-item" href="sDashboard.html">
-        <span class="nav-icon"><i class="ti ti-layout-dashboard" aria-hidden="true"></i></span> Dashboard
-      </a>
-      <a class="nav-item active" href="sCheckIn.html">
-        <span class="nav-icon"><i class="ti ti-circle-check" aria-hidden="true"></i></span> Check-in
-      </a>
-      <a class="nav-item" href="sCheckOut.html">
-        <span class="nav-icon"><i class="ti ti-door-exit" aria-hidden="true"></i></span> Check-out
-      </a>
-      <a class="nav-item" href="sMyHistory.html">
-        <span class="nav-icon"><i class="ti ti-clipboard-list" aria-hidden="true"></i></span> My History
-      </a>
-      <div class="nav-section-label">Info</div>
-      <a class="nav-item" href="sHowItWorks.html">
-        <span class="nav-icon"><i class="ti ti-help-circle" aria-hidden="true"></i></span> How It Works
-      </a>
+    <nav class="sidebar-nav" aria-label="Student navigation">
+      <div class="nav-section-label">Attendance</div>
+      <a class="nav-item" href="sDashboard.html"><span class="nav-icon"><i class="ti ti-layout-dashboard"></i></span> Dashboard</a>
+      <a class="nav-item active" href="sCheckIn.html"><span class="nav-icon"><i class="ti ti-circle-check"></i></span> Check-in</a>
+      <a class="nav-item" href="sCheckOut.html"><span class="nav-icon"><i class="ti ti-door-exit"></i></span> Check-out</a>
+      <div class="nav-section-label">Records</div>
+      <a class="nav-item" href="sMyHistory.html"><span class="nav-icon"><i class="ti ti-clipboard-list"></i></span> My History</a>
+      <a class="nav-item" href="sAttendanceList.html"><span class="nav-icon"><i class="ti ti-users"></i></span> Class Attendance</a>
+      <div class="nav-section-label">Event</div>
+      <a class="nav-item" href="sEvent.html"><span class="nav-icon"><i class="ti ti-calendar-event"></i></span> Event Info</a>
+      <a class="nav-item" href="sAnnouncements.html"><span class="nav-icon"><i class="ti ti-speakerphone"></i></span> Announcements</a>
+      <div class="nav-section-label">Help</div>
+      <a class="nav-item" href="sHowItWorks.html"><span class="nav-icon"><i class="ti ti-help-circle"></i></span> How It Works</a>
     </nav>
-
     <div class="sidebar-bottom">
       <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
         <span style="display:flex;align-items:center;gap:8px;">
-          <i class="ti" id="theme-icon" aria-hidden="true"></i>
+          <i class="ti" id="theme-icon"></i>
           <span id="theme-label">Light Mode</span>
         </span>
         <div class="toggle-switch"></div>
       </button>
-      <button class="logout-btn" onclick="logout()">
-        <i class="ti ti-logout" aria-hidden="true"></i> Sign Out
-      </button>
+      <button class="logout-btn" onclick="logout()"><i class="ti ti-logout"></i> Sign Out</button>
     </div>
   </aside>
 
-  <!-- MAIN -->
   <div class="main-content">
-
     <div class="top-bar">
       <div>
         <div class="page-title">Check In</div>
         <div class="page-sub">Enter your check-in code</div>
       </div>
       <div class="top-bar-right">
-        <div id="event-badge" class="badge badge-gray">No Active Event</div>
+        <div id="event-badge"></div>
       </div>
     </div>
 
     <div class="content-scroll">
 
-      <div class="card" style="max-width:460px;">
+      <div id="ci-already" class="alert alert-success" style="display:none;">
+        <i class="ti ti-circle-check"></i>
+        You're already checked in! Check-in time: <strong id="ci-already-time">—</strong>
+      </div>
+
+      <div id="ci-no-event" class="alert alert-warning" style="display:none;">
+        <i class="ti ti-alert-triangle"></i>
+        No active event found. Ask your organizer to create one.
+      </div>
+
+      <div class="card" style="max-width:480px;" id="ci-card">
         <div class="card-header">
           <div>
             <div class="card-title">Check In</div>
-            <div class="card-sub">Enter the code announced by your organizer</div>
+            <div class="card-sub">Enter the 4-digit code announced by your organizer</div>
           </div>
-        </div>
-
-        <div id="ci-already" class="alert alert-success" style="display:none;">
-          <i class="ti ti-circle-check" aria-hidden="true"></i>
-          You are already checked in to this event!
-        </div>
-
-        <div id="ci-no-event" class="alert alert-warning" style="display:none;">
-          <i class="ti ti-alert-triangle" aria-hidden="true"></i>
-          No active event found. Ask your organizer to create one.
+          <div id="ci-window-badge"></div>
         </div>
 
         <div id="ci-form">
-          <div class="form-group">
-            <label class="form-label">4-Digit Check-in Code</label>
-            <input type="text" class="form-input code-input" id="ci-code-input"
-                   placeholder="· · · ·" maxlength="4" inputmode="numeric"
-                   onkeydown="if(event.key==='Enter') doCheckIn()" />
+          <!-- GPS status -->
+          <div class="gps-bar" id="ci-gps-bar">
+            <i class="ti ti-map-pin"></i>
+            <div id="ci-gps-text">Acquiring GPS location…</div>
+          </div>
+
+          <div class="form-group" style="margin-top:16px;">
+            <label class="form-label" for="ci-code-input">4-Digit Check-in Code</label>
+            <input
+              type="text"
+              class="form-input code-input"
+              id="ci-code-input"
+              placeholder="· · · ·"
+              maxlength="4"
+              inputmode="numeric"
+              pattern="[0-9]*"
+              autocomplete="off"
+              onkeydown="if(event.key==='Enter') doCheckIn()"
+            />
             <div style="font-size:11px;color:var(--text3);margin-top:7px;">
               This code is announced verbally by your organizer inside the venue.
             </div>
@@ -114,126 +122,161 @@
 
           <div id="ci-error" class="alert alert-danger" style="display:none;"></div>
 
-          <button class="btn btn-primary btn-full" onclick="doCheckIn()">
-            <i class="ti ti-circle-check" aria-hidden="true"></i> Check In Now
+          <button class="btn btn-primary btn-full" id="ci-btn" onclick="doCheckIn()">
+            <i class="ti ti-circle-check"></i> Check In Now
           </button>
+        </div>
+
+        <div id="ci-success-state" style="display:none;text-align:center;padding:20px 0;">
+          <div style="font-size:48px;color:var(--matcha);margin-bottom:12px;"><i class="ti ti-circle-check"></i></div>
+          <div style="font-size:18px;font-weight:700;color:var(--text);margin-bottom:6px;">Checked In!</div>
+          <div style="font-size:13px;color:var(--text3);">Time recorded: <strong id="ci-success-time">—</strong></div>
+          <a href="sDashboard.html" class="btn btn-ghost" style="margin-top:16px;">
+            <i class="ti ti-layout-dashboard"></i> Go to Dashboard
+          </a>
         </div>
       </div>
 
-    </div><!-- content-scroll -->
-  </div><!-- main-content -->
+    </div>
+  </div>
 
-  <!-- MOBILE BOTTOM NAV -->
-  <nav class="bottom-nav">
-    <a class="bottom-nav-item" href="sDashboard.html">
-      <span class="bn-icon"><i class="ti ti-layout-dashboard" aria-hidden="true"></i></span><span>Home</span>
-    </a>
-    <a class="bottom-nav-item active" href="sCheckIn.html">
-      <span class="bn-icon"><i class="ti ti-circle-check" aria-hidden="true"></i></span><span>Check In</span>
-    </a>
-    <a class="bottom-nav-item" href="sCheckOut.html">
-      <span class="bn-icon"><i class="ti ti-door-exit" aria-hidden="true"></i></span><span>Check Out</span>
-    </a>
-    <a class="bottom-nav-item" href="sMyHistory.html">
-      <span class="bn-icon"><i class="ti ti-clipboard-list" aria-hidden="true"></i></span><span>History</span>
-    </a>
-    <a class="bottom-nav-item" href="sHowItWorks.html">
-      <span class="bn-icon"><i class="ti ti-help-circle" aria-hidden="true"></i></span><span>Help</span>
-    </a>
+  <nav class="bottom-nav" aria-label="Mobile navigation">
+    <a class="bottom-nav-item" href="sDashboard.html"><span class="bn-icon"><i class="ti ti-layout-dashboard"></i></span><span>Home</span></a>
+    <a class="bottom-nav-item active" href="sCheckIn.html"><span class="bn-icon"><i class="ti ti-circle-check"></i></span><span>Check In</span></a>
+    <a class="bottom-nav-item" href="sEvent.html"><span class="bn-icon"><i class="ti ti-calendar-event"></i></span><span>Event</span></a>
+    <a class="bottom-nav-item" href="sAnnouncements.html"><span class="bn-icon"><i class="ti ti-speakerphone"></i></span><span>Posts</span></a>
+    <a class="bottom-nav-item" href="sMyHistory.html"><span class="bn-icon"><i class="ti ti-clipboard-list"></i></span><span>History</span></a>
   </nav>
 
 </div>
 
+<script src="toki.js"></script>
 <script>
-const user = JSON.parse(sessionStorage.getItem('ae_user') || 'null');
-if (!user || user.role !== 'student') window.location.href = 'login.html';
+  const user = JSON.parse(sessionStorage.getItem('ae_user') || 'null');
+  if (!user || user.role !== 'student') window.location.href = 'login.html';
 
-document.getElementById('sb-name').textContent   = user.name;
-document.getElementById('sb-id').textContent     = user.id;
-document.getElementById('sb-course').textContent = user.course;
+  document.getElementById('sb-name').textContent   = user.name;
+  document.getElementById('sb-id').textContent     = user.id;
+  document.getElementById('sb-course').textContent = user.course;
 
-/* ── Theme ── */
-function applyTheme(theme) {
-  document.documentElement.setAttribute('data-theme', theme);
-  localStorage.setItem('toki_theme', theme);
-  const icon  = document.getElementById('theme-icon');
-  const label = document.getElementById('theme-label');
-  if (icon)  icon.className  = theme === 'light' ? 'ti ti-moon' : 'ti ti-sun';
-  if (label) label.textContent = theme === 'light' ? 'Dark Mode' : 'Light Mode';
-}
-function toggleTheme() {
-  const cur = document.documentElement.getAttribute('data-theme') || 'dark';
-  applyTheme(cur === 'dark' ? 'light' : 'dark');
-}
-applyTheme(localStorage.getItem('toki_theme') || 'dark');
-
-let userLat = null, userLng = null, gpsReady = false;
-
-function initGPS() {
-  if (!navigator.geolocation) return;
-  navigator.geolocation.getCurrentPosition(pos => {
-    userLat = pos.coords.latitude; userLng = pos.coords.longitude; gpsReady = true;
-  }, () => { gpsReady = false; }, { enableHighAccuracy: false, timeout: 8000 });
-}
-
-function getDist(lat1, lng1, lat2, lng2) {
-  const R = 6371000, dLat = (lat2-lat1)*Math.PI/180, dLng = (lng2-lng1)*Math.PI/180;
-  const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)**2;
-  return R*2*Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-}
-
-function getState() {
-  const d = localStorage.getItem('ae_state'); return d ? JSON.parse(d) : null;
-}
-function saveState(s) { localStorage.setItem('ae_state', JSON.stringify(s)); }
-function getMyRecord(s) { return (s.attendance || []).find(a => a.sid === user.id) || null; }
-
-function refreshUI() {
-  const s = getState();
-  const event = s?.event || null;
-  const myRecord = s ? getMyRecord(s) : null;
-
-  document.getElementById('event-badge').innerHTML = event
-    ? `<span class="badge badge-green"><span class="dot pulse"></span>${event.name}</span>`
-    : '<span class="badge badge-gray">No Active Event</span>';
-
-  document.getElementById('ci-already').style.display   = myRecord?.checkinTime ? 'block' : 'none';
-  document.getElementById('ci-no-event').style.display  = (!myRecord?.checkinTime && !event) ? 'block' : 'none';
-  document.getElementById('ci-form').style.display      = (!myRecord?.checkinTime && !!event) ? 'block' : 'none';
-}
-
-function doCheckIn() {
-  const code = document.getElementById('ci-code-input').value.trim();
-  hideMsg('ci-error');
-  if (!code || code.length !== 4) return showMsg('ci-error', 'Please enter the 4-digit code.');
-  const s = getState();
-  if (!s || !s.event)         return showMsg('ci-error', 'No active event found. Ask your organizer to create one.');
-  if (!s.checkinOpen)         return showMsg('ci-error', 'Check-in is not open yet. Wait for your organizer to open it.');
-  if (code !== s.checkinCode) return showMsg('ci-error', 'Wrong code. Ask your organizer to repeat it.');
-  const existing = getMyRecord(s);
-  if (existing && existing.checkinTime) return showMsg('ci-error', 'You are already checked in!');
-  if (gpsReady && s.orgLat && s.orgLng) {
-    const dist = getDist(userLat, userLng, s.orgLat, s.orgLng);
-    const allowed = (s.event.radius || 120) + 60;
-    if (dist > allowed) return showMsg('ci-error', `You are ${Math.round(dist)}m from the venue (max ${s.event.radius}m). Make sure you are physically inside.`);
+  function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('toki_theme', theme);
+    const icon  = document.getElementById('theme-icon');
+    const label = document.getElementById('theme-label');
+    if (icon)  icon.className    = theme === 'light' ? 'ti ti-moon' : 'ti ti-sun';
+    if (label) label.textContent = theme === 'light' ? 'Dark Mode'  : 'Light Mode';
   }
-  const record = { sid: user.id, name: user.name, checkinTime: new Date().toLocaleTimeString(), checkoutTime: null, method: 'self' };
-  s.attendance = s.attendance || [];
-  s.attendance.push(record);
-  saveState(s);
-  document.getElementById('ci-code-input').value = '';
+  function toggleTheme() {
+    const cur = document.documentElement.getAttribute('data-theme') || 'dark';
+    applyTheme(cur === 'dark' ? 'light' : 'dark');
+  }
+  applyTheme(localStorage.getItem('toki_theme') || 'dark');
+
+  let userLat = null, userLng = null, gpsReady = false;
+
+  // GPS
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(pos => {
+      userLat = pos.coords.latitude; userLng = pos.coords.longitude; gpsReady = true;
+      const bar = document.getElementById('ci-gps-bar');
+      document.getElementById('ci-gps-text').textContent = 'Location acquired ✓';
+      bar.style.background = 'var(--success-bg)';
+      bar.style.borderColor = 'rgba(110,200,138,0.25)';
+      bar.style.color = 'var(--success)';
+    }, () => {
+      document.getElementById('ci-gps-text').textContent = 'GPS unavailable — location check disabled';
+      document.getElementById('ci-gps-bar').style.background = 'var(--warning-bg)';
+      document.getElementById('ci-gps-bar').style.color = 'var(--warning)';
+    }, { enableHighAccuracy: false, timeout: 8000 });
+  } else {
+    document.getElementById('ci-gps-text').textContent = 'Geolocation not supported';
+  }
+
+  function getDist(lat1, lng1, lat2, lng2) {
+    const R = 6371000, dLat = (lat2-lat1)*Math.PI/180, dLng = (lng2-lng1)*Math.PI/180;
+    const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)**2;
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  }
+
+  function getState() { const d = localStorage.getItem('ae_state'); return d ? JSON.parse(d) : null; }
+  function saveState(s) { localStorage.setItem('ae_state', JSON.stringify(s)); }
+  function getMyRecord(s) { return (s.attendance || []).find(a => a.sid === user.id) || null; }
+
+  function refreshUI() {
+    const s = getState();
+    const event = s?.event || null;
+    const myRecord = s ? getMyRecord(s) : null;
+
+    document.getElementById('event-badge').innerHTML = event
+      ? `<span class="badge badge-green"><span class="dot pulse"></span>${event.name}</span>`
+      : '<span class="badge badge-gray">No Active Event</span>';
+
+    document.getElementById('ci-no-event').style.display = (!event) ? 'block' : 'none';
+    document.getElementById('ci-card').style.display     = event ? 'block' : 'none';
+
+    if (!event) return;
+
+    if (myRecord?.checkinTime) {
+      document.getElementById('ci-already').style.display = 'block';
+      document.getElementById('ci-already-time').textContent = myRecord.checkinTime;
+      document.getElementById('ci-form').style.display = 'none';
+      document.getElementById('ci-success-state').style.display = 'block';
+      document.getElementById('ci-success-time').textContent = myRecord.checkinTime;
+    }
+
+    document.getElementById('ci-window-badge').innerHTML = s.checkinOpen
+      ? '<span class="badge badge-green"><span class="dot pulse"></span> Open</span>'
+      : '<span class="badge badge-gray">Closed</span>';
+  }
+
+  function doCheckIn() {
+    const code = document.getElementById('ci-code-input').value.trim();
+    const errEl = document.getElementById('ci-error');
+    errEl.style.display = 'none';
+
+    const s = getState();
+    if (!s?.event) { showErr('No active event.'); return; }
+
+    const myRecord = getMyRecord(s);
+    if (myRecord?.checkinTime) { showErr('You are already checked in.'); return; }
+    if (!s.checkinOpen) { showErr('Check-in window is not open yet. Wait for your organizer.'); return; }
+    if (code !== s.checkinCode) { showErr('Incorrect code. Listen carefully to your organizer.'); return; }
+
+    // GPS check
+    if (s.orgLat && gpsReady) {
+      const dist = getDist(userLat, userLng, s.orgLat, s.orgLng);
+      if (dist > s.event.radius) {
+        showErr(`You are too far from the venue (${Math.round(dist)}m away, limit is ${s.event.radius}m).`);
+        return;
+      }
+    }
+
+    const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    s.attendance = s.attendance || [];
+    s.attendance.push({
+      sid: user.id, name: user.name,
+      checkinTime: now, checkoutTime: null, method: 'code',
+    });
+    saveState(s);
+
+    document.getElementById('ci-form').style.display = 'none';
+    document.getElementById('ci-success-state').style.display = 'block';
+    document.getElementById('ci-success-time').textContent = now;
+    document.getElementById('ci-already').style.display = 'block';
+    document.getElementById('ci-already-time').textContent = now;
+    showToast('Successfully checked in!', 'success');
+  }
+
+  function showErr(msg) {
+    const el = document.getElementById('ci-error');
+    el.innerHTML = `<i class="ti ti-alert-circle"></i> ${msg}`;
+    el.style.display = 'flex';
+  }
+
+  function logout() { sessionStorage.removeItem('ae_user'); window.location.href = 'login.html'; }
+
   refreshUI();
-  showMsg('ci-error', 'Successfully checked in!');
-  document.getElementById('ci-error').className = 'alert alert-success';
-  setTimeout(() => { hideMsg('ci-error'); document.getElementById('ci-error').className = 'alert alert-danger'; }, 2500);
-}
-
-function showMsg(id, msg) { const el = document.getElementById(id); el.textContent = msg; el.style.display = 'flex'; }
-function hideMsg(id) { document.getElementById(id).style.display = 'none'; }
-function logout() { sessionStorage.removeItem('ae_user'); window.location.href = 'login.html'; }
-
-initGPS(); refreshUI();
-setInterval(() => refreshUI(), 5000);
 </script>
 </body>
 </html>

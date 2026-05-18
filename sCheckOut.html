@@ -1,238 +1,244 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TOKI — Check Out</title>
-<link rel="stylesheet" href="shared.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TOKI — Check Out</title>
+  <link rel="stylesheet" href="toki.css" />
+  <style>
+    .code-input {
+      text-align: center;
+      font-family: var(--font-mono);
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: 12px;
+      padding: 16px;
+      color: var(--matcha);
+    }
+    .code-input::placeholder { color: var(--text4); font-size: 28px; letter-spacing: 12px; }
+  </style>
 </head>
 <body>
-
 <div class="app-layout">
 
-  <!-- SIDEBAR -->
   <aside class="sidebar">
     <div class="sidebar-logo">
-      <div class="logo-icon">
-        <i class="ti ti-clock" aria-hidden="true"></i>
-      </div>
+      <div class="logo-icon"><img src="icon.png" alt="TOKI Logo" /></div>
       <div>
         <div class="logo-text"><span class="logo-accent">TOKI</span></div>
         <div class="logo-sub">Timing is Everything</div>
       </div>
     </div>
-
     <div class="sidebar-role">
-      <span class="role-pill student">
-        <i class="ti ti-school" aria-hidden="true"></i> Student
-      </span>
+      <span class="role-pill student"><i class="ti ti-school"></i> Student</span>
     </div>
-
     <div class="sidebar-user">
       <div class="user-name" id="sb-name">—</div>
       <div class="user-id" id="sb-id">—</div>
-      <div class="user-id" id="sb-course" style="margin-top:1px;">—</div>
+      <div class="user-id" id="sb-course">—</div>
     </div>
-
-    <nav class="sidebar-nav">
-      <div class="nav-section-label">Main</div>
-      <a class="nav-item" href="sDashboard.html">
-        <span class="nav-icon"><i class="ti ti-layout-dashboard" aria-hidden="true"></i></span> Dashboard
-      </a>
-      <a class="nav-item" href="sCheckIn.html">
-        <span class="nav-icon"><i class="ti ti-circle-check" aria-hidden="true"></i></span> Check-in
-      </a>
-      <a class="nav-item active" href="sCheckOut.html">
-        <span class="nav-icon"><i class="ti ti-door-exit" aria-hidden="true"></i></span> Check-out
-      </a>
-      <a class="nav-item" href="sMyHistory.html">
-        <span class="nav-icon"><i class="ti ti-clipboard-list" aria-hidden="true"></i></span> My History
-      </a>
-      <div class="nav-section-label">Info</div>
-      <a class="nav-item" href="sHowItWorks.html">
-        <span class="nav-icon"><i class="ti ti-help-circle" aria-hidden="true"></i></span> How It Works
-      </a>
+    <nav class="sidebar-nav" aria-label="Student navigation">
+      <div class="nav-section-label">Attendance</div>
+      <a class="nav-item" href="sDashboard.html"><span class="nav-icon"><i class="ti ti-layout-dashboard"></i></span> Dashboard</a>
+      <a class="nav-item" href="sCheckIn.html"><span class="nav-icon"><i class="ti ti-circle-check"></i></span> Check-in</a>
+      <a class="nav-item active" href="sCheckOut.html"><span class="nav-icon"><i class="ti ti-door-exit"></i></span> Check-out</a>
+      <div class="nav-section-label">Records</div>
+      <a class="nav-item" href="sMyHistory.html"><span class="nav-icon"><i class="ti ti-clipboard-list"></i></span> My History</a>
+      <a class="nav-item" href="sAttendanceList.html"><span class="nav-icon"><i class="ti ti-users"></i></span> Class Attendance</a>
+      <div class="nav-section-label">Event</div>
+      <a class="nav-item" href="sEvent.html"><span class="nav-icon"><i class="ti ti-calendar-event"></i></span> Event Info</a>
+      <a class="nav-item" href="sAnnouncements.html"><span class="nav-icon"><i class="ti ti-speakerphone"></i></span> Announcements</a>
+      <div class="nav-section-label">Help</div>
+      <a class="nav-item" href="sHowItWorks.html"><span class="nav-icon"><i class="ti ti-help-circle"></i></span> How It Works</a>
     </nav>
-
     <div class="sidebar-bottom">
       <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
         <span style="display:flex;align-items:center;gap:8px;">
-          <i class="ti" id="theme-icon" aria-hidden="true"></i>
+          <i class="ti" id="theme-icon"></i>
           <span id="theme-label">Light Mode</span>
         </span>
         <div class="toggle-switch"></div>
       </button>
-      <button class="logout-btn" onclick="logout()">
-        <i class="ti ti-logout" aria-hidden="true"></i> Sign Out
-      </button>
+      <button class="logout-btn" onclick="logout()"><i class="ti ti-logout"></i> Sign Out</button>
     </div>
   </aside>
 
-  <!-- MAIN -->
   <div class="main-content">
-
     <div class="top-bar">
       <div>
         <div class="page-title">Check Out</div>
         <div class="page-sub">Enter your check-out code</div>
       </div>
       <div class="top-bar-right">
-        <div id="event-badge" class="badge badge-gray">No Active Event</div>
+        <div id="event-badge"></div>
       </div>
     </div>
 
     <div class="content-scroll">
 
-      <div class="card" style="max-width:460px;">
+      <div id="co-already" class="alert alert-success" style="display:none;">
+        <i class="ti ti-circle-check"></i>
+        You're already checked out! Time: <strong id="co-already-time">—</strong>. See you next time!
+      </div>
+
+      <div id="co-no-checkin" class="alert alert-warning" style="display:none;">
+        <i class="ti ti-alert-triangle"></i>
+        You need to <a href="sCheckIn.html" style="color:inherit;text-decoration:underline;font-weight:700;">check in first</a> before you can check out.
+      </div>
+
+      <div id="co-no-event" class="alert alert-warning" style="display:none;">
+        <i class="ti ti-alert-triangle"></i>
+        No active event found. Ask your organizer.
+      </div>
+
+      <div class="card" style="max-width:480px;" id="co-card">
         <div class="card-header">
           <div>
             <div class="card-title">Check Out</div>
-            <div class="card-sub">Enter the check-out code when the event is ending</div>
+            <div class="card-sub">Enter the 4-digit departure code</div>
           </div>
-        </div>
-
-        <div id="co-not-checkedin" class="alert alert-warning" style="display:none;">
-          <i class="ti ti-alert-triangle" aria-hidden="true"></i>
-          You need to check in first before checking out.
-        </div>
-
-        <div id="co-already" class="alert alert-success" style="display:none;">
-          <i class="ti ti-circle-check" aria-hidden="true"></i>
-          You have already checked out. See you next time!
+          <div id="co-window-badge"></div>
         </div>
 
         <div id="co-form">
           <div class="form-group">
-            <label class="form-label">4-Digit Check-out Code</label>
-            <input type="text" class="form-input code-input" id="co-code-input"
-                   placeholder="· · · ·" maxlength="4" inputmode="numeric"
-                   onkeydown="if(event.key==='Enter') doCheckOut()" />
+            <label class="form-label" for="co-code-input">4-Digit Check-out Code</label>
+            <input
+              type="text"
+              class="form-input code-input"
+              id="co-code-input"
+              placeholder="· · · ·"
+              maxlength="4"
+              inputmode="numeric"
+              pattern="[0-9]*"
+              autocomplete="off"
+              onkeydown="if(event.key==='Enter') doCheckOut()"
+            />
             <div style="font-size:11px;color:var(--text3);margin-top:7px;">
-              This code is announced verbally by your organizer near the end of the event.
+              This code is announced by your organizer before the event ends.
             </div>
           </div>
 
           <div id="co-error" class="alert alert-danger" style="display:none;"></div>
 
           <button class="btn btn-success btn-full" onclick="doCheckOut()">
-            <i class="ti ti-door-exit" aria-hidden="true"></i> Check Out Now
+            <i class="ti ti-door-exit"></i> Check Out Now
           </button>
+        </div>
+
+        <div id="co-success-state" style="display:none;text-align:center;padding:20px 0;">
+          <div style="font-size:48px;color:var(--matcha);margin-bottom:12px;"><i class="ti ti-circle-check"></i></div>
+          <div style="font-size:18px;font-weight:700;color:var(--text);margin-bottom:6px;">Checked Out!</div>
+          <div style="font-size:13px;color:var(--text3);">Departure recorded: <strong id="co-success-time">—</strong></div>
+          <a href="sDashboard.html" class="btn btn-ghost" style="margin-top:16px;">
+            <i class="ti ti-layout-dashboard"></i> Go to Dashboard
+          </a>
         </div>
       </div>
 
-    </div><!-- content-scroll -->
-  </div><!-- main-content -->
+    </div>
+  </div>
 
-  <!-- MOBILE BOTTOM NAV -->
-  <nav class="bottom-nav">
-    <a class="bottom-nav-item" href="sDashboard.html">
-      <span class="bn-icon"><i class="ti ti-layout-dashboard" aria-hidden="true"></i></span><span>Home</span>
-    </a>
-    <a class="bottom-nav-item" href="sCheckIn.html">
-      <span class="bn-icon"><i class="ti ti-circle-check" aria-hidden="true"></i></span><span>Check In</span>
-    </a>
-    <a class="bottom-nav-item active" href="sCheckOut.html">
-      <span class="bn-icon"><i class="ti ti-door-exit" aria-hidden="true"></i></span><span>Check Out</span>
-    </a>
-    <a class="bottom-nav-item" href="sMyHistory.html">
-      <span class="bn-icon"><i class="ti ti-clipboard-list" aria-hidden="true"></i></span><span>History</span>
-    </a>
-    <a class="bottom-nav-item" href="sHowItWorks.html">
-      <span class="bn-icon"><i class="ti ti-help-circle" aria-hidden="true"></i></span><span>Help</span>
-    </a>
+  <nav class="bottom-nav" aria-label="Mobile navigation">
+    <a class="bottom-nav-item" href="sDashboard.html"><span class="bn-icon"><i class="ti ti-layout-dashboard"></i></span><span>Home</span></a>
+    <a class="bottom-nav-item" href="sCheckIn.html"><span class="bn-icon"><i class="ti ti-circle-check"></i></span><span>Check In</span></a>
+    <a class="bottom-nav-item" href="sEvent.html"><span class="bn-icon"><i class="ti ti-calendar-event"></i></span><span>Event</span></a>
+    <a class="bottom-nav-item" href="sAnnouncements.html"><span class="bn-icon"><i class="ti ti-speakerphone"></i></span><span>Posts</span></a>
+    <a class="bottom-nav-item" href="sMyHistory.html"><span class="bn-icon"><i class="ti ti-clipboard-list"></i></span><span>History</span></a>
   </nav>
 
 </div>
 
+<script src="toki.js"></script>
 <script>
-const user = JSON.parse(sessionStorage.getItem('ae_user') || 'null');
-if (!user || user.role !== 'student') window.location.href = 'login.html';
+  const user = JSON.parse(sessionStorage.getItem('ae_user') || 'null');
+  if (!user || user.role !== 'student') window.location.href = 'login.html';
 
-document.getElementById('sb-name').textContent   = user.name;
-document.getElementById('sb-id').textContent     = user.id;
-document.getElementById('sb-course').textContent = user.course;
+  document.getElementById('sb-name').textContent   = user.name;
+  document.getElementById('sb-id').textContent     = user.id;
+  document.getElementById('sb-course').textContent = user.course;
 
-/* ── Theme ── */
-function applyTheme(theme) {
-  document.documentElement.setAttribute('data-theme', theme);
-  localStorage.setItem('toki_theme', theme);
-  const icon  = document.getElementById('theme-icon');
-  const label = document.getElementById('theme-label');
-  if (icon)  icon.className  = theme === 'light' ? 'ti ti-moon' : 'ti ti-sun';
-  if (label) label.textContent = theme === 'light' ? 'Dark Mode' : 'Light Mode';
-}
-function toggleTheme() {
-  const cur = document.documentElement.getAttribute('data-theme') || 'dark';
-  applyTheme(cur === 'dark' ? 'light' : 'dark');
-}
-applyTheme(localStorage.getItem('toki_theme') || 'dark');
-
-let userLat = null, userLng = null, gpsReady = false;
-
-function initGPS() {
-  if (!navigator.geolocation) return;
-  navigator.geolocation.getCurrentPosition(pos => {
-    userLat = pos.coords.latitude; userLng = pos.coords.longitude; gpsReady = true;
-  }, () => { gpsReady = false; }, { enableHighAccuracy: false, timeout: 8000 });
-}
-
-function getDist(lat1, lng1, lat2, lng2) {
-  const R = 6371000, dLat = (lat2-lat1)*Math.PI/180, dLng = (lng2-lng1)*Math.PI/180;
-  const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)**2;
-  return R*2*Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-}
-
-function getState() {
-  const d = localStorage.getItem('ae_state'); return d ? JSON.parse(d) : null;
-}
-function saveState(s) { localStorage.setItem('ae_state', JSON.stringify(s)); }
-function getMyRecord(s) { return (s.attendance || []).find(a => a.sid === user.id) || null; }
-
-function refreshUI() {
-  const s = getState();
-  const event = s?.event || null;
-  const myRecord = s ? getMyRecord(s) : null;
-
-  document.getElementById('event-badge').innerHTML = event
-    ? `<span class="badge badge-green"><span class="dot pulse"></span>${event.name}</span>`
-    : '<span class="badge badge-gray">No Active Event</span>';
-
-  document.getElementById('co-not-checkedin').style.display = !myRecord?.checkinTime ? 'block' : 'none';
-  document.getElementById('co-already').style.display       = (myRecord?.checkinTime && myRecord?.checkoutTime) ? 'block' : 'none';
-  document.getElementById('co-form').style.display          = (myRecord?.checkinTime && !myRecord?.checkoutTime) ? 'block' : 'none';
-}
-
-function doCheckOut() {
-  const code = document.getElementById('co-code-input').value.trim();
-  hideMsg('co-error');
-  if (!code || code.length !== 4) return showMsg('co-error', 'Please enter the 4-digit check-out code.');
-  const s = getState();
-  if (!s || !s.event)          return showMsg('co-error', 'No active event found.');
-  if (!s.checkoutOpen)         return showMsg('co-error', 'Check-out is not open yet. Wait for your organizer.');
-  if (code !== s.checkoutCode) return showMsg('co-error', 'Wrong code. Ask your organizer to repeat it.');
-  const rec = getMyRecord(s);
-  if (!rec)             return showMsg('co-error', 'You have not checked in yet.');
-  if (rec.checkoutTime) return showMsg('co-error', 'You have already checked out.');
-  if (gpsReady && s.orgLat && s.orgLng) {
-    const dist = getDist(userLat, userLng, s.orgLat, s.orgLng);
-    const allowed = (s.event.radius || 120) + 60;
-    if (dist > allowed) return showMsg('co-error', `You are ${Math.round(dist)}m from the venue. Make sure you are still inside.`);
+  function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('toki_theme', theme);
+    const icon  = document.getElementById('theme-icon');
+    const label = document.getElementById('theme-label');
+    if (icon)  icon.className    = theme === 'light' ? 'ti ti-moon' : 'ti ti-sun';
+    if (label) label.textContent = theme === 'light' ? 'Dark Mode'  : 'Light Mode';
   }
-  rec.checkoutTime = new Date().toLocaleTimeString();
-  saveState(s);
-  document.getElementById('co-code-input').value = '';
+  function toggleTheme() {
+    const cur = document.documentElement.getAttribute('data-theme') || 'dark';
+    applyTheme(cur === 'dark' ? 'light' : 'dark');
+  }
+  applyTheme(localStorage.getItem('toki_theme') || 'dark');
+
+  function getState() { const d = localStorage.getItem('ae_state'); return d ? JSON.parse(d) : null; }
+  function saveState(s) { localStorage.setItem('ae_state', JSON.stringify(s)); }
+  function getMyRecord(s) { return (s.attendance || []).find(a => a.sid === user.id) || null; }
+
+  function refreshUI() {
+    const s = getState();
+    const event = s?.event || null;
+    const myRecord = s ? getMyRecord(s) : null;
+
+    document.getElementById('event-badge').innerHTML = event
+      ? `<span class="badge badge-green"><span class="dot pulse"></span>${event.name}</span>`
+      : '<span class="badge badge-gray">No Active Event</span>';
+
+    document.getElementById('co-no-event').style.display  = !event ? 'block' : 'none';
+    document.getElementById('co-card').style.display      = event ? 'block' : 'none';
+    document.getElementById('co-no-checkin').style.display = (event && !myRecord?.checkinTime) ? 'block' : 'none';
+
+    if (!event) return;
+
+    if (myRecord?.checkoutTime) {
+      document.getElementById('co-already').style.display = 'block';
+      document.getElementById('co-already-time').textContent = myRecord.checkoutTime;
+      document.getElementById('co-form').style.display = 'none';
+      document.getElementById('co-success-state').style.display = 'block';
+      document.getElementById('co-success-time').textContent = myRecord.checkoutTime;
+    }
+
+    document.getElementById('co-window-badge').innerHTML = s.checkoutOpen
+      ? '<span class="badge badge-green"><span class="dot pulse"></span> Open</span>'
+      : '<span class="badge badge-gray">Closed</span>';
+  }
+
+  function doCheckOut() {
+    const code = document.getElementById('co-code-input').value.trim();
+    const errEl = document.getElementById('co-error');
+    errEl.style.display = 'none';
+
+    const s = getState();
+    if (!s?.event)    { showErr('No active event.'); return; }
+
+    const myRecord = getMyRecord(s);
+    if (!myRecord?.checkinTime)  { showErr('You must check in first.'); return; }
+    if (myRecord?.checkoutTime)  { showErr('You are already checked out.'); return; }
+    if (!s.checkoutOpen)         { showErr('Check-out window is not open yet. Wait for your organizer.'); return; }
+    if (code !== s.checkoutCode) { showErr('Incorrect code. Listen carefully to your organizer.'); return; }
+
+    const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    myRecord.checkoutTime = now;
+    saveState(s);
+
+    document.getElementById('co-form').style.display = 'none';
+    document.getElementById('co-success-state').style.display = 'block';
+    document.getElementById('co-success-time').textContent = now;
+    document.getElementById('co-already').style.display = 'block';
+    document.getElementById('co-already-time').textContent = now;
+    showToast('Successfully checked out! See you next time.', 'success');
+  }
+
+  function showErr(msg) {
+    const el = document.getElementById('co-error');
+    el.innerHTML = `<i class="ti ti-alert-circle"></i> ${msg}`;
+    el.style.display = 'flex';
+  }
+
+  function logout() { sessionStorage.removeItem('ae_user'); window.location.href = 'login.html'; }
+
   refreshUI();
-  showMsg('co-error', 'Successfully checked out!');
-  document.getElementById('co-error').className = 'alert alert-success';
-  setTimeout(() => { hideMsg('co-error'); document.getElementById('co-error').className = 'alert alert-danger'; }, 2500);
-}
-
-function showMsg(id, msg) { const el = document.getElementById(id); el.textContent = msg; el.style.display = 'flex'; }
-function hideMsg(id) { document.getElementById(id).style.display = 'none'; }
-function logout() { sessionStorage.removeItem('ae_user'); window.location.href = 'login.html'; }
-
-initGPS(); refreshUI();
-setInterval(() => refreshUI(), 5000);
 </script>
 </body>
 </html>

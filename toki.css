@@ -734,7 +734,7 @@ body::before {
 .content-scroll {
   flex: 1;
   overflow-y: auto;
-  padding: 24px 28px;
+  padding: 28px 32px;
   scrollbar-width: thin;
   scrollbar-color: var(--border2) transparent;
 }
@@ -746,7 +746,8 @@ body::before {
   background: var(--glass);
   border: 1px solid var(--border2);
   border-radius: var(--r-lg);
-  padding: 20px;
+  padding: 24px;
+  margin-bottom: 16px;
   transition: border-color var(--fast), background var(--fast), box-shadow var(--fast), transform var(--fast);
   animation: fadeUp 0.4s var(--ease) both;
 }
@@ -781,11 +782,11 @@ body::before {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 16px;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
 .stat-card {
   border-radius: var(--r-lg);
-  padding: 20px;
+  padding: 24px;
   position: relative;
   overflow: hidden;
   border: 1px solid var(--border2);
@@ -837,7 +838,7 @@ body::before {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 16px;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
 
 /* ════════════════════════════════════════════════════════

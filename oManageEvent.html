@@ -8,10 +8,9 @@
 </head>
 <body>
 <div class="app-layout">
-
   <aside class="sidebar">
     <div class="sidebar-logo">
-      <div class="logo-icon"><img src="icon.png" alt="TOKI Logo" /></div>
+      <div class="logo-icon"><img src="icon.png" alt="TOKI Logo" onerror="this.style.display='none'"/></div>
       <div>
         <div class="logo-text"><span class="logo-accent">TOKI</span></div>
         <div class="logo-sub">Timing is Everything</div>
@@ -52,7 +51,7 @@
     <div class="top-bar">
       <div>
         <div class="page-title">Manage Event</div>
-        <div class="page-sub">Create or end your event</div>
+        <div class="page-sub">Create, edit, or end your event</div>
       </div>
       <div class="top-bar-right">
         <div id="event-badge"></div>
@@ -61,13 +60,13 @@
 
     <div class="content-scroll">
 
-      <!-- CREATE FORM -->
+      <!-- CREATE / EDIT FORM -->
       <div id="event-form-section">
         <div class="card">
           <div class="card-header">
             <div>
-              <div class="card-title">Create New Event</div>
-              <div class="card-sub">Your GPS location will be auto-captured as the venue center</div>
+              <div class="card-title" id="form-title">Create New Event</div>
+              <div class="card-sub">Your GPS location will be captured as the venue center</div>
             </div>
           </div>
 
@@ -81,11 +80,11 @@
 
           <div class="grid-2">
             <div class="form-group">
-              <label class="form-label" for="e-name">Event Name</label>
+              <label class="form-label" for="e-name">Event Name <span style="color:var(--strawberry)">*</span></label>
               <input type="text" class="form-input" id="e-name" placeholder="e.g. General Assembly 2025" />
             </div>
             <div class="form-group">
-              <label class="form-label" for="e-venue">Venue / Room</label>
+              <label class="form-label" for="e-venue">Venue / Room <span style="color:var(--strawberry)">*</span></label>
               <input type="text" class="form-input" id="e-venue" placeholder="e.g. 8th Floor Auditorium" />
             </div>
           </div>
@@ -112,14 +111,33 @@
             </div>
           </div>
 
-          <div class="alert alert-info">
-            <i class="ti ti-info-circle"></i>
-            Make sure you are physically at the venue when creating the event — your location is used as the center point for student GPS verification.
+          <div class="grid-2">
+            <div class="form-group">
+              <label class="form-label" for="e-grace">Grace Period (minutes)</label>
+              <input type="number" class="form-input" id="e-grace" value="15" min="0" max="120"
+                title="Students checking in after start time + grace period are marked Late" />
+              <div style="font-size:11px;color:var(--text3);margin-top:5px;">Check-ins after start + grace are flagged <span style="color:var(--warning);">Late</span></div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="e-cap">Attendee Cap (optional)</label>
+              <input type="number" class="form-input" id="e-cap" min="1" placeholder="No limit" />
+              <div style="font-size:11px;color:var(--text3);margin-top:5px;">Check-in closes when cap is reached</div>
+            </div>
           </div>
 
-          <button class="btn btn-primary" id="create-event-btn" onclick="createEvent()" disabled>
-            <i class="ti ti-rocket"></i> Create Event &amp; Capture Location
-          </button>
+          <div class="alert alert-info">
+            <i class="ti ti-info-circle"></i>
+            Make sure you are physically at the venue when creating the event — your location is used as the GPS verification center.
+          </div>
+
+          <div style="display:flex;gap:10px;">
+            <button class="btn btn-primary" id="create-event-btn" onclick="saveEvent()" disabled style="flex:1;">
+              <i class="ti ti-rocket"></i> <span id="btn-label">Create Event &amp; Capture Location</span>
+            </button>
+            <button class="btn btn-ghost" id="cancel-edit-btn" onclick="cancelEdit()" style="display:none;">
+              Cancel
+            </button>
+          </div>
         </div>
       </div>
 
@@ -127,14 +145,22 @@
       <div id="event-active-section" style="display:none;">
         <div class="alert alert-success">
           <i class="ti ti-circle-check"></i>
-          Event is active. End it below to create a new one.
+          Event is active and running.
         </div>
         <div class="card" id="event-detail-card"></div>
-        <div style="margin-top:16px;">
+        <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap;">
+          <button class="btn btn-ghost" onclick="enterEditMode()">
+            <i class="ti ti-edit"></i> Edit Event Details
+          </button>
           <button class="btn btn-danger" onclick="confirmEnd()">
-            <i class="ti ti-trash"></i> End Event &amp; Clear Data
+            <i class="ti ti-trash"></i> End Event &amp; Archive Data
           </button>
         </div>
+      </div>
+
+      <!-- ARCHIVED EVENTS -->
+      <div id="archives-section" style="margin-top:24px;">
+        <div id="archives-list"></div>
       </div>
 
     </div>
@@ -147,7 +173,6 @@
     <a class="bottom-nav-item" href="oCheckOut.html"><span class="bn-icon"><i class="ti ti-door-exit"></i></span><span>Check-out</span></a>
     <a class="bottom-nav-item" href="oAttendanceList.html"><span class="bn-icon"><i class="ti ti-clipboard-list"></i></span><span>Records</span></a>
   </nav>
-
 </div>
 
 <!-- Confirm End Modal -->
@@ -157,12 +182,13 @@
       <div class="modal-title">End Event?</div>
       <button class="modal-close" onclick="TOKI_Modal.close('confirm-end-modal')" aria-label="Close"><i class="ti ti-x"></i></button>
     </div>
-    <p style="color:var(--text2);font-size:14px;line-height:1.6;">
-      This will <strong>permanently delete</strong> all attendance records and reset the system. This action cannot be undone.
+    <div id="end-summary" style="background:var(--glass);border:1px solid var(--border2);border-radius:var(--r-md);padding:14px;margin-bottom:14px;font-size:13px;color:var(--text2);"></div>
+    <p style="color:var(--text2);font-size:13px;line-height:1.6;">
+      All attendance data will be <strong>archived</strong> and the session will be cleared. You can view archives below.
     </p>
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="TOKI_Modal.close('confirm-end-modal')">Cancel</button>
-      <button class="btn btn-danger" onclick="endEvent()"><i class="ti ti-trash"></i> End Event</button>
+      <button class="btn btn-danger" onclick="endEvent()"><i class="ti ti-archive"></i> Archive &amp; End</button>
     </div>
   </div>
 </div>
@@ -178,8 +204,8 @@
   }
 
   let gpsLat = null, gpsLng = null;
+  let editMode = false;
 
-  // Set today's date
   document.getElementById('e-date').value = new Date().toISOString().split('T')[0];
   document.getElementById('e-time').value = new Date().toTimeString().slice(0,5);
 
@@ -189,16 +215,17 @@
       gpsLat = pos.coords.latitude;
       gpsLng = pos.coords.longitude;
       document.getElementById('event-gps-text').textContent = 'Location captured ✓';
-      document.getElementById('event-gps-coords').textContent =
-        `${gpsLat.toFixed(6)}, ${gpsLng.toFixed(6)}`;
+      document.getElementById('event-gps-coords').textContent = `${gpsLat.toFixed(6)}, ${gpsLng.toFixed(6)}`;
       document.getElementById('create-event-btn').disabled = false;
-      document.getElementById('event-gps-bar').style.background = 'var(--success-bg)';
-      document.getElementById('event-gps-bar').style.borderColor = 'rgba(110,200,138,0.25)';
-      document.getElementById('event-gps-bar').style.color = 'var(--success)';
+      const bar = document.getElementById('event-gps-bar');
+      bar.style.background   = 'var(--success-bg)';
+      bar.style.borderColor  = 'rgba(110,200,138,0.25)';
+      bar.style.color        = 'var(--success)';
     }, () => {
       document.getElementById('event-gps-text').textContent = 'GPS unavailable — location check disabled';
-      document.getElementById('event-gps-bar').style.background = 'var(--warning-bg)';
-      document.getElementById('event-gps-bar').style.color = 'var(--warning)';
+      const bar = document.getElementById('event-gps-bar');
+      bar.style.background  = 'var(--warning-bg)';
+      bar.style.color       = 'var(--warning)';
       document.getElementById('create-event-btn').disabled = false;
     });
   } else {
@@ -206,36 +233,43 @@
     document.getElementById('create-event-btn').disabled = false;
   }
 
-  function renderUI() {
+  function enterEditMode() {
     const st = TOKI.load();
-    document.getElementById('event-badge').innerHTML = st.event
-      ? `<span class="badge badge-green"><span class="dot pulse"></span>${st.event.name}</span>`
-      : `<span class="badge badge-gray">No Active Event</span>`;
-
-    if (st.event) {
-      document.getElementById('event-form-section').style.display = 'none';
-      document.getElementById('event-active-section').style.display = 'block';
-      document.getElementById('event-detail-card').innerHTML = `
-        <div class="card-header"><div class="card-title">${st.event.name}</div></div>
-        <div style="display:flex;flex-direction:column;gap:10px;font-size:13px;color:var(--text2);">
-          <div><i class="ti ti-map-pin" style="color:var(--strawberry);margin-right:8px;"></i>${st.event.venue}</div>
-          <div><i class="ti ti-building" style="color:var(--matcha);margin-right:8px;"></i>${st.event.dept || '—'}</div>
-          <div><i class="ti ti-calendar" style="color:var(--amber);margin-right:8px;"></i>${st.event.date} at ${st.event.time}</div>
-          <div><i class="ti ti-location" style="color:var(--sky);margin-right:8px;"></i>GPS Radius: ${st.event.radius}m ${st.orgLat ? '(active)' : '(disabled)'}</div>
-        </div>`;
-    } else {
-      document.getElementById('event-form-section').style.display = 'block';
-      document.getElementById('event-active-section').style.display = 'none';
-    }
+    if (!st.event) return;
+    editMode = true;
+    document.getElementById('e-name').value  = st.event.name;
+    document.getElementById('e-venue').value = st.event.venue;
+    document.getElementById('e-dept').value  = st.event.dept || '';
+    document.getElementById('e-radius').value = st.event.radius || 120;
+    document.getElementById('e-date').value  = st.event.date;
+    document.getElementById('e-time').value  = st.event.time;
+    document.getElementById('e-grace').value = st.event.gracePeriod || st.gracePeriod || 15;
+    document.getElementById('e-cap').value   = st.event.cap || '';
+    document.getElementById('form-title').textContent = 'Edit Event Details';
+    document.getElementById('btn-label').textContent  = 'Save Changes';
+    document.getElementById('create-event-btn').disabled = false;
+    document.getElementById('cancel-edit-btn').style.display = 'inline-flex';
+    document.getElementById('event-form-section').style.display = 'block';
+    document.getElementById('event-active-section').style.display = 'none';
   }
 
-  function createEvent() {
+  function cancelEdit() {
+    editMode = false;
+    document.getElementById('form-title').textContent = 'Create New Event';
+    document.getElementById('btn-label').textContent  = 'Create Event & Capture Location';
+    document.getElementById('cancel-edit-btn').style.display = 'none';
+    renderUI();
+  }
+
+  function saveEvent() {
     const name   = document.getElementById('e-name').value.trim();
     const venue  = document.getElementById('e-venue').value.trim();
     const dept   = document.getElementById('e-dept').value.trim();
     const radius = parseInt(document.getElementById('e-radius').value) || 120;
     const date   = document.getElementById('e-date').value;
     const time   = document.getElementById('e-time').value;
+    const grace  = parseInt(document.getElementById('e-grace').value) || 15;
+    const cap    = parseInt(document.getElementById('e-cap').value) || null;
 
     if (!name || !venue) {
       showToast('Please fill in Event Name and Venue.', 'error');
@@ -245,25 +279,124 @@
     }
 
     const st = TOKI.load();
-    st.event = { name, venue, dept, radius, date, time };
-    if (gpsLat) { st.orgLat = gpsLat; st.orgLng = gpsLng; }
-    TOKI.save(st);
-    showToast(`Event "${name}" created successfully!`, 'success');
+
+    if (editMode) {
+      // Edit: preserve existing data
+      st.event = { ...st.event, name, venue, dept, radius, date, time, gracePeriod: grace, cap };
+      st.gracePeriod = grace;
+      TOKI.save(st);
+      showToast('Event updated successfully!', 'success');
+      editMode = false;
+      document.getElementById('cancel-edit-btn').style.display = 'none';
+      document.getElementById('form-title').textContent = 'Create New Event';
+      document.getElementById('btn-label').textContent  = 'Create Event & Capture Location';
+    } else {
+      // Create new
+      st.eventId = TOKI.genEventId();
+      st.event = { name, venue, dept, radius, date, time, gracePeriod: grace, cap };
+      st.gracePeriod = grace;
+      if (gpsLat) { st.orgLat = gpsLat; st.orgLng = gpsLng; }
+      TOKI.save(st);
+      showToast(`Event "${name}" created!`, 'success');
+    }
     renderUI();
   }
 
   function confirmEnd() {
+    const st = TOKI.load();
+    const total   = st.attendance.filter(a => a.checkinTime).length;
+    const complete = st.attendance.filter(a => a.checkoutTime).length;
+    document.getElementById('end-summary').innerHTML = `
+      <div style="display:flex;gap:20px;flex-wrap:wrap;">
+        <div><div style="font-size:22px;font-weight:700;color:var(--text)">${total}</div><div style="font-size:11px;color:var(--text3)">Check-ins</div></div>
+        <div><div style="font-size:22px;font-weight:700;color:var(--matcha)">${complete}</div><div style="font-size:11px;color:var(--text3)">Checked out</div></div>
+        <div><div style="font-size:22px;font-weight:700;color:var(--amber)">${total - complete}</div><div style="font-size:11px;color:var(--text3)">Still inside</div></div>
+      </div>`;
     TOKI_Modal.open('confirm-end-modal');
   }
 
   function endEvent() {
     TOKI_Modal.close('confirm-end-modal');
-    TOKI.save(TOKI.defaultState());
-    showToast('Event ended and data cleared.', 'info');
+    TOKI.archiveAndClear();
+    showToast('Event archived and cleared.', 'success');
     renderUI();
+    renderArchives();
+  }
+
+  function renderUI() {
+    const st = TOKI.load();
+    document.getElementById('event-badge').innerHTML = st.event
+      ? `<span class="badge badge-green"><span class="dot pulse"></span>${st.event.name}</span>`
+      : `<span class="badge badge-gray">No Active Event</span>`;
+
+    if (st.event && !editMode) {
+      document.getElementById('event-form-section').style.display = 'none';
+      document.getElementById('event-active-section').style.display = 'block';
+
+      const cap = st.event.cap ? `${st.event.cap} max` : 'No limit';
+      document.getElementById('event-detail-card').innerHTML = `
+        <div class="card-header">
+          <div class="card-title">${st.event.name}</div>
+          <span class="badge badge-green"><span class="dot pulse"></span> Active</span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;font-size:13px;color:var(--text2);">
+          <div>
+            <div style="font-size:9px;text-transform:uppercase;letter-spacing:1.2px;font-weight:700;color:var(--text3);margin-bottom:4px;">Venue</div>
+            <div><i class="ti ti-map-pin" style="color:var(--strawberry);margin-right:6px;"></i>${st.event.venue}</div>
+          </div>
+          <div>
+            <div style="font-size:9px;text-transform:uppercase;letter-spacing:1.2px;font-weight:700;color:var(--text3);margin-bottom:4px;">Department</div>
+            <div><i class="ti ti-building" style="color:var(--matcha);margin-right:6px;"></i>${st.event.dept || '—'}</div>
+          </div>
+          <div>
+            <div style="font-size:9px;text-transform:uppercase;letter-spacing:1.2px;font-weight:700;color:var(--text3);margin-bottom:4px;">Date & Time</div>
+            <div><i class="ti ti-calendar" style="color:var(--amber);margin-right:6px;"></i>${st.event.date} at ${st.event.time}</div>
+          </div>
+          <div>
+            <div style="font-size:9px;text-transform:uppercase;letter-spacing:1.2px;font-weight:700;color:var(--text3);margin-bottom:4px;">Grace Period</div>
+            <div><i class="ti ti-clock" style="color:var(--sky);margin-right:6px;"></i>${st.event.gracePeriod || 15} minutes</div>
+          </div>
+          <div>
+            <div style="font-size:9px;text-transform:uppercase;letter-spacing:1.2px;font-weight:700;color:var(--text3);margin-bottom:4px;">GPS Radius</div>
+            <div><i class="ti ti-location" style="color:var(--plum);margin-right:6px;"></i>${st.event.radius}m ${st.orgLat ? '(active)' : '(disabled)'}</div>
+          </div>
+          <div>
+            <div style="font-size:9px;text-transform:uppercase;letter-spacing:1.2px;font-weight:700;color:var(--text3);margin-bottom:4px;">Capacity</div>
+            <div><i class="ti ti-users" style="color:var(--matcha);margin-right:6px;"></i>${cap}</div>
+          </div>
+        </div>`;
+    } else if (!editMode) {
+      document.getElementById('event-form-section').style.display = 'block';
+      document.getElementById('event-active-section').style.display = 'none';
+    }
+  }
+
+  function renderArchives() {
+    const archives = TOKI.loadArchives();
+    const el = document.getElementById('archives-list');
+    if (!archives.length) { el.innerHTML = ''; return; }
+    el.innerHTML = `
+      <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:12px;">
+        <i class="ti ti-archive" style="margin-right:8px;color:var(--text3);"></i>Past Events (${archives.length})
+      </div>` +
+      archives.slice().reverse().map(a => `
+        <div class="card" style="margin-bottom:12px;">
+          <div class="card-header">
+            <div>
+              <div class="card-title">${a.event.name}</div>
+              <div class="card-sub">${a.event.date} · ${a.event.venue} · Archived ${a.archivedAt}</div>
+            </div>
+            <span class="badge badge-gray">${a.attendance.length} students</span>
+          </div>
+          <div style="display:flex;gap:14px;font-size:12px;color:var(--text3);">
+            <span><i class="ti ti-circle-check" style="color:var(--matcha);margin-right:4px;"></i>${a.attendance.filter(x=>x.checkoutTime).length} completed</span>
+            <span><i class="ti ti-clock" style="color:var(--amber);margin-right:4px;"></i>${a.attendance.filter(x=>x.checkinTime&&!x.checkoutTime).length} inside only</span>
+          </div>
+        </div>`).join('');
   }
 
   renderUI();
+  renderArchives();
 </script>
 </body>
 </html>

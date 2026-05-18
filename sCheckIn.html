@@ -7,23 +7,17 @@
   <link rel="stylesheet" href="toki.css" />
   <style>
     .code-input {
-      text-align: center;
-      font-family: var(--font-mono);
-      font-size: 32px;
-      font-weight: 700;
-      letter-spacing: 12px;
-      padding: 16px;
-      color: var(--strawberry);
+      text-align:center;font-family:var(--font-mono);font-size:32px;
+      font-weight:700;letter-spacing:12px;padding:16px;color:var(--strawberry);
     }
-    .code-input::placeholder { color: var(--text4); font-size: 28px; letter-spacing: 12px; }
+    .code-input::placeholder { color:var(--text4);font-size:28px;letter-spacing:12px; }
   </style>
 </head>
 <body>
 <div class="app-layout">
-
   <aside class="sidebar">
     <div class="sidebar-logo">
-      <div class="logo-icon"><img src="icon.png" alt="TOKI Logo" /></div>
+      <div class="logo-icon"><img src="icon.png" alt="TOKI Logo" onerror="this.style.display='none'"/></div>
       <div>
         <div class="logo-text"><span class="logo-accent">TOKI</span></div>
         <div class="logo-sub">Timing is Everything</div>
@@ -51,14 +45,14 @@
       <a class="nav-item" href="sHowItWorks.html"><span class="nav-icon"><i class="ti ti-help-circle"></i></span> How It Works</a>
     </nav>
     <div class="sidebar-bottom">
-      <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+      <button class="theme-toggle" onclick="TOKI.toggleTheme()" aria-label="Toggle theme">
         <span style="display:flex;align-items:center;gap:8px;">
           <i class="ti" id="theme-icon"></i>
           <span id="theme-label">Light Mode</span>
         </span>
         <div class="toggle-switch"></div>
       </button>
-      <button class="logout-btn" onclick="logout()"><i class="ti ti-logout"></i> Sign Out</button>
+      <button class="logout-btn" onclick="TOKI.logout()"><i class="ti ti-logout"></i> Sign Out</button>
     </div>
   </aside>
 
@@ -66,18 +60,16 @@
     <div class="top-bar">
       <div>
         <div class="page-title">Check In</div>
-        <div class="page-sub">Enter your check-in code</div>
+        <div class="page-sub">Enter the code announced by your organizer</div>
       </div>
-      <div class="top-bar-right">
-        <div id="event-badge"></div>
-      </div>
+      <div class="top-bar-right"><div id="event-badge"></div></div>
     </div>
 
     <div class="content-scroll">
 
       <div id="ci-already" class="alert alert-success" style="display:none;">
         <i class="ti ti-circle-check"></i>
-        You're already checked in! Check-in time: <strong id="ci-already-time">—</strong>
+        You're already checked in! Time: <strong id="ci-already-time">—</strong>
       </div>
 
       <div id="ci-no-event" class="alert alert-warning" style="display:none;">
@@ -89,13 +81,12 @@
         <div class="card-header">
           <div>
             <div class="card-title">Check In</div>
-            <div class="card-sub">Enter the 4-digit code announced by your organizer</div>
+            <div class="card-sub">Enter the 4-digit code announced verbally by your organizer</div>
           </div>
           <div id="ci-window-badge"></div>
         </div>
 
         <div id="ci-form">
-          <!-- GPS status -->
           <div class="gps-bar" id="ci-gps-bar">
             <i class="ti ti-map-pin"></i>
             <div id="ci-gps-text">Acquiring GPS location…</div>
@@ -103,17 +94,9 @@
 
           <div class="form-group" style="margin-top:16px;">
             <label class="form-label" for="ci-code-input">4-Digit Check-in Code</label>
-            <input
-              type="text"
-              class="form-input code-input"
-              id="ci-code-input"
-              placeholder="· · · ·"
-              maxlength="4"
-              inputmode="numeric"
-              pattern="[0-9]*"
-              autocomplete="off"
-              onkeydown="if(event.key==='Enter') doCheckIn()"
-            />
+            <input type="text" class="form-input code-input" id="ci-code-input"
+              placeholder="· · · ·" maxlength="4" inputmode="numeric" pattern="[0-9]*"
+              autocomplete="off" onkeydown="if(event.key==='Enter') doCheckIn()"/>
             <div style="font-size:11px;color:var(--text3);margin-top:7px;">
               This code is announced verbally by your organizer inside the venue.
             </div>
@@ -130,6 +113,9 @@
           <div style="font-size:48px;color:var(--matcha);margin-bottom:12px;"><i class="ti ti-circle-check"></i></div>
           <div style="font-size:18px;font-weight:700;color:var(--text);margin-bottom:6px;">Checked In!</div>
           <div style="font-size:13px;color:var(--text3);">Time recorded: <strong id="ci-success-time">—</strong></div>
+          <div id="ci-late-notice" style="display:none;margin-top:10px;" class="alert alert-warning">
+            <i class="ti ti-clock"></i> You were marked as <strong>Late</strong> — past the grace period.
+          </div>
           <a href="sDashboard.html" class="btn btn-ghost" style="margin-top:16px;">
             <i class="ti ti-layout-dashboard"></i> Go to Dashboard
           </a>
@@ -146,64 +132,49 @@
     <a class="bottom-nav-item" href="sAnnouncements.html"><span class="bn-icon"><i class="ti ti-speakerphone"></i></span><span>Posts</span></a>
     <a class="bottom-nav-item" href="sMyHistory.html"><span class="bn-icon"><i class="ti ti-clipboard-list"></i></span><span>History</span></a>
   </nav>
-
 </div>
 
+<script src="shared-state.js"></script>
 <script src="toki.js"></script>
 <script>
-  const user = JSON.parse(sessionStorage.getItem('ae_user') || 'null');
-  if (!user || user.role !== 'student') window.location.href = 'login.html';
-
-  document.getElementById('sb-name').textContent   = user.name;
-  document.getElementById('sb-id').textContent     = user.id;
-  document.getElementById('sb-course').textContent = user.course;
-
-  function applyTheme(theme) {
-    document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('toki_theme', theme);
-    const icon  = document.getElementById('theme-icon');
-    const label = document.getElementById('theme-label');
-    if (icon)  icon.className    = theme === 'light' ? 'ti ti-moon' : 'ti ti-sun';
-    if (label) label.textContent = theme === 'light' ? 'Dark Mode'  : 'Light Mode';
+  const user = TOKI.requireStudent();
+  TOKI.initTheme();
+  if (user) {
+    document.getElementById('sb-name').textContent   = user.name;
+    document.getElementById('sb-id').textContent     = user.id;
+    document.getElementById('sb-course').textContent = user.course;
   }
-  function toggleTheme() {
-    const cur = document.documentElement.getAttribute('data-theme') || 'dark';
-    applyTheme(cur === 'dark' ? 'light' : 'dark');
-  }
-  applyTheme(localStorage.getItem('toki_theme') || 'dark');
 
   let userLat = null, userLng = null, gpsReady = false;
 
-  // GPS
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(pos => {
       userLat = pos.coords.latitude; userLng = pos.coords.longitude; gpsReady = true;
       const bar = document.getElementById('ci-gps-bar');
       document.getElementById('ci-gps-text').textContent = 'Location acquired ✓';
-      bar.style.background = 'var(--success-bg)';
+      bar.style.background  = 'var(--success-bg)';
       bar.style.borderColor = 'rgba(110,200,138,0.25)';
-      bar.style.color = 'var(--success)';
+      bar.style.color       = 'var(--success)';
     }, () => {
       document.getElementById('ci-gps-text').textContent = 'GPS unavailable — location check disabled';
-      document.getElementById('ci-gps-bar').style.background = 'var(--warning-bg)';
-      document.getElementById('ci-gps-bar').style.color = 'var(--warning)';
+      const bar = document.getElementById('ci-gps-bar');
+      bar.style.background = 'var(--warning-bg)';
+      bar.style.color      = 'var(--warning)';
     }, { enableHighAccuracy: false, timeout: 8000 });
   } else {
     document.getElementById('ci-gps-text').textContent = 'Geolocation not supported';
   }
 
   function getDist(lat1, lng1, lat2, lng2) {
-    const R = 6371000, dLat = (lat2-lat1)*Math.PI/180, dLng = (lng2-lng1)*Math.PI/180;
+    const R = 6371000, dLat=(lat2-lat1)*Math.PI/180, dLng=(lng2-lng1)*Math.PI/180;
     const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)**2;
     return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
   }
 
-  function getState() { const d = localStorage.getItem('ae_state'); return d ? JSON.parse(d) : null; }
-  function saveState(s) { localStorage.setItem('ae_state', JSON.stringify(s)); }
   function getMyRecord(s) { return (s.attendance || []).find(a => a.sid === user.id) || null; }
 
   function refreshUI() {
-    const s = getState();
+    const s = TOKI.load();
     const event = s?.event || null;
     const myRecord = s ? getMyRecord(s) : null;
 
@@ -213,7 +184,6 @@
 
     document.getElementById('ci-no-event').style.display = (!event) ? 'block' : 'none';
     document.getElementById('ci-card').style.display     = event ? 'block' : 'none';
-
     if (!event) return;
 
     if (myRecord?.checkinTime) {
@@ -222,6 +192,11 @@
       document.getElementById('ci-form').style.display = 'none';
       document.getElementById('ci-success-state').style.display = 'block';
       document.getElementById('ci-success-time').textContent = myRecord.checkinTime;
+      // Show late notice if applicable
+      const grace = event.gracePeriod ?? s.gracePeriod ?? 15;
+      if (TOKI.isLate(myRecord.checkinTime, event.time, grace)) {
+        document.getElementById('ci-late-notice').style.display = 'flex';
+      }
     }
 
     document.getElementById('ci-window-badge').innerHTML = s.checkinOpen
@@ -230,12 +205,19 @@
   }
 
   function doCheckIn() {
-    const code = document.getElementById('ci-code-input').value.trim();
+    const code  = document.getElementById('ci-code-input').value.trim();
     const errEl = document.getElementById('ci-error');
     errEl.style.display = 'none';
 
-    const s = getState();
+    const s = TOKI.load();
     if (!s?.event) { showErr('No active event.'); return; }
+
+    // Capacity check
+    const cap = s.event?.cap;
+    if (cap) {
+      const count = s.attendance.filter(a => a.checkinTime).length;
+      if (count >= cap) { showErr(`Sorry, the event is at full capacity (${cap} students).`); return; }
+    }
 
     const myRecord = getMyRecord(s);
     if (myRecord?.checkinTime) { showErr('You are already checked in.'); return; }
@@ -251,19 +233,26 @@
       }
     }
 
-    const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const now = TOKI.nowTime();
     s.attendance = s.attendance || [];
     s.attendance.push({
       sid: user.id, name: user.name,
       checkinTime: now, checkoutTime: null, method: 'code',
     });
-    saveState(s);
+    TOKI.save(s);
 
     document.getElementById('ci-form').style.display = 'none';
     document.getElementById('ci-success-state').style.display = 'block';
     document.getElementById('ci-success-time').textContent = now;
     document.getElementById('ci-already').style.display = 'block';
     document.getElementById('ci-already-time').textContent = now;
+
+    // Show late notice
+    const grace = s.event.gracePeriod ?? s.gracePeriod ?? 15;
+    if (TOKI.isLate(now, s.event.time, grace)) {
+      document.getElementById('ci-late-notice').style.display = 'flex';
+    }
+
     showToast('Successfully checked in!', 'success');
   }
 
@@ -272,8 +261,6 @@
     el.innerHTML = `<i class="ti ti-alert-circle"></i> ${msg}`;
     el.style.display = 'flex';
   }
-
-  function logout() { sessionStorage.removeItem('ae_user'); window.location.href = 'login.html'; }
 
   refreshUI();
 </script>

@@ -6,42 +6,357 @@
   <title>TOKI — Attendance List</title>
   <link rel="stylesheet" href="toki.css" />
   <style>
-    .oAttendanceList-toolbar { display:flex;align-items:center;gap:10px;flex-wrap:wrap; }
-    .table-wrap { overflow-x:auto;border-radius:var(--r-md);border:1px solid var(--border); }
-    .badge-late { background:rgba(232,168,90,0.18);color:var(--amber);border:1px solid rgba(232,168,90,0.35); }
-    .cap-bar { height:6px;background:var(--glass3);border-radius:4px;margin-top:8px;overflow:hidden; }
-    .cap-fill { height:100%;border-radius:4px;background:var(--grad-primary);transition:width 0.5s; }
+    /* ── Page-scoped styles ── */
+    .att-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .att-toolbar .form-input {
+      padding: 7px 12px;
+      font-size: 12px;
+    }
+    .att-toolbar input[type="search"] {
+      width: 180px;
+    }
+    .att-toolbar select {
+      width: 130px;
+    }
+
+    /* Table wrap */
+    .table-wrap {
+      overflow-x: auto;
+      border-radius: 0 0 var(--r-lg) var(--r-lg);
+    }
+
+    /* Late badge — distinct from badge-amber */
+    .badge-late {
+      background: rgba(232,168,90,0.14);
+      color: var(--amber);
+      border: 1px solid rgba(232,168,90,0.30);
+    }
+    [data-theme="light"] .badge-late {
+      background: rgba(192,112,56,0.10);
+      color: var(--amber);
+      border-color: rgba(192,112,56,0.25);
+    }
+
+    /* Cap progress bar */
+    .cap-bar {
+      height: 6px;
+      background: var(--glass3);
+      border-radius: 4px;
+      margin-top: 10px;
+      overflow: hidden;
+    }
+    .cap-fill {
+      height: 100%;
+      border-radius: 4px;
+      background: var(--grad-primary);
+      transition: width 0.5s var(--ease);
+    }
+
+    /* ── Tabs ── */
+    .att-tabs {
+      display: flex;
+      gap: 4px;
+      padding: 14px 20px 0;
+      border-bottom: 1px solid var(--border2);
+      background: transparent;
+    }
+    .att-tab {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px 10px;
+      border-radius: var(--r-sm) var(--r-sm) 0 0;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text3);
+      letter-spacing: 0.3px;
+      border: 1px solid transparent;
+      border-bottom: none;
+      margin-bottom: -1px;
+      transition: color var(--fast), background var(--fast), border-color var(--fast);
+      cursor: pointer;
+      background: none;
+      font-family: var(--font-body);
+    }
+    .att-tab:hover {
+      color: var(--text2);
+      background: var(--glass);
+    }
+    .att-tab.active {
+      color: var(--strawberry-light);
+      background: var(--glass2);
+      border-color: var(--border2);
+      border-bottom-color: var(--glass2);
+    }
+    [data-theme="light"] .att-tab.active {
+      color: var(--strawberry);
+      background: var(--glass3);
+      border-bottom-color: var(--glass3);
+    }
+
+    /* ── Event selector bar ── */
+    .ev-selector {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 20px;
+      background: var(--glass);
+      border: 1px solid var(--border2);
+      border-radius: var(--r-lg);
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      animation: fadeUp 0.35s var(--ease) both;
+    }
+    .ev-selector-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--text3);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .ev-picker-wrap {
+      flex: 1;
+      min-width: 200px;
+      position: relative;
+    }
+    .ev-picker-wrap .form-input {
+      padding-right: 36px;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+    .ev-picker-wrap::after {
+      content: '\ea99'; /* ti-chevron-down */
+      font-family: 'tabler-icons';
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text3);
+      pointer-events: none;
+      font-size: 16px;
+    }
+    .ev-meta-pills {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    /* ── Event history list (All Events tab) ── */
+    .ev-history-list {
+      display: flex;
+      flex-direction: column;
+    }
+    .ev-history-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      transition: background var(--fast);
+    }
+    .ev-history-item:last-child { border-bottom: none; }
+    .ev-history-item:hover { background: var(--glass2); }
+    .ev-history-item.selected { background: rgba(216,103,143,0.07); }
+
+    .ev-timeline-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      position: relative;
+    }
+    .ev-timeline-dot.live {
+      background: var(--success);
+      box-shadow: 0 0 0 3px rgba(110,200,138,0.22);
+      animation: dotPulse 2s ease-in-out infinite;
+    }
+    .ev-timeline-dot.past {
+      background: var(--text4);
+    }
+
+    .ev-history-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .ev-history-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .ev-history-meta {
+      font-size: 11px;
+      color: var(--text3);
+      font-family: var(--font-mono);
+      margin-top: 2px;
+    }
+
+    .ev-history-stats {
+      display: flex;
+      gap: 14px;
+      flex-shrink: 0;
+      align-items: center;
+    }
+    .ev-hist-stat {
+      text-align: center;
+    }
+    .ev-hist-stat-num {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1;
+    }
+    .ev-hist-stat-label {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: var(--text4);
+      margin-top: 2px;
+    }
+    .ev-hist-stat.late .ev-hist-stat-num { color: var(--amber); }
+
+    .ev-jump-btn {
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--glass2);
+      border: 1px solid var(--border2);
+      border-radius: var(--r-xs);
+      color: var(--text3);
+      font-size: 15px;
+      flex-shrink: 0;
+      transition: background var(--fast), color var(--fast), border-color var(--fast);
+    }
+    .ev-jump-btn:hover {
+      background: rgba(216,103,143,0.14);
+      border-color: rgba(216,103,143,0.30);
+      color: var(--strawberry);
+    }
+
+    /* pane wrapper inside card (no extra padding) */
+    .pane { display: none; }
+    .pane.active { display: block; }
+
+    /* card with no default padding for tab layout */
+    .card-tabbed {
+      background: var(--glass);
+      border: 1px solid var(--border2);
+      border-radius: var(--r-lg);
+      margin-bottom: 16px;
+      animation: fadeUp 0.4s var(--ease) both;
+      overflow: hidden;
+      transition: border-color var(--fast), background var(--fast);
+    }
+    .card-tabbed:hover {
+      background: var(--glass2);
+      border-color: var(--border3);
+    }
+
+    /* inner card-header padding */
+    .pane-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      padding: 16px 20px;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* Export all row */
+    .ev-all-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    /* Responsive overrides */
+    @media (max-width: 600px) {
+      .ev-history-stats { display: none; }
+      .att-toolbar input[type="search"] { width: 130px; }
+      .att-toolbar select { width: 110px; }
+    }
   </style>
 </head>
 <body>
 <div class="app-layout">
-  <aside class="sidebar">
+
+  <!-- ══════════════════════════════════════
+       SIDEBAR
+  ══════════════════════════════════════ -->
+  <aside class="sidebar" id="sidebar">
+    <button class="sidebar-toggle-btn" onclick="toggleSidebar()" aria-label="Collapse sidebar">
+      <i class="ti ti-chevron-left"></i>
+    </button>
+
     <div class="sidebar-logo">
-      <div class="logo-icon"><img src="icon.png" alt="TOKI Logo" onerror="this.style.display='none'"/></div>
+      <div class="logo-icon">
+        <img src="icon.png" alt="TOKI" onerror="this.outerHTML='<i class=\'ti ti-clock\' style=\'font-size:18px\'></i>'"/>
+      </div>
       <div>
         <div class="logo-text"><span class="logo-accent">TOKI</span></div>
         <div class="logo-sub">Timing is Everything</div>
       </div>
     </div>
+
     <div class="sidebar-role">
-      <span class="role-pill organizer"><i class="ti ti-microphone"></i> Organizer</span>
+      <span class="role-pill organizer">
+        <i class="ti ti-microphone"></i> Organizer
+      </span>
     </div>
+
     <div class="sidebar-user">
       <div class="user-name" id="sb-name">—</div>
       <div class="user-id" id="sb-dept">—</div>
     </div>
+
     <nav class="sidebar-nav" aria-label="Organizer navigation">
       <div class="nav-section-label">Main</div>
-      <a class="nav-item" href="oDashboard.html"><span class="nav-icon"><i class="ti ti-layout-dashboard"></i></span> Dashboard</a>
-      <a class="nav-item" href="oManageEvent.html"><span class="nav-icon"><i class="ti ti-calendar-event"></i></span> Manage Event</a>
-      <a class="nav-item" href="oCheckIn.html"><span class="nav-icon"><i class="ti ti-door-enter"></i></span> Check-in</a>
-      <a class="nav-item" href="oCheckOut.html"><span class="nav-icon"><i class="ti ti-door-exit"></i></span> Check-out</a>
+      <a class="nav-item" href="oDashboard.html">
+        <span class="nav-icon"><i class="ti ti-layout-dashboard"></i></span> Dashboard
+      </a>
+      <a class="nav-item" href="oManageEvent.html">
+        <span class="nav-icon"><i class="ti ti-calendar-event"></i></span> Manage Event
+      </a>
+      <a class="nav-item" href="oCheckIn.html">
+        <span class="nav-icon"><i class="ti ti-door-enter"></i></span> Check-in
+      </a>
+      <a class="nav-item" href="oCheckOut.html">
+        <span class="nav-icon"><i class="ti ti-door-exit"></i></span> Check-out
+      </a>
+
       <div class="nav-section-label">Records</div>
-      <a class="nav-item active" href="oAttendanceList.html"><span class="nav-icon"><i class="ti ti-clipboard-list"></i></span> Attendance List</a>
-      <a class="nav-item" href="oManualEntry.html"><span class="nav-icon"><i class="ti ti-edit"></i></span> Manual Entry</a>
+      <a class="nav-item active" href="oAttendanceList.html">
+        <span class="nav-icon"><i class="ti ti-clipboard-list"></i></span> Attendance List
+      </a>
+      <a class="nav-item" href="oManualEntry.html">
+        <span class="nav-icon"><i class="ti ti-edit"></i></span> Manual Entry
+      </a>
+
       <div class="nav-section-label">Communication</div>
-      <a class="nav-item" href="oAnnouncements.html"><span class="nav-icon"><i class="ti ti-speakerphone"></i></span> Announcements</a>
+      <a class="nav-item" href="oAnnouncements.html">
+        <span class="nav-icon"><i class="ti ti-speakerphone"></i></span> Announcements
+      </a>
     </nav>
+
     <div class="sidebar-bottom">
       <button class="theme-toggle" onclick="TOKI.toggleTheme()" aria-label="Toggle theme">
         <span style="display:flex;align-items:center;gap:8px;">
@@ -50,25 +365,50 @@
         </span>
         <div class="toggle-switch"></div>
       </button>
-      <button class="logout-btn" onclick="TOKI.logout()"><i class="ti ti-logout"></i> Sign Out</button>
+      <button class="logout-btn" onclick="TOKI.logout()">
+        <i class="ti ti-logout"></i> <span>Sign Out</span>
+      </button>
     </div>
   </aside>
 
+  <!-- Sidebar overlay (mobile) -->
+  <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeMobileSidebar()"></div>
+
+  <!-- ══════════════════════════════════════
+       MAIN CONTENT
+  ══════════════════════════════════════ -->
   <div class="main-content">
-    <div class="top-bar">
-      <div>
-        <div class="page-title">Attendance List</div>
-        <div class="page-sub">View, filter, and export attendance records</div>
+
+    <!-- Top bar -->
+    <div class="top-bar" id="top-bar">
+      <div style="display:flex;align-items:center;gap:0;">
+        <button class="topbar-menu-btn" onclick="openMobileSidebar()" aria-label="Open menu">
+          <i class="ti ti-menu-2"></i>
+        </button>
+        <div>
+          <div class="page-title">Attendance List</div>
+          <div class="page-sub">View, filter &amp; export records across all your events</div>
+        </div>
       </div>
       <div class="top-bar-right">
         <div id="event-badge"></div>
       </div>
     </div>
 
-    <div class="content-scroll">
+    <!-- Scrollable content -->
+    <div class="content-scroll" id="content-scroll">
 
-      <!-- Summary cards -->
-      <div class="stat-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:16px;" id="stat-row">
+      <!-- ── Event Selector ── -->
+      <div class="ev-selector">
+        <span class="ev-selector-label">Viewing</span>
+        <div class="ev-picker-wrap">
+          <select class="form-input" id="ev-picker" onchange="selectEvent(this.value)"></select>
+        </div>
+        <div class="ev-meta-pills" id="ev-meta-pills"></div>
+      </div>
+
+      <!-- ── Stat Cards ── -->
+      <div class="stat-grid" id="stat-grid">
         <div class="stat-card rose">
           <div class="stat-icon"><i class="ti ti-users"></i></div>
           <div class="stat-num" id="s-total">0</div>
@@ -80,7 +420,7 @@
           <div class="stat-label">Completed</div>
         </div>
         <div class="stat-card amber">
-          <div class="stat-icon"><i class="ti ti-clock"></i></div>
+          <div class="stat-icon"><i class="ti ti-clock-exclamation"></i></div>
           <div class="stat-num" id="s-late">0</div>
           <div class="stat-label">Late Arrivals</div>
         </div>
@@ -91,172 +431,538 @@
         </div>
       </div>
 
-      <!-- Cap progress -->
-      <div id="cap-section" style="display:none;" class="card" style="margin-bottom:16px;">
-        <div class="card-header">
-          <div class="card-title">Capacity</div>
+      <!-- ── Capacity bar (conditional) ── -->
+      <div id="cap-section" class="card" style="display:none;padding:18px 20px;margin-bottom:16px;">
+        <div class="card-header" style="margin-bottom:8px;">
+          <div>
+            <div class="card-title">Venue Capacity</div>
+            <div class="card-sub">Real-time occupancy tracker</div>
+          </div>
           <span id="cap-badge" class="badge badge-gray"></span>
         </div>
-        <div class="cap-bar"><div class="cap-fill" id="cap-fill" style="width:0%"></div></div>
+        <div class="cap-bar">
+          <div class="cap-fill" id="cap-fill" style="width:0%"></div>
+        </div>
       </div>
 
-      <div class="card">
-        <div class="card-header">
-          <div>
-            <div class="card-title">Attendance Records</div>
-            <div class="card-sub" id="att-count">0 students</div>
+      <!-- ── Main tabbed card ── -->
+      <div class="card-tabbed">
+
+        <!-- Tabs -->
+        <div class="att-tabs" role="tablist">
+          <button class="att-tab active" id="tab-records" role="tab"
+            aria-selected="true" onclick="switchTab('records')">
+            <i class="ti ti-clipboard-list"></i> Records
+          </button>
+          <button class="att-tab" id="tab-history" role="tab"
+            aria-selected="false" onclick="switchTab('history')">
+            <i class="ti ti-history"></i> All Events
+          </button>
+        </div>
+
+        <!-- ─ Records pane ─ -->
+        <div class="pane active" id="pane-records" role="tabpanel">
+          <div class="pane-header">
+            <div>
+              <div class="card-title">Attendance Records</div>
+              <div class="card-sub" id="att-count">0 students</div>
+            </div>
+            <div class="att-toolbar">
+              <input type="search" class="form-input" id="att-search"
+                placeholder="Search name or ID…"
+                oninput="renderTable()"
+                aria-label="Search attendance"/>
+              <select class="form-input" id="att-filter" onchange="renderTable()">
+                <option value="all">All</option>
+                <option value="on-time">On Time</option>
+                <option value="late">Late</option>
+                <option value="complete">Complete</option>
+                <option value="inside">Still Inside</option>
+                <option value="absent">Absent</option>
+              </select>
+              <button class="btn btn-ghost btn-sm" onclick="exportCSV()">
+                <i class="ti ti-download"></i> CSV
+              </button>
+            </div>
           </div>
-          <div class="oAttendanceList-toolbar">
-            <input type="search" class="form-input" id="att-search"
-              placeholder="Search name or ID…" oninput="renderTable()"
-              style="width:180px;padding:8px 12px;font-size:12.5px;" aria-label="Search"/>
-            <select class="form-input" id="att-filter" onchange="renderTable()"
-              style="width:130px;padding:8px 12px;font-size:12.5px;">
-              <option value="all">All</option>
-              <option value="on-time">On Time</option>
-              <option value="late">Late</option>
-              <option value="complete">Complete</option>
-              <option value="inside">Still Inside</option>
-            </select>
-            <button class="btn btn-ghost btn-sm" onclick="exportCSV()">
-              <i class="ti ti-download"></i> CSV
+
+          <div class="table-wrap">
+            <table class="toki-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Student No.</th>
+                  <th>Name</th>
+                  <th>Check-in</th>
+                  <th>Check-out</th>
+                  <th>Method</th>
+                  <th>Arrival</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="att-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ─ All Events pane ─ -->
+        <div class="pane" id="pane-history" role="tabpanel">
+          <div class="ev-all-header">
+            <div>
+              <div class="card-title">All Your Events</div>
+              <div class="card-sub" id="ev-history-count">—</div>
+            </div>
+            <button class="btn btn-ghost btn-sm" onclick="exportAllCSV()">
+              <i class="ti ti-download"></i> Export All CSV
             </button>
           </div>
+          <div class="ev-history-list" id="ev-history-list"></div>
         </div>
 
-        <div class="table-wrap">
-          <table class="toki-table">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Student No.</th>
-                <th>Name</th>
-                <th>Check-in</th>
-                <th>Check-out</th>
-                <th>Method</th>
-                <th>Arrival</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody id="att-tbody"></tbody>
-          </table>
-        </div>
-      </div>
+      </div><!-- /card-tabbed -->
 
-    </div>
-  </div>
+    </div><!-- /content-scroll -->
+  </div><!-- /main-content -->
 
+  <!-- ══════════════════════════════════════
+       MOBILE BOTTOM NAV
+  ══════════════════════════════════════ -->
   <nav class="bottom-nav" aria-label="Mobile navigation">
-    <a class="bottom-nav-item" href="oDashboard.html"><span class="bn-icon"><i class="ti ti-layout-dashboard"></i></span><span>Home</span></a>
-    <a class="bottom-nav-item" href="oManageEvent.html"><span class="bn-icon"><i class="ti ti-calendar-event"></i></span><span>Event</span></a>
-    <a class="bottom-nav-item" href="oCheckIn.html"><span class="bn-icon"><i class="ti ti-door-enter"></i></span><span>Check-in</span></a>
-    <a class="bottom-nav-item" href="oCheckOut.html"><span class="bn-icon"><i class="ti ti-door-exit"></i></span><span>Check-out</span></a>
-    <a class="bottom-nav-item active" href="oAttendanceList.html"><span class="bn-icon"><i class="ti ti-clipboard-list"></i></span><span>Records</span></a>
+    <a class="bottom-nav-item" href="oDashboard.html">
+      <span class="bn-icon"><i class="ti ti-layout-dashboard"></i></span>
+      <span>Home</span>
+    </a>
+    <a class="bottom-nav-item" href="oManageEvent.html">
+      <span class="bn-icon"><i class="ti ti-calendar-event"></i></span>
+      <span>Event</span>
+    </a>
+    <a class="bottom-nav-item" href="oCheckIn.html">
+      <span class="bn-icon"><i class="ti ti-door-enter"></i></span>
+      <span>Check-in</span>
+    </a>
+    <a class="bottom-nav-item" href="oCheckOut.html">
+      <span class="bn-icon"><i class="ti ti-door-exit"></i></span>
+      <span>Check-out</span>
+    </a>
+    <a class="bottom-nav-item active" href="oAttendanceList.html">
+      <span class="bn-icon"><i class="ti ti-clipboard-list"></i></span>
+      <span>Records</span>
+    </a>
   </nav>
-</div>
 
+</div><!-- /app-layout -->
+
+<!-- Toast container (injected by toki.js) -->
+<div id="toast-container"></div>
+
+<!-- ═══════════════════════════════════════════════════
+     SCRIPTS
+═══════════════════════════════════════════════════ -->
 <script src="shared-state.js"></script>
 <script src="toki.js"></script>
 <script>
-  const user = TOKI.requireOrganizer();
-  TOKI.initTheme();
-  if (user) {
-    document.getElementById('sb-name').textContent = user.name;
-    document.getElementById('sb-dept').textContent = user.dept;
+/* ──────────────────────────────────────────────────
+   BOOTSTRAP
+────────────────────────────────────────────────── */
+const user = TOKI.requireOrganizer();
+TOKI.initTheme();
+
+if (user) {
+  document.getElementById('sb-name').textContent = user.name;
+  document.getElementById('sb-dept').textContent = user.dept;
+}
+
+/* ──────────────────────────────────────────────────
+   STATE
+────────────────────────────────────────────────── */
+let currentEventId = null;
+let currentTab     = 'records';
+
+/* ──────────────────────────────────────────────────
+   HELPERS
+────────────────────────────────────────────────── */
+function isLate(checkinTime, eventTime, grace) {
+  if (!checkinTime || !eventTime) return false;
+  const [eh, em] = eventTime.split(':').map(Number);
+  const [ch, cm] = checkinTime.split(':').map(Number);
+  return (ch * 60 + cm) > (eh * 60 + em) + (grace ?? 15);
+}
+
+/**
+ * Returns all events from shared-state, sorted newest-first.
+ * Supports two storage shapes:
+ *   A) st.events[] array  (multi-event model)
+ *   B) st.event + st.attendance  (single-event legacy model — wrapped into one)
+ */
+function getAllEvents() {
+  const st = TOKI.load();
+  let events = [];
+
+  // Shape A — preferred
+  if (Array.isArray(st.events) && st.events.length) {
+    events = st.events;
+  }
+  // Shape B — legacy: promote the single event
+  else if (st.event) {
+    events = [{
+      id:          st.event.id   || 'legacy',
+      name:        st.event.name || 'Event',
+      date:        st.event.date || '',
+      time:        st.event.time || '',
+      gracePeriod: st.event.gracePeriod ?? st.gracePeriod ?? 15,
+      cap:         st.event.cap  ?? null,
+      active:      true,
+      attendance:  st.attendance || [],
+    }];
   }
 
-  function renderTable() {
-    const st = TOKI.load();
-    const q  = (document.getElementById('att-search').value || '').toLowerCase();
-    const f  = document.getElementById('att-filter').value;
-    const grace = st.event?.gracePeriod ?? st.gracePeriod ?? 15;
-    const eventTime = st.event?.time;
+  // Sort: active first, then by date descending
+  events.sort((a, b) => {
+    if (a.active && !b.active) return -1;
+    if (!a.active && b.active) return  1;
+    return (b.date || '').localeCompare(a.date || '');
+  });
 
-    document.getElementById('event-badge').innerHTML = st.event
-      ? `<span class="badge badge-green"><span class="dot pulse"></span>${st.event.name}</span>`
-      : `<span class="badge badge-gray">No Active Event</span>`;
+  return events;
+}
 
-    const all = st.attendance;
+function getEvent(id) {
+  return getAllEvents().find(e => e.id === id) || null;
+}
+
+/* ──────────────────────────────────────────────────
+   EVENT PICKER
+────────────────────────────────────────────────── */
+function populatePicker() {
+  const events = getAllEvents();
+  if (!events.length) return;
+
+  // Default to first (active or most recent)
+  if (!currentEventId || !events.find(e => e.id === currentEventId)) {
+    currentEventId = events[0].id;
+  }
+
+  const sel = document.getElementById('ev-picker');
+  sel.innerHTML = events.map(ev => {
+    const prefix = ev.active ? '● ' : '○ ';
+    const dateStr = ev.date ? ` · ${ev.date}` : '';
+    return `<option value="${ev.id}" ${ev.id === currentEventId ? 'selected' : ''}>${prefix}${ev.name}${dateStr}</option>`;
+  }).join('');
+}
+
+function selectEvent(id) {
+  currentEventId = id;
+  // reset filters when switching events
+  document.getElementById('att-search').value = '';
+  document.getElementById('att-filter').value = 'all';
+  renderAll();
+}
+
+/* ──────────────────────────────────────────────────
+   EVENT META PILLS
+────────────────────────────────────────────────── */
+function renderEventMeta() {
+  const ev = getEvent(currentEventId);
+  if (!ev) {
+    document.getElementById('ev-meta-pills').innerHTML = '';
+    document.getElementById('event-badge').innerHTML = '';
+    return;
+  }
+
+  const total = ev.attendance.filter(a => a.checkinTime).length;
+
+  document.getElementById('ev-meta-pills').innerHTML = `
+    <span class="badge ${ev.active ? 'badge-green' : 'badge-gray'}">
+      ${ev.active ? '<span class="dot pulse"></span> Live' : '<i class="ti ti-archive" style="font-size:10px"></i> Past'}
+    </span>
+    ${ev.date ? `<span class="badge badge-gray"><i class="ti ti-calendar" style="font-size:10px"></i> ${ev.date}</span>` : ''}
+    ${ev.time ? `<span class="badge badge-gray"><i class="ti ti-clock" style="font-size:10px"></i> ${ev.time}</span>` : ''}
+    ${total > 0 ? `<span class="badge badge-gray"><i class="ti ti-users" style="font-size:10px"></i> ${total} checked in</span>` : ''}
+  `;
+
+  document.getElementById('event-badge').innerHTML = `
+    <span class="badge ${ev.active ? 'badge-green' : 'badge-gray'}">
+      ${ev.active ? '<span class="dot pulse"></span>' : ''} ${ev.name}
+    </span>
+  `;
+}
+
+/* ──────────────────────────────────────────────────
+   STAT CARDS
+────────────────────────────────────────────────── */
+function renderStats() {
+  const ev = getEvent(currentEventId);
+  if (!ev) return;
+
+  const all      = ev.attendance;
+  const grace    = ev.gracePeriod ?? 15;
+  const total    = all.filter(a => a.checkinTime).length;
+  const complete = all.filter(a => a.checkoutTime).length;
+  const inside   = all.filter(a => a.checkinTime && !a.checkoutTime).length;
+  const late     = all.filter(a => isLate(a.checkinTime, ev.time, grace)).length;
+
+  document.getElementById('s-total').textContent    = total;
+  document.getElementById('s-complete').textContent = complete;
+  document.getElementById('s-inside').textContent   = inside;
+  document.getElementById('s-late').textContent     = late;
+
+  // Capacity bar
+  const capSec = document.getElementById('cap-section');
+  if (ev.cap) {
+    capSec.style.display = 'block';
+    const pct = Math.min(100, Math.round((total / ev.cap) * 100));
+    document.getElementById('cap-fill').style.width = pct + '%';
+    document.getElementById('cap-badge').textContent = `${total} / ${ev.cap} (${pct}%)`;
+    document.getElementById('cap-badge').className =
+      'badge ' + (pct >= 100 ? 'badge-red' : pct >= 80 ? 'badge-amber' : 'badge-green');
+  } else {
+    capSec.style.display = 'none';
+  }
+}
+
+/* ──────────────────────────────────────────────────
+   RECORDS TABLE
+────────────────────────────────────────────────── */
+function renderTable() {
+  const ev = getEvent(currentEventId);
+  if (!ev) {
+    document.getElementById('att-tbody').innerHTML =
+      `<tr><td colspan="8"><div class="empty-state"><div class="icon"><i class="ti ti-calendar-off"></i></div><p>No event selected.</p></div></td></tr>`;
+    return;
+  }
+
+  const q     = (document.getElementById('att-search').value || '').toLowerCase();
+  const f     = document.getElementById('att-filter').value;
+  const grace = ev.gracePeriod ?? 15;
+
+  const list = ev.attendance.filter(a => {
+    const matchQ = a.name.toLowerCase().includes(q) || a.sid.toLowerCase().includes(q);
+    const late   = isLate(a.checkinTime, ev.time, grace);
+    const matchF =
+      f === 'all'      ? true :
+      f === 'on-time'  ? (a.checkinTime && !late) :
+      f === 'late'     ? (a.checkinTime && late) :
+      f === 'complete' ? !!a.checkoutTime :
+      f === 'inside'   ? (a.checkinTime && !a.checkoutTime) :
+      f === 'absent'   ? !a.checkinTime : true;
+    return matchQ && matchF;
+  });
+
+  const filterNote = q || f !== 'all' ? ' (filtered)' : '';
+  document.getElementById('att-count').textContent =
+    `${list.length} student${list.length !== 1 ? 's' : ''}${filterNote}`;
+
+  const tbody = document.getElementById('att-tbody');
+  if (!list.length) {
+    tbody.innerHTML = `<tr><td colspan="8"><div class="empty-state">
+      <div class="icon"><i class="ti ti-inbox"></i></div>
+      <p>${q ? 'No results matching your search.' : f !== 'all' ? 'No records match this filter.' : 'No attendance records yet.'}</p>
+    </div></td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = list.map((a, i) => {
+    const late = isLate(a.checkinTime, ev.time, grace);
+    const statusBadge = a.checkoutTime
+      ? `<span class="badge badge-green"><i class="ti ti-circle-check" style="font-size:10px"></i> Complete</span>`
+      : a.checkinTime
+        ? `<span class="badge badge-amber"><i class="ti ti-home" style="font-size:10px"></i> Inside</span>`
+        : `<span class="badge badge-gray">Absent</span>`;
+
+    return `<tr>
+      <td style="color:var(--text4);font-size:11px;font-family:var(--font-mono)">${i + 1}</td>
+      <td><span class="text-mono" style="font-size:12px;color:var(--text3)">${a.sid}</span></td>
+      <td style="font-weight:600;color:var(--text)">${a.name}</td>
+      <td><span class="text-mono" style="font-size:12px">${a.checkinTime || '<span style="color:var(--text4)">—</span>'}</span></td>
+      <td><span class="text-mono" style="font-size:12px">${a.checkoutTime || '<span style="color:var(--text4)">—</span>'}</span></td>
+      <td>${a.method
+        ? `<span class="badge ${a.method === 'manual' ? 'badge-amber' : 'badge-gray'}">${a.method}</span>`
+        : `<span style="color:var(--text4)">—</span>`}</td>
+      <td>${a.checkinTime
+        ? `<span class="badge ${late ? 'badge-late' : 'badge-green'}">${late ? 'Late' : 'On Time'}</span>`
+        : `<span style="color:var(--text4)">—</span>`}</td>
+      <td>${statusBadge}</td>
+    </tr>`;
+  }).join('');
+}
+
+/* ──────────────────────────────────────────────────
+   ALL EVENTS HISTORY
+────────────────────────────────────────────────── */
+function renderHistory() {
+  const events = getAllEvents();
+  document.getElementById('ev-history-count').textContent =
+    `${events.length} event${events.length !== 1 ? 's' : ''}`;
+
+  if (!events.length) {
+    document.getElementById('ev-history-list').innerHTML =
+      `<div class="empty-state"><div class="icon"><i class="ti ti-calendar-off"></i></div><p>No events found.</p></div>`;
+    return;
+  }
+
+  document.getElementById('ev-history-list').innerHTML = events.map(ev => {
+    const all      = ev.attendance;
+    const grace    = ev.gracePeriod ?? 15;
     const total    = all.filter(a => a.checkinTime).length;
     const complete = all.filter(a => a.checkoutTime).length;
+    const late     = all.filter(a => isLate(a.checkinTime, ev.time, grace)).length;
     const inside   = all.filter(a => a.checkinTime && !a.checkoutTime).length;
-    const lateArr  = all.filter(a => a.checkinTime && TOKI.isLate(a.checkinTime, eventTime, grace)).length;
+    const isSelected = ev.id === currentEventId;
 
-    document.getElementById('s-total').textContent    = total;
-    document.getElementById('s-complete').textContent = complete;
-    document.getElementById('s-inside').textContent   = inside;
-    document.getElementById('s-late').textContent     = lateArr;
+    return `<div class="ev-history-item ${isSelected ? 'selected' : ''}" onclick="jumpToEvent('${ev.id}')">
+      <div class="ev-timeline-dot ${ev.active ? 'live' : 'past'}"></div>
+      <div class="ev-history-info">
+        <div class="ev-history-name">${ev.name}</div>
+        <div class="ev-history-meta">${[
+          ev.date,
+          ev.time ? ev.time : null,
+          ev.gracePeriod ? `+${ev.gracePeriod}min grace` : null
+        ].filter(Boolean).join('  ·  ')}</div>
+      </div>
+      <div class="ev-history-stats">
+        <div class="ev-hist-stat">
+          <div class="ev-hist-stat-num">${total}</div>
+          <div class="ev-hist-stat-label">In</div>
+        </div>
+        <div class="ev-hist-stat">
+          <div class="ev-hist-stat-num">${complete}</div>
+          <div class="ev-hist-stat-label">Done</div>
+        </div>
+        ${inside > 0 ? `<div class="ev-hist-stat">
+          <div class="ev-hist-stat-num">${inside}</div>
+          <div class="ev-hist-stat-label">Inside</div>
+        </div>` : ''}
+        ${late > 0 ? `<div class="ev-hist-stat late">
+          <div class="ev-hist-stat-num">${late}</div>
+          <div class="ev-hist-stat-label">Late</div>
+        </div>` : ''}
+        ${ev.active ? `<span class="badge badge-green" style="font-size:10px"><span class="dot pulse"></span> Live</span>` : ''}
+      </div>
+      <button class="ev-jump-btn" title="View this event's records" onclick="event.stopPropagation();jumpToEvent('${ev.id}')">
+        <i class="ti ti-arrow-right"></i>
+      </button>
+    </div>`;
+  }).join('');
+}
 
-    // Cap bar
-    const cap = st.event?.cap;
-    const capSection = document.getElementById('cap-section');
-    if (cap) {
-      capSection.style.display = 'block';
-      const pct = Math.min(100, Math.round((total / cap) * 100));
-      document.getElementById('cap-fill').style.width = pct + '%';
-      document.getElementById('cap-badge').textContent = `${total} / ${cap} (${pct}%)`;
-      document.getElementById('cap-badge').className = 'badge ' + (pct >= 100 ? 'badge-red' : pct >= 80 ? 'badge-amber' : 'badge-green');
-    } else {
-      capSection.style.display = 'none';
-    }
+/* ──────────────────────────────────────────────────
+   JUMP from All Events → Records
+────────────────────────────────────────────────── */
+function jumpToEvent(id) {
+  currentEventId = id;
+  document.getElementById('ev-picker').value = id;
+  switchTab('records');
+  renderAll();
+}
 
-    // Filter
-    const list = all.filter(a => {
-      const matchQ  = a.name.toLowerCase().includes(q) || a.sid.toLowerCase().includes(q);
-      const isLate  = TOKI.isLate(a.checkinTime, eventTime, grace);
-      const matchF  =
-        f === 'all'      ? true :
-        f === 'on-time'  ? (a.checkinTime && !isLate) :
-        f === 'late'     ? isLate :
-        f === 'complete' ? !!a.checkoutTime :
-        f === 'inside'   ? (a.checkinTime && !a.checkoutTime) : true;
-      return matchQ && matchF;
+/* ──────────────────────────────────────────────────
+   TAB SWITCHING
+────────────────────────────────────────────────── */
+function switchTab(tab) {
+  currentTab = tab;
+
+  document.querySelectorAll('.att-tab').forEach(el => {
+    el.classList.remove('active');
+    el.setAttribute('aria-selected', 'false');
+  });
+  document.querySelectorAll('.pane').forEach(el => el.classList.remove('active'));
+
+  document.getElementById('tab-' + tab).classList.add('active');
+  document.getElementById('tab-' + tab).setAttribute('aria-selected', 'true');
+  document.getElementById('pane-' + tab).classList.add('active');
+
+  if (tab === 'history') renderHistory();
+}
+
+/* ──────────────────────────────────────────────────
+   CSV EXPORTS
+────────────────────────────────────────────────── */
+function exportCSV() {
+  const ev = getEvent(currentEventId);
+  if (!ev || !ev.attendance.length) {
+    showToast && showToast('No data to export.', 'error');
+    return;
+  }
+  const grace = ev.gracePeriod ?? 15;
+  const rows = [
+    'Student Number,Name,Check-in,Check-out,Method,Arrival,Status',
+    ...ev.attendance.map(a => {
+      const late = isLate(a.checkinTime, ev.time, grace);
+      return `${a.sid},"${a.name}",${a.checkinTime || ''},${a.checkoutTime || ''},${a.method || ''},` +
+             `${a.checkinTime ? (late ? 'Late' : 'On Time') : ''},` +
+             `${a.checkoutTime ? 'Complete' : a.checkinTime ? 'Inside' : 'Absent'}`;
+    })
+  ].join('\n');
+  dlCSV(rows, `${(ev.name || 'attendance').replace(/\s+/g, '-')}_attendance.csv`);
+  showToast && showToast('CSV exported!', 'success');
+}
+
+function exportAllCSV() {
+  const events = getAllEvents();
+  if (!events.length) return;
+  const rows = ['Event,Date,Student Number,Name,Check-in,Check-out,Method,Arrival,Status'];
+  events.forEach(ev => {
+    const grace = ev.gracePeriod ?? 15;
+    ev.attendance.forEach(a => {
+      const late = isLate(a.checkinTime, ev.time, grace);
+      rows.push(
+        `"${ev.name}",${ev.date || ''},${a.sid},"${a.name}",` +
+        `${a.checkinTime || ''},${a.checkoutTime || ''},${a.method || ''},` +
+        `${a.checkinTime ? (late ? 'Late' : 'On Time') : ''},` +
+        `${a.checkoutTime ? 'Complete' : a.checkinTime ? 'Inside' : 'Absent'}`
+      );
     });
+  });
+  dlCSV(rows.join('\n'), 'all_events_attendance.csv');
+  showToast && showToast('All events exported!', 'success');
+}
 
-    document.getElementById('att-count').textContent = `${list.length} student${list.length !== 1 ? 's' : ''}${q || f !== 'all' ? ' (filtered)' : ''}`;
+function dlCSV(content, filename) {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([content], { type: 'text/csv' }));
+  a.download = filename;
+  a.click();
+}
 
-    const tbody = document.getElementById('att-tbody');
-    if (!list.length) {
-      tbody.innerHTML = `<tr><td colspan="8"><div class="empty-state"><div class="icon"><i class="ti ti-inbox"></i></div><p>${q ? 'No results matching search.' : 'No attendance records yet.'}</p></div></td></tr>`;
-      return;
-    }
+/* ──────────────────────────────────────────────────
+   SIDEBAR COLLAPSE / MOBILE
+────────────────────────────────────────────────── */
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('collapsed');
+}
+function openMobileSidebar() {
+  document.getElementById('sidebar').classList.add('mobile-open');
+  document.getElementById('sidebar-overlay').classList.add('visible');
+}
+function closeMobileSidebar() {
+  document.getElementById('sidebar').classList.remove('mobile-open');
+  document.getElementById('sidebar-overlay').classList.remove('visible');
+}
 
-    tbody.innerHTML = list.map((a, i) => {
-      const isLate = TOKI.isLate(a.checkinTime, eventTime, grace);
-      return `<tr>
-        <td style="color:var(--text3);font-size:11px;">${i + 1}</td>
-        <td><span class="text-mono" style="font-size:12px;">${a.sid}</span></td>
-        <td><strong>${a.name}</strong></td>
-        <td><span class="text-mono" style="font-size:12px;">${a.checkinTime || '—'}</span></td>
-        <td><span class="text-mono" style="font-size:12px;">${a.checkoutTime || '—'}</span></td>
-        <td><span class="badge ${a.method === 'manual' ? 'badge-amber' : 'badge-gray'}">${a.method || 'code'}</span></td>
-        <td>${a.checkinTime ? `<span class="badge ${isLate ? 'badge-late' : 'badge-green'}">${isLate ? 'Late' : 'On Time'}</span>` : '<span style="color:var(--text4)">—</span>'}</td>
-        <td><span class="badge ${a.checkoutTime ? 'badge-green' : 'badge-amber'}">${a.checkoutTime ? 'Complete' : 'Inside'}</span></td>
-      </tr>`;
-    }).join('');
-  }
+/* Sticky topbar shadow */
+document.getElementById('content-scroll').addEventListener('scroll', function () {
+  document.getElementById('top-bar').classList.toggle('scrolled', this.scrollTop > 4);
+});
 
-  function exportCSV() {
-    const st = TOKI.load();
-    if (!st.attendance.length) { showToast('No data to export.', 'error'); return; }
-    const grace = st.event?.gracePeriod ?? 15;
-    const rows = [
-      'Student Number,Name,Check-in,Check-out,Method,Arrival,Status',
-      ...st.attendance.map(a => {
-        const isLate = TOKI.isLate(a.checkinTime, st.event?.time, grace);
-        return `${a.sid},"${a.name}",${a.checkinTime||''},${a.checkoutTime||''},${a.method||'code'},${a.checkinTime?(isLate?'Late':'On Time'):''},${a.checkoutTime?'Complete':'Inside'}`;
-      })
-    ].join('\n');
-    const blob = new Blob([rows], { type: 'text/csv' });
-    const anchor = document.createElement('a');
-    anchor.href = URL.createObjectURL(blob);
-    anchor.download = `${(st.event?.name || 'attendance').replace(/\s+/g,'-')}_attendance.csv`;
-    anchor.click();
-    showToast('CSV exported!', 'success');
-  }
+/* ──────────────────────────────────────────────────
+   RENDER ALL
+────────────────────────────────────────────────── */
+function renderAll() {
+  populatePicker();
+  renderEventMeta();
+  renderStats();
+  if (currentTab === 'records') renderTable();
+  if (currentTab === 'history') renderHistory();
+}
 
-  renderTable();
-  setInterval(renderTable, 5000);
+// Initial render
+renderAll();
+
+// Auto-refresh every 5 s (only live data needs it)
+setInterval(() => {
+  const ev = getEvent(currentEventId);
+  if (ev && ev.active) renderAll();
+}, 5000);
 </script>
 </body>
 </html>

@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TOKI — Pricing</title>
+  <link rel="stylesheet" href="toki.css" />
+  <style>
+    .pricing-page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: calc(var(--topbar-h) + 56px) 40px 80px;
+      animation: fadeUp 0.6s var(--ease) both;
+    }
+    .pricing-page h1 {
+      font-size: clamp(28px, 5vw, 44px);
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 32px;
+      background: var(--grad-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .demo-notice {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      background: rgba(216,103,143,0.07);
+      border: 1px solid rgba(216,103,143,0.20);
+      border-radius: var(--r-md);
+      padding: 14px 18px;
+      font-size: 13px;
+      color: var(--text2);
+      margin-bottom: 28px;
+    }
+    .demo-notice i { color: var(--strawberry); flex-shrink: 0; margin-top: 1px; }
+
+    /* ── 4-column pricing grid ── */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 20px;
+      align-items: stretch;
+    }
+    .pricing-card {
+      background: var(--glass);
+      border: 1px solid var(--border2);
+      border-radius: var(--r-lg);
+      padding: 24px 18px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      transition: border-color var(--fast), background var(--fast), box-shadow var(--fast), transform var(--fast);
+      animation: fadeUp 0.4s var(--ease) both;
+    }
+    .pricing-card:nth-child(1) { animation-delay: 0ms; }
+    .pricing-card:nth-child(2) { animation-delay: 60ms; }
+    .pricing-card:nth-child(3) { animation-delay: 120ms; }
+    .pricing-card:nth-child(4) { animation-delay: 180ms; }
+    .pricing-card:hover {
+      background: var(--glass2);
+      border-color: var(--border3);
+      box-shadow: var(--shadow-sm);
+      transform: translateY(-2px);
+    }
+    .pricing-card.featured {
+      border: 2px solid var(--strawberry);
+      box-shadow: 0 0 28px rgba(216,103,143,0.15);
+    }
+    .popular-badge {
+      position: absolute;
+      top: -13px; left: 50%;
+      transform: translateX(-50%);
+      background: var(--grad-primary);
+      color: white;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 4px 14px;
+      border-radius: 20px;
+      white-space: nowrap;
+    }
+    .plan-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text3);
+      margin-bottom: 12px;
+    }
+    .plan-price {
+      font-size: 30px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -1px;
+      line-height: 1;
+      margin-bottom: 3px;
+    }
+    .plan-price sup {
+      font-size: 15px;
+      font-weight: 600;
+      vertical-align: top;
+      margin-top: 5px;
+      display: inline-block;
+    }
+    .plan-cadence {
+      font-size: 11px;
+      color: var(--text3);
+      margin-bottom: 8px;
+    }
+    .plan-desc {
+      font-size: 12px;
+      color: var(--text3);
+      line-height: 1.5;
+      margin-bottom: 16px;
+    }
+    .plan-sep {
+      height: 1px;
+      background: var(--border);
+      margin: 12px 0 14px;
+    }
+    .plan-features {
+      list-style: none;
+      padding: 0; margin: 0 0 18px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex: 1;
+    }
+    .plan-features li {
+      display: flex;
+      align-items: flex-start;
+      gap: 7px;
+      font-size: 12px;
+      color: var(--text2);
+      line-height: 1.4;
+    }
+    .plan-features li i { font-size: 13px; flex-shrink: 0; margin-top: 1px; color: var(--matcha); }
+    .plan-features li.off { color: var(--text4); }
+    .plan-features li.off i { color: var(--text4); }
+
+    /* ── Add-ons ── */
+    .addon-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .addon-card {
+      background: var(--glass);
+      border: 1px solid var(--border2);
+      border-radius: var(--r-lg);
+      padding: 20px;
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      transition: border-color var(--fast), background var(--fast), transform var(--fast);
+      animation: fadeUp 0.5s var(--ease) both;
+    }
+    .addon-card:hover { background: var(--glass2); border-color: var(--border3); transform: translateY(-1px); }
+    .addon-icon {
+      width: 40px; height: 40px;
+      border-radius: var(--r-sm);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; flex-shrink: 0;
+    }
+    .addon-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+    .addon-desc  { font-size: 12px; color: var(--text3); line-height: 1.5; margin-bottom: 10px; }
+    .addon-price { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 10px; }
+    .addon-price span { font-size: 12px; font-weight: 400; color: var(--text3); }
+
+    /* ── Compare table ── */
+    .compare-wrap { overflow-x: auto; border-radius: var(--r-md); border: 1px solid var(--border); }
+    .compare-table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 520px; }
+    .compare-table th {
+      text-align: left; padding: 10px 14px;
+      font-size: 10px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase;
+      color: var(--text3); border-bottom: 1px solid var(--border2); background: var(--glass);
+    }
+    .compare-table td {
+      padding: 11px 14px; border-bottom: 1px solid var(--border);
+      color: var(--text2); vertical-align: middle;
+    }
+    .compare-table tr:last-child td { border-bottom: none; }
+    .compare-table td:first-child { color: var(--text); font-weight: 500; }
+    .ic { color: var(--matcha); }
+    .ix { color: var(--text4); }
+
+    /* ── FAQ ── */
+    .faq-item { border-bottom: 1px solid var(--border); padding: 14px 0; cursor: pointer; }
+    .faq-item:last-child { border-bottom: none; }
+    .faq-q {
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: 13px; font-weight: 600; color: var(--text); gap: 12px;
+    }
+    .faq-q i { color: var(--text3); flex-shrink: 0; transition: transform var(--med); }
+    .faq-a { display: none; font-size: 13px; color: var(--text2); line-height: 1.65; padding-top: 10px; }
+
+    /* ── Modal overrides ── */
+    .modal-plan-tag {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(216,103,143,0.10);
+      color: var(--strawberry);
+      border: 1px solid rgba(216,103,143,0.25);
+      border-radius: 20px;
+      font-size: 11px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase;
+      padding: 4px 12px; margin-bottom: 18px;
+    }
+    .modal-success-area { display: none; text-align: center; padding: 16px 0; }
+    .modal-success-icon { font-size: 48px; color: var(--matcha); margin-bottom: 12px; }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .pricing-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 560px) {
+      .pricing-grid { grid-template-columns: 1fr; }
+      .addon-grid   { grid-template-columns: 1fr; }
+      .pricing-page { padding: calc(var(--topbar-h) + 32px) 20px 60px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="logo">TOKI</div>
+    <nav class="nav" aria-label="Main navigation">
+      <a href="index.html">Home</a>
+      <a href="features.html">Features</a>
+      <a href="how.html">How it works</a>
+      <a href="about.html">About</a>
+    </nav>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <button class="topbar-theme-btn" onclick="toggleTheme()" aria-label="Toggle theme">
+        <i class="ti ti-moon" id="topbar-theme-icon"></i>
+      </button>
+      <a href="login.html" class="btn btn-primary btn-sm">Sign In</a>
+    </div>
+  </header>
+
+  <main class="pricing-page">
+    <h1>Pricing</h1>
+
+    <div class="demo-notice">
+      <i class="ti ti-info-circle"></i>
+      <div>
+        This is a <strong style="color:var(--text);">demo system.</strong>
+        Selecting a plan simulates the subscription flow — no real payment is processed.
+      </div>
+    </div>
+
+    <!-- 4-column pricing cards -->
+    <div class="pricing-grid">
+
+      <!-- Free -->
+      <div class="pricing-card">
+        <div class="plan-label">Free Pilot</div>
+        <div class="plan-price"><sup>₱</sup>0</div>
+        <div class="plan-cadence">/ month</div>
+        <div class="plan-desc">Try TOKI at your first event. No commitment.</div>
+        <div class="plan-sep"></div>
+        <ul class="plan-features">
+          <li><i class="ti ti-check"></i>1 active event</li>
+          <li><i class="ti ti-check"></i>Up to 50 attendees</li>
+          <li><i class="ti ti-check"></i>OTP check-in &amp; check-out</li>
+          <li><i class="ti ti-check"></i>GPS geofencing</li>
+          <li><i class="ti ti-check"></i>CSV export</li>
+          <li class="off"><i class="ti ti-x"></i>Multiple organizers</li>
+          <li class="off"><i class="ti ti-x"></i>Analytics dashboard</li>
+          <li class="off"><i class="ti ti-x"></i>Priority support</li>
+        </ul>
+        <button class="btn btn-ghost btn-full" onclick="openModal('Free Pilot','₱0/month')">
+          <i class="ti ti-rocket"></i> Get Started Free
+        </button>
+      </div>
+
+      <!-- Basic (featured) -->
+      <div class="pricing-card featured">
+        <div class="popular-badge">Most Popular</div>
+        <div class="plan-label">Basic</div>
+        <div class="plan-price"><sup>₱</sup>1,000</div>
+        <div class="plan-cadence">/ month per institution</div>
+        <div class="plan-desc">For small institutions running regular events.</div>
+        <div class="plan-sep"></div>
+        <ul class="plan-features">
+          <li><i class="ti ti-check"></i>Unlimited events</li>
+          <li><i class="ti ti-check"></i>Up to 200 attendees/event</li>
+          <li><i class="ti ti-check"></i>OTP check-in &amp; check-out</li>
+          <li><i class="ti ti-check"></i>GPS geofencing</li>
+          <li><i class="ti ti-check"></i>CSV &amp; PDF export</li>
+          <li><i class="ti ti-check"></i>Up to 3 organizer accounts</li>
+          <li><i class="ti ti-check"></i>Attendance analytics</li>
+          <li class="off"><i class="ti ti-x"></i>Priority support</li>
+        </ul>
+        <button class="btn btn-primary btn-full" onclick="openModal('Basic','₱1,000/month')">
+          <i class="ti ti-credit-card"></i> Subscribe — ₱1,000/mo
+        </button>
+      </div>
+
+      <!-- Standard -->
+      <div class="pricing-card">
+        <div class="plan-label">Standard</div>
+        <div class="plan-price"><sup>₱</sup>2,000</div>
+        <div class="plan-cadence">/ month per institution</div>
+        <div class="plan-desc">For growing institutions with multiple departments.</div>
+        <div class="plan-sep"></div>
+        <ul class="plan-features">
+          <li><i class="ti ti-check"></i>Unlimited events</li>
+          <li><i class="ti ti-check"></i>Up to 500 attendees/event</li>
+          <li><i class="ti ti-check"></i>OTP check-in &amp; check-out</li>
+          <li><i class="ti ti-check"></i>GPS geofencing</li>
+          <li><i class="ti ti-check"></i>CSV &amp; PDF export</li>
+          <li><i class="ti ti-check"></i>Up to 10 organizer accounts</li>
+          <li><i class="ti ti-check"></i>Full analytics dashboard</li>
+          <li><i class="ti ti-check"></i>Email support (48h)</li>
+        </ul>
+        <button class="btn btn-ghost btn-full" onclick="openModal('Standard','₱2,000/month')">
+          <i class="ti ti-credit-card"></i> Subscribe — ₱2,000/mo
+        </button>
+      </div>
+
+      <!-- Premium -->
+      <div class="pricing-card">
+        <div class="plan-label">Premium</div>
+        <div class="plan-price"><sup>₱</sup>3,000</div>
+        <div class="plan-cadence">/ month per institution</div>
+        <div class="plan-desc">Full-featured for large universities.</div>
+        <div class="plan-sep"></div>
+        <ul class="plan-features">
+          <li><i class="ti ti-check"></i>Unlimited events</li>
+          <li><i class="ti ti-check"></i>Unlimited attendees</li>
+          <li><i class="ti ti-check"></i>OTP check-in &amp; check-out</li>
+          <li><i class="ti ti-check"></i>GPS geofencing</li>
+          <li><i class="ti ti-check"></i>CSV &amp; PDF export</li>
+          <li><i class="ti ti-check"></i>Unlimited organizer accounts</li>
+          <li><i class="ti ti-check"></i>Full analytics dashboard</li>
+          <li><i class="ti ti-check"></i>Priority support (same-day)</li>
+        </ul>
+        <button class="btn btn-ghost btn-full" onclick="openModal('Premium','₱3,000/month')">
+          <i class="ti ti-credit-card"></i> Subscribe — ₱3,000/mo
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Add-ons -->
+    <div class="addon-grid">
+      <div class="addon-card">
+        <div class="addon-icon" style="background:rgba(159,170,116,0.15);color:var(--matcha);">
+          <i class="ti ti-calendar-event"></i>
+        </div>
+        <div>
+          <div class="addon-title">Event-Based Package</div>
+          <div class="addon-desc">Pay only for who shows up — no monthly commitment. Perfect for student orgs and occasional events.</div>
+          <div class="addon-price">₱1 <span>/ attendee</span></div>
+          <div style="font-size:11px;color:var(--text3);margin-bottom:12px;line-height:1.8;font-family:var(--font-mono);">
+            50 attendees = ₱50<br>
+            200 attendees = ₱200<br>
+            500 attendees = ₱500
+          </div>
+          <button class="btn btn-ghost btn-sm" onclick="openModal('Event-Based Package','₱1/attendee')">
+            <i class="ti ti-bolt"></i> Book an Event
+          </button>
+        </div>
+      </div>
+      <div class="addon-card">
+        <div class="addon-icon" style="background:rgba(166,86,137,0.15);color:var(--plum);">
+          <i class="ti ti-code"></i>
+        </div>
+        <div>
+          <div class="addon-title">Custom Development</div>
+          <div class="addon-desc">Need a tailored system built for your specific workflows? We'll build it.</div>
+          <div class="addon-price">₱5,000 – ₱15,000 <span>/ project</span></div>
+          <button class="btn btn-ghost btn-sm" onclick="openModal('Custom Development','₱5,000–₱15,000/project')">
+            <i class="ti ti-message"></i> Request a Quote
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Compare table -->
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title"><i class="ti ti-table" style="margin-right:8px;color:var(--text3);"></i>Plan Comparison</div>
+          <div class="card-sub">See what's included at each tier</div>
+        </div>
+      </div>
+      <div class="compare-wrap">
+        <table class="compare-table">
+          <thead>
+            <tr>
+              <th style="width:34%;">Feature</th>
+              <th>Free</th><th>Basic</th><th>Standard</th><th>Premium</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Active events</td><td>1</td><td>Unlimited</td><td>Unlimited</td><td>Unlimited</td></tr>
+            <tr><td>Attendees / event</td><td>50</td><td>200</td><td>500</td><td>Unlimited</td></tr>
+            <tr>
+              <td>OTP check-in / out</td>
+              <td><i class="ti ti-check ic"></i></td><td><i class="ti ti-check ic"></i></td>
+              <td><i class="ti ti-check ic"></i></td><td><i class="ti ti-check ic"></i></td>
+            </tr>
+            <tr>
+              <td>GPS geofencing</td>
+              <td><i class="ti ti-check ic"></i></td><td><i class="ti ti-check ic"></i></td>
+              <td><i class="ti ti-check ic"></i></td><td><i class="ti ti-check ic"></i></td>
+            </tr>
+            <tr>
+              <td>CSV export</td>
+              <td><i class="ti ti-check ic"></i></td><td><i class="ti ti-check ic"></i></td>
+              <td><i class="ti ti-check ic"></i></td><td><i class="ti ti-check ic"></i></td>
+            </tr>
+            <tr>
+              <td>PDF export</td>
+              <td><i class="ti ti-x ix"></i></td><td><i class="ti ti-check ic"></i></td>
+              <td><i class="ti ti-check ic"></i></td><td><i class="ti ti-check ic"></i></td>
+            </tr>
+            <tr><td>Organizer accounts</td><td>1</td><td>3</td><td>10</td><td>Unlimited</td></tr>
+            <tr>
+              <td>Attendance analytics</td>
+              <td><i class="ti ti-x ix"></i></td><td><i class="ti ti-check ic"></i></td>
+              <td><i class="ti ti-check ic"></i></td><td><i class="ti ti-check ic"></i></td>
+            </tr>
+            <tr><td>Support</td><td>—</td><td>—</td><td>Email (48h)</td><td>Same-day</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- FAQ -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><i class="ti ti-help-circle" style="margin-right:8px;color:var(--text3);"></i>Frequently Asked Questions</div>
+      </div>
+      <div class="faq-item" onclick="toggleFAQ(this)">
+        <div class="faq-q"><span>Can we try TOKI before subscribing?</span><i class="ti ti-chevron-down"></i></div>
+        <div class="faq-a">Yes! The Free Pilot plan lets you run one event with up to 50 attendees at no cost — the best way to experience TOKI before committing.</div>
+      </div>
+      <div class="faq-item" onclick="toggleFAQ(this)">
+        <div class="faq-q"><span>Is billing monthly or annual?</span><i class="ti ti-chevron-down"></i></div>
+        <div class="faq-a">Subscriptions are billed monthly per institution. No long-term contracts — cancel or change plans any time.</div>
+      </div>
+      <div class="faq-item" onclick="toggleFAQ(this)">
+        <div class="faq-q"><span>What counts as an "event"?</span><i class="ti ti-chevron-down"></i></div>
+        <div class="faq-a">Any session with its own check-in/check-out window — seminars, orientations, assemblies, sports days, etc.</div>
+      </div>
+      <div class="faq-item" onclick="toggleFAQ(this)">
+        <div class="faq-q"><span>Can we upgrade or downgrade our plan?</span><i class="ti ti-chevron-down"></i></div>
+        <div class="faq-a">Yes. Switch plans at any time. Changes take effect at the start of your next billing cycle.</div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Subscription modal -->
+  <div class="modal-overlay" id="sub-modal">
+    <div class="modal">
+      <div id="modal-form-area">
+        <div class="modal-header">
+          <div class="modal-title">Subscribe to TOKI</div>
+          <button class="modal-close" onclick="closeModal()" aria-label="Close"><i class="ti ti-x"></i></button>
+        </div>
+        <div class="modal-plan-tag" id="modal-plan-tag"><i class="ti ti-tag"></i> Basic — ₱1,000/month</div>
+        <div class="form-group">
+          <label class="form-label" for="m-inst">Institution Name</label>
+          <input class="form-input" type="text" id="m-inst" placeholder="e.g. Pamantasan ng Lungsod ng Pasig" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="m-contact">Contact Person</label>
+          <input class="form-input" type="text" id="m-contact" placeholder="e.g. Dr. Santos" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="m-email">Email Address</label>
+          <input class="form-input" type="email" id="m-email" placeholder="e.g. admin@institution.edu.ph" />
+        </div>
+        <div id="modal-err" class="alert alert-danger" style="display:none;"></div>
+        <div class="modal-footer" style="margin-top:8px;">
+          <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+          <button class="btn btn-primary" onclick="submitModal()">
+            <i class="ti ti-check"></i> Confirm Subscription
+          </button>
+        </div>
+        <div style="margin-top:12px;font-size:11px;color:var(--text4);text-align:center;">
+          <i class="ti ti-info-circle" style="margin-right:4px;"></i>Demo only — no real payment is processed.
+        </div>
+      </div>
+      <div class="modal-success-area" id="modal-success-area">
+        <div class="modal-success-icon"><i class="ti ti-circle-check"></i></div>
+        <div style="font-size:18px;font-weight:700;color:var(--text);margin-bottom:8px;">Subscription Confirmed!</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.65;" id="modal-success-text"></div>
+        <button class="btn btn-primary btn-full" style="margin-top:20px;" onclick="closeModal()">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="toki.js"></script>
+  <script>
+    function applyTheme(t) {
+      document.documentElement.setAttribute('data-theme', t);
+      localStorage.setItem('toki_theme', t);
+      const icon = document.getElementById('topbar-theme-icon');
+      if (icon) icon.className = t === 'dark' ? 'ti ti-sun' : 'ti ti-moon';
+    }
+    function toggleTheme() {
+      applyTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    }
+    applyTheme(localStorage.getItem('toki_theme') || 'dark');
+
+    let _plan = '', _price = '';
+    function openModal(plan, price) {
+      _plan = plan; _price = price;
+      document.getElementById('modal-plan-tag').innerHTML = `<i class="ti ti-tag"></i> ${plan} — ${price}`;
+      document.getElementById('modal-form-area').style.display = 'block';
+      document.getElementById('modal-success-area').style.display = 'none';
+      document.getElementById('modal-err').style.display = 'none';
+      ['m-inst','m-contact','m-email'].forEach(id => {
+        document.getElementById(id).value = '';
+        document.getElementById(id).classList.remove('error');
+      });
+      document.getElementById('sub-modal').classList.add('open');
+    }
+    function closeModal() { document.getElementById('sub-modal').classList.remove('open'); }
+    function submitModal() {
+      const inst    = document.getElementById('m-inst').value.trim();
+      const contact = document.getElementById('m-contact').value.trim();
+      const email   = document.getElementById('m-email').value.trim();
+      const errEl   = document.getElementById('modal-err');
+      errEl.style.display = 'none';
+      ['m-inst','m-contact','m-email'].forEach(id => document.getElementById(id).classList.remove('error'));
+      if (!inst || !contact || !email) {
+        errEl.innerHTML = '<i class="ti ti-alert-circle"></i> Please fill in all fields.';
+        errEl.style.display = 'flex';
+        if (!inst)    document.getElementById('m-inst').classList.add('error');
+        if (!contact) document.getElementById('m-contact').classList.add('error');
+        if (!email)   document.getElementById('m-email').classList.add('error');
+        return;
+      }
+      if (!email.includes('@')) {
+        errEl.innerHTML = '<i class="ti ti-alert-circle"></i> Enter a valid email address.';
+        errEl.style.display = 'flex';
+        document.getElementById('m-email').classList.add('error');
+        return;
+      }
+      document.getElementById('modal-success-text').textContent =
+        `Thank you, ${contact}! ${inst} has been registered under the ${_plan} plan (${_price}). Our team will reach out to ${email} within 24 hours.`;
+      document.getElementById('modal-form-area').style.display = 'none';
+      document.getElementById('modal-success-area').style.display = 'block';
+    }
+    document.getElementById('sub-modal').addEventListener('click', function(e) {
+      if (e.target === this) closeModal();
+    });
+    function toggleFAQ(item) {
+      const ans = item.querySelector('.faq-a');
+      const icon = item.querySelector('.faq-q i');
+      const open = ans.style.display === 'block';
+      ans.style.display = open ? 'none' : 'block';
+      if (icon) icon.style.transform = open ? 'rotate(0deg)' : 'rotate(180deg)';
+    }
+  </script>
+</body>
+</html>

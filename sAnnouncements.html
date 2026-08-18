@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TOKI — Announcements</title>
+  <link rel="stylesheet" href="toki.css" />
+  <style>
+    .sAnnouncements-card {
+      background: var(--glass);
+      border: 1px solid var(--border2);
+      border-radius: var(--r-lg);
+      padding: 20px;
+      margin-bottom: 14px;
+      animation: fadeUp 0.3s var(--ease) both;
+      transition: border-color var(--fast), background var(--fast);
+    }
+    .sAnnouncements-card:hover {
+      background: var(--glass2);
+      border-color: var(--border3);
+    }
+    .sAnnouncements-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      gap: 12px;
+    }
+    .sAnnouncements-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .sAnnouncements-type {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      padding: 3px 9px;
+      border-radius: 12px;
+      background: rgba(216,103,143,0.12);
+      color: var(--strawberry);
+      margin-top: 4px;
+      white-space: nowrap;
+    }
+    .sAnnouncements-detail-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text2);
+      margin-bottom: 6px;
+    }
+    .sAnnouncements-detail-row i {
+      flex-shrink: 0;
+      width: 16px;
+      text-align: center;
+    }
+    .sAnnouncements-notes {
+      font-size: 13px;
+      color: var(--text2);
+      line-height: 1.65;
+      background: var(--glass);
+      border: 1px solid var(--border);
+      border-radius: var(--r-sm);
+      padding: 10px 13px;
+      margin: 12px 0;
+    }
+    .sAnnouncements-audience {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+    }
+    .sAnnouncements-audience-label {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--text4);
+      margin-bottom: 7px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .sAnnouncements-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .sAnnouncements-tag {
+      padding: 3px 9px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+      background: var(--glass2);
+      border: 1px solid var(--border2);
+      color: var(--text2);
+    }
+    .sAnnouncements-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border);
+      font-size: 11px;
+      color: var(--text3);
+    }
+    .sAnnouncements-new-dot {
+      width: 8px; height: 8px;
+      background: var(--strawberry);
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 5px;
+      animation: dotPulse 2s ease-in-out infinite;
+      flex-shrink: 0;
+    }
+    .sAnnouncements-filter-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+  </style>
+</head>
+<body>
+<div class="app-layout">
+
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon"><img src="icon.png" alt="TOKI Logo" /></div>
+      <div>
+        <div class="logo-text"><span class="logo-accent">TOKI</span></div>
+        <div class="logo-sub">Timing is Everything</div>
+      </div>
+    </div>
+    <div class="sidebar-role">
+      <span class="role-pill student"><i class="ti ti-school"></i> Student</span>
+    </div>
+    <div class="sidebar-user">
+      <div class="user-name" id="sb-name">—</div>
+      <div class="user-id" id="sb-id">—</div>
+      <div class="user-id" id="sb-course">—</div>
+    </div>
+    <nav class="sidebar-nav" aria-label="Student navigation">
+      <div class="nav-section-label">Attendance</div>
+      <a class="nav-item" href="sDashboard.html"><span class="nav-icon"><i class="ti ti-layout-dashboard"></i></span> Dashboard</a>
+      <a class="nav-item" href="sCheckIn.html"><span class="nav-icon"><i class="ti ti-circle-check"></i></span> Check-in</a>
+      <a class="nav-item" href="sCheckOut.html"><span class="nav-icon"><i class="ti ti-door-exit"></i></span> Check-out</a>
+      <div class="nav-section-label">Records</div>
+      <a class="nav-item" href="sMyHistory.html"><span class="nav-icon"><i class="ti ti-clipboard-list"></i></span> My History</a>
+      <div class="nav-section-label">Event</div>
+      <a class="nav-item" href="sEvent.html"><span class="nav-icon"><i class="ti ti-calendar-event"></i></span> Event Info</a>
+      <a class="nav-item active" href="sAnnouncements.html"><span class="nav-icon"><i class="ti ti-speakerphone"></i></span> Announcements</a>
+      <div class="nav-section-label">Help</div>
+      <a class="nav-item" href="sHowItWorks.html"><span class="nav-icon"><i class="ti ti-help-circle"></i></span> How It Works</a>
+    </nav>
+    <div class="sidebar-bottom">
+      <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+        <span style="display:flex;align-items:center;gap:8px;">
+          <i class="ti" id="theme-icon"></i>
+          <span id="theme-label">Light Mode</span>
+        </span>
+        <div class="toggle-switch"></div>
+      </button>
+      <button class="logout-btn" onclick="logout()"><i class="ti ti-logout"></i> Sign Out</button>
+    </div>
+  </aside>
+
+  <div class="main-content">
+    <div class="top-bar">
+      <div>
+        <div class="page-title">Announcements</div>
+        <div class="page-sub">Event details posted by your organizer</div>
+      </div>
+      <div class="top-bar-right">
+        <span class="badge badge-gray" id="ann-count">0 posts</span>
+      </div>
+    </div>
+
+    <div class="content-scroll">
+
+      <!-- Filter row -->
+      <div class="sAnnouncements-filter-row">
+        <input
+          type="search"
+          class="form-input"
+          id="ann-search"
+          placeholder="Search announcements…"
+          oninput="renderFeed()"
+          style="width:210px;padding:8px 12px;font-size:12.5px;"
+          aria-label="Search announcements"
+        />
+        <select class="form-input" id="ann-type-filter" onchange="renderFeed()"
+          style="width:140px;padding:8px 12px;font-size:12.5px;">
+          <option value="all">All Types</option>
+          <option value="seminar">Seminar</option>
+          <option value="orientation">Orientation</option>
+          <option value="assembly">Assembly</option>
+          <option value="sports">Sports</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+
+      <!-- Feed -->
+      <div id="ann-feed"></div>
+
+    </div>
+  </div>
+
+  <!-- Mobile bottom nav -->
+  <nav class="bottom-nav" aria-label="Mobile navigation">
+    <a class="bottom-nav-item" href="sDashboard.html"><span class="bn-icon"><i class="ti ti-layout-dashboard"></i></span><span>Home</span></a>
+    <a class="bottom-nav-item" href="sCheckIn.html"><span class="bn-icon"><i class="ti ti-circle-check"></i></span><span>Check In</span></a>
+    <a class="bottom-nav-item" href="sEvent.html"><span class="bn-icon"><i class="ti ti-calendar-event"></i></span><span>Event</span></a>
+    <a class="bottom-nav-item active" href="sAnnouncements.html"><span class="bn-icon"><i class="ti ti-speakerphone"></i></span><span>Posts</span></a>
+    <a class="bottom-nav-item" href="sMyHistory.html"><span class="bn-icon"><i class="ti ti-clipboard-list"></i></span><span>History</span></a>
+  </nav>
+
+</div>
+
+<script src="toki.js"></script>
+<script>
+  const user = JSON.parse(sessionStorage.getItem('ae_user') || 'null');
+  if (!user || user.role !== 'student') window.location.href = 'login.html';
+
+  document.getElementById('sb-name').textContent   = user.name;
+  document.getElementById('sb-id').textContent     = user.id;
+  document.getElementById('sb-course').textContent = user.course;
+
+  function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('toki_theme', theme);
+    const icon  = document.getElementById('theme-icon');
+    const label = document.getElementById('theme-label');
+    if (icon)  icon.className    = theme === 'light' ? 'ti ti-moon' : 'ti ti-sun';
+    if (label) label.textContent = theme === 'light' ? 'Dark Mode'  : 'Light Mode';
+  }
+  function toggleTheme() {
+    const cur = document.documentElement.getAttribute('data-theme') || 'dark';
+    applyTheme(cur === 'dark' ? 'light' : 'dark');
+  }
+  applyTheme(localStorage.getItem('toki_theme') || 'dark');
+
+  function loadAnns() {
+    try { return JSON.parse(localStorage.getItem('toki_announcements') || '[]'); } catch { return []; }
+  }
+
+  const typeLabels = {
+    seminar: 'Seminar', orientation: 'Orientation',
+    assembly: 'Assembly', sports: 'Sports', other: 'Other',
+  };
+
+  function fmtDate(d) {
+    if (!d) return '—';
+    const [y, m, day] = d.split('-');
+    const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    return months[parseInt(m) - 1] + ' ' + parseInt(day) + ', ' + y;
+  }
+  function fmtTime(t) {
+    if (!t) return '—';
+    const [h, m] = t.split(':').map(Number);
+    return (h % 12 || 12) + ':' + String(m).padStart(2, '0') + ' ' + (h >= 12 ? 'PM' : 'AM');
+  }
+  function esc(s) { return String(s).replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+  // Track which announcements the student has "seen" (by ID)
+  function getSeenIds() {
+    try { return new Set(JSON.parse(localStorage.getItem('toki_seen_anns') || '[]')); } catch { return new Set(); }
+  }
+  function markSeen(ids) {
+    localStorage.setItem('toki_seen_anns', JSON.stringify([...ids]));
+  }
+
+  function renderFeed() {
+    const allAnns   = loadAnns();
+    const q         = (document.getElementById('ann-search').value || '').toLowerCase();
+    const typeFilter = document.getElementById('ann-type-filter').value;
+    const seenIds   = getSeenIds();
+
+    let list = allAnns.filter(ann => {
+      const matchQ    = ann.title.toLowerCase().includes(q) || ann.venue.toLowerCase().includes(q);
+      const matchType = typeFilter === 'all' || ann.type === typeFilter;
+      return matchQ && matchType;
+    });
+
+    document.getElementById('ann-count').textContent = list.length + (list.length === 1 ? ' post' : ' posts');
+
+    const feed = document.getElementById('ann-feed');
+
+    if (!allAnns.length) {
+      feed.innerHTML = `
+        <div class="empty-state">
+          <div class="icon"><i class="ti ti-speakerphone"></i></div>
+          <p>No announcements yet. Your organizer hasn't posted any.</p>
+        </div>`;
+      return;
+    }
+
+    if (!list.length) {
+      feed.innerHTML = `
+        <div class="empty-state">
+          <div class="icon"><i class="ti ti-search"></i></div>
+          <p>No announcements match your search.</p>
+        </div>`;
+      return;
+    }
+
+    feed.innerHTML = list.slice().reverse().map(ann => {
+      const isNew = !seenIds.has(ann.id);
+      const audTags = [
+        ...(ann.allCourses ? ['All Courses'] : (ann.courses || [])),
+        ...(ann.allYears ? ['All Years'] : (ann.years || [])),
+        ...(ann.allSections ? ['All Sections'] : (ann.sections || []).map(s => 'Section ' + s)),
+      ];
+
+      return `
+        <div class="sAnnouncements-card" data-id="${ann.id}">
+          <div class="sAnnouncements-header">
+            <div>
+              ${isNew ? '<div style="display:flex;align-items:center;gap:6px;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--strawberry);margin-bottom:5px;"><span class="sAnnouncements-new-dot"></span>New</div>' : ''}
+              <div class="sAnnouncements-title">${esc(ann.title)}</div>
+              <span class="sAnnouncements-type">${typeLabels[ann.type] || 'Other'}</span>
+            </div>
+          </div>
+
+          <div class="sAnnouncements-detail-row">
+            <i class="ti ti-map-pin" style="color:var(--strawberry);"></i>
+            <span>${esc(ann.venue)}</span>
+          </div>
+          <div class="sAnnouncements-detail-row">
+            <i class="ti ti-calendar" style="color:var(--amber);"></i>
+            <span>${fmtDate(ann.date)}</span>
+          </div>
+          <div class="sAnnouncements-detail-row">
+            <i class="ti ti-clock" style="color:var(--matcha);"></i>
+            <span>${fmtTime(ann.time)}</span>
+          </div>
+          ${ann.count ? `
+          <div class="sAnnouncements-detail-row">
+            <i class="ti ti-users" style="color:var(--sky);"></i>
+            <span>${esc(ann.count)} expected attendees</span>
+          </div>` : ''}
+          ${ann.attire ? `
+          <div class="sAnnouncements-detail-row">
+            <i class="ti ti-shirt" style="color:var(--plum);"></i>
+            <span>Attire: ${esc(ann.attire)}</span>
+          </div>` : ''}
+
+          ${ann.notes ? `<div class="sAnnouncements-notes">${esc(ann.notes)}</div>` : ''}
+
+          ${audTags.length ? `
+          <div class="sAnnouncements-audience">
+            <div class="sAnnouncements-audience-label"><i class="ti ti-target"></i> For</div>
+            <div class="sAnnouncements-tags">
+              ${audTags.map(t => `<span class="sAnnouncements-tag">${t}</span>`).join('')}
+            </div>
+          </div>` : ''}
+
+          <div class="sAnnouncements-footer">
+            <span><i class="ti ti-clock-hour-4" style="margin-right:4px;"></i>Posted at ${ann.postedAt}</span>
+            <span style="color:var(--success);display:flex;align-items:center;gap:4px;"><i class="ti ti-circle-check"></i> Published</span>
+          </div>
+        </div>`;
+    }).join('');
+
+    // Mark all visible as seen
+    const newSeenIds = new Set(allAnns.map(a => a.id));
+    markSeen(newSeenIds);
+  }
+
+  function logout() { sessionStorage.removeItem('ae_user'); window.location.href = 'login.html'; }
+
+  renderFeed();
+  // Refresh every 10s so new organizer posts appear automatically
+  setInterval(renderFeed, 10000);
+</script>
+</body>
+</html>

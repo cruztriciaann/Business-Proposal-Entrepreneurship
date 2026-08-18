@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TOKI — Event Info</title>
+  <link rel="stylesheet" href="toki.css" />
+</head>
+<body>
+<div class="app-layout">
+
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon"><img src="icon.png" alt="TOKI Logo" /></div>
+      <div>
+        <div class="logo-text"><span class="logo-accent">TOKI</span></div>
+        <div class="logo-sub">Timing is Everything</div>
+      </div>
+    </div>
+    <div class="sidebar-role">
+      <span class="role-pill student"><i class="ti ti-school"></i> Student</span>
+    </div>
+    <div class="sidebar-user">
+      <div class="user-name" id="sb-name">—</div>
+      <div class="user-id" id="sb-id">—</div>
+      <div class="user-id" id="sb-course">—</div>
+    </div>
+    <nav class="sidebar-nav" aria-label="Student navigation">
+      <div class="nav-section-label">Attendance</div>
+      <a class="nav-item" href="sDashboard.html"><span class="nav-icon"><i class="ti ti-layout-dashboard"></i></span> Dashboard</a>
+      <a class="nav-item" href="sCheckIn.html"><span class="nav-icon"><i class="ti ti-circle-check"></i></span> Check-in</a>
+      <a class="nav-item" href="sCheckOut.html"><span class="nav-icon"><i class="ti ti-door-exit"></i></span> Check-out</a>
+      <div class="nav-section-label">Records</div>
+      <a class="nav-item" href="sMyHistory.html"><span class="nav-icon"><i class="ti ti-clipboard-list"></i></span> My History</a>
+      <div class="nav-section-label">Event</div>
+      <a class="nav-item active" href="sEvent.html"><span class="nav-icon"><i class="ti ti-calendar-event"></i></span> Event Info</a>
+      <a class="nav-item" href="sAnnouncements.html"><span class="nav-icon"><i class="ti ti-speakerphone"></i></span> Announcements</a>
+      <div class="nav-section-label">Help</div>
+      <a class="nav-item" href="sHowItWorks.html"><span class="nav-icon"><i class="ti ti-help-circle"></i></span> How It Works</a>
+    </nav>
+    <div class="sidebar-bottom">
+      <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+        <span style="display:flex;align-items:center;gap:8px;">
+          <i class="ti" id="theme-icon"></i>
+          <span id="theme-label">Light Mode</span>
+        </span>
+        <div class="toggle-switch"></div>
+      </button>
+      <button class="logout-btn" onclick="logout()"><i class="ti ti-logout"></i> Sign Out</button>
+    </div>
+  </aside>
+
+  <div class="main-content">
+    <div class="top-bar">
+      <div>
+        <div class="page-title">Event Info</div>
+        <div class="page-sub">Details about the current event</div>
+      </div>
+      <div class="top-bar-right">
+        <div id="event-badge"></div>
+      </div>
+    </div>
+
+    <div class="content-scroll">
+
+      <!-- No event state -->
+      <div id="sEvent-no-event" class="alert alert-warning" style="display:none;">
+        <i class="ti ti-alert-triangle"></i>
+        No active event right now. Check back when your organizer creates one.
+      </div>
+
+      <!-- Event detail cards -->
+      <div id="sEvent-content" style="display:none;">
+
+        <!-- Primary info card -->
+        <div class="card" style="margin-bottom:16px;">
+          <div class="card-header">
+            <div>
+              <div class="card-title" id="sEvent-name">—</div>
+              <div class="card-sub" id="sEvent-type">Event</div>
+            </div>
+            <span class="badge badge-green"><span class="dot pulse"></span> Active</span>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;font-size:13px;">
+            <div>
+              <div style="font-size:9px;text-transform:uppercase;letter-spacing:1.5px;font-weight:700;color:var(--text3);margin-bottom:5px;">Venue</div>
+              <div style="display:flex;align-items:center;gap:7px;color:var(--text2);">
+                <i class="ti ti-map-pin" style="color:var(--strawberry);"></i>
+                <span id="sEvent-venue">—</span>
+              </div>
+            </div>
+            <div>
+              <div style="font-size:9px;text-transform:uppercase;letter-spacing:1.5px;font-weight:700;color:var(--text3);margin-bottom:5px;">Department</div>
+              <div style="display:flex;align-items:center;gap:7px;color:var(--text2);">
+                <i class="ti ti-building" style="color:var(--matcha);"></i>
+                <span id="sEvent-dept">—</span>
+              </div>
+            </div>
+            <div>
+              <div style="font-size:9px;text-transform:uppercase;letter-spacing:1.5px;font-weight:700;color:var(--text3);margin-bottom:5px;">Date</div>
+              <div style="display:flex;align-items:center;gap:7px;color:var(--text2);">
+                <i class="ti ti-calendar" style="color:var(--amber);"></i>
+                <span id="sEvent-date">—</span>
+              </div>
+            </div>
+            <div>
+              <div style="font-size:9px;text-transform:uppercase;letter-spacing:1.5px;font-weight:700;color:var(--text3);margin-bottom:5px;">Start Time</div>
+              <div style="display:flex;align-items:center;gap:7px;color:var(--text2);">
+                <i class="ti ti-clock" style="color:var(--sky);"></i>
+                <span id="sEvent-time">—</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- GPS info card -->
+        <div class="card" style="margin-bottom:16px;">
+          <div class="card-header">
+            <div class="card-title"><i class="ti ti-map-pin" style="color:var(--strawberry);margin-right:8px;"></i>GPS Verification</div>
+          </div>
+          <div class="gps-bar" id="sEvent-gps-bar">
+            <i class="ti ti-location-off"></i>
+            <div id="sEvent-gps-text">Checking location…</div>
+          </div>
+          <div style="margin-top:12px;font-size:12px;color:var(--text3);line-height:1.65;">
+            You must be within <strong id="sEvent-radius" style="color:var(--text2);">—</strong> of the venue when checking in.
+            GPS is verified automatically — make sure location is enabled on your device.
+          </div>
+        </div>
+
+        <!-- Window status card -->
+        <div class="card" style="margin-bottom:16px;">
+          <div class="card-header">
+            <div class="card-title"><i class="ti ti-door-enter" style="color:var(--matcha);margin-right:8px;"></i>Window Status</div>
+            <div class="card-sub">Live check-in / check-out state</div>
+          </div>
+          <div class="status-steps" id="sEvent-window-steps"></div>
+        </div>
+
+        <!-- Quick action card -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Quick Actions</div>
+          </div>
+          <div style="display:flex;gap:12px;flex-wrap:wrap;">
+            <a href="sCheckIn.html" class="btn btn-primary">
+              <i class="ti ti-circle-check"></i> Check In
+            </a>
+            <a href="sCheckOut.html" class="btn btn-success">
+              <i class="ti ti-door-exit"></i> Check Out
+            </a>
+            <a href="sAnnouncements.html" class="btn btn-ghost">
+              <i class="ti ti-speakerphone"></i> Announcements
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile bottom nav -->
+  <nav class="bottom-nav" aria-label="Mobile navigation">
+    <a class="bottom-nav-item" href="sDashboard.html"><span class="bn-icon"><i class="ti ti-layout-dashboard"></i></span><span>Home</span></a>
+    <a class="bottom-nav-item" href="sCheckIn.html"><span class="bn-icon"><i class="ti ti-circle-check"></i></span><span>Check In</span></a>
+    <a class="bottom-nav-item active" href="sEvent.html"><span class="bn-icon"><i class="ti ti-calendar-event"></i></span><span>Event</span></a>
+    <a class="bottom-nav-item" href="sAnnouncements.html"><span class="bn-icon"><i class="ti ti-speakerphone"></i></span><span>Posts</span></a>
+    <a class="bottom-nav-item" href="sMyHistory.html"><span class="bn-icon"><i class="ti ti-clipboard-list"></i></span><span>History</span></a>
+  </nav>
+
+</div>
+
+<script src="toki.js"></script>
+<script>
+  const user = JSON.parse(sessionStorage.getItem('ae_user') || 'null');
+  if (!user || user.role !== 'student') window.location.href = 'login.html';
+
+  document.getElementById('sb-name').textContent   = user.name;
+  document.getElementById('sb-id').textContent     = user.id;
+  document.getElementById('sb-course').textContent = user.course;
+
+  function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('toki_theme', theme);
+    const icon  = document.getElementById('theme-icon');
+    const label = document.getElementById('theme-label');
+    if (icon)  icon.className    = theme === 'light' ? 'ti ti-moon' : 'ti ti-sun';
+    if (label) label.textContent = theme === 'light' ? 'Dark Mode'  : 'Light Mode';
+  }
+  function toggleTheme() {
+    const cur = document.documentElement.getAttribute('data-theme') || 'dark';
+    applyTheme(cur === 'dark' ? 'light' : 'dark');
+  }
+  applyTheme(localStorage.getItem('toki_theme') || 'dark');
+
+  function getState() {
+    try { return JSON.parse(localStorage.getItem('ae_state') || 'null'); } catch { return null; }
+  }
+
+  // GPS
+  let userLat = null, userLng = null;
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(pos => {
+      userLat = pos.coords.latitude;
+      userLng = pos.coords.longitude;
+      renderGPS();
+    }, () => {
+      const bar = document.getElementById('sEvent-gps-bar');
+      if (bar) {
+        bar.innerHTML = '<i class="ti ti-location-off"></i><div>GPS unavailable — ensure location access is enabled</div>';
+        bar.style.background = 'var(--warning-bg)';
+        bar.style.color = 'var(--warning)';
+      }
+    }, { enableHighAccuracy: false, timeout: 8000 });
+  }
+
+  function haversine(lat1, lng1, lat2, lng2) {
+    const R = 6371000;
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLng = (lng2 - lng1) * Math.PI / 180;
+    const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)**2;
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  }
+
+  function renderGPS() {
+    const s   = getState();
+    const bar = document.getElementById('sEvent-gps-bar');
+    if (!bar) return;
+    if (!s?.event || !s.orgLat) {
+      bar.innerHTML = '<i class="ti ti-map-pin"></i><div>GPS radius active for this event</div>';
+      return;
+    }
+    if (userLat !== null) {
+      const dist   = Math.round(haversine(userLat, userLng, s.orgLat, s.orgLng));
+      const radius = s.event.radius;
+      const inside = dist <= radius;
+      bar.innerHTML = `<i class="ti ${inside ? 'ti-map-pin-check' : 'ti-map-pin-x'}"></i>
+        <div>
+          <div>${inside ? 'You are inside the venue radius ✓' : 'You appear to be outside the venue radius'}</div>
+          <div style="font-size:11px;margin-top:2px;font-family:var(--font-mono);">${dist}m from venue center (limit: ${radius}m)</div>
+        </div>`;
+      bar.style.background  = inside ? 'var(--success-bg)' : 'var(--danger-bg)';
+      bar.style.borderColor = inside ? 'rgba(110,200,138,0.25)' : 'rgba(232,120,120,0.25)';
+      bar.style.color       = inside ? 'var(--success)' : 'var(--danger)';
+    }
+  }
+
+  function refreshUI() {
+    const s = getState();
+    const event = s?.event || null;
+
+    document.getElementById('event-badge').innerHTML = event
+      ? `<span class="badge badge-green"><span class="dot pulse"></span>${event.name}</span>`
+      : '<span class="badge badge-gray">No Active Event</span>';
+
+    document.getElementById('sEvent-no-event').style.display = event ? 'none' : 'block';
+    document.getElementById('sEvent-content').style.display  = event ? 'block' : 'none';
+    if (!event) return;
+
+    document.getElementById('sEvent-name').textContent   = event.name;
+    document.getElementById('sEvent-venue').textContent  = event.venue;
+    document.getElementById('sEvent-dept').textContent   = event.dept || 'N/A';
+    document.getElementById('sEvent-date').textContent   = event.date;
+    document.getElementById('sEvent-time').textContent   = event.time;
+    document.getElementById('sEvent-radius').textContent = `${event.radius}m`;
+
+    document.getElementById('sEvent-window-steps').innerHTML = `
+      <div class="step ${s.checkinOpen ? 'active' : s.checkinCode ? 'done' : 'pending'}">
+        <span class="step-icon"><i class="ti ti-door-enter"></i></span>
+        <div>
+          <div class="step-label">Check-in Window</div>
+          <div class="step-time">${s.checkinOpen ? 'Open now — enter the code!' : s.checkinCode ? 'Closed' : 'Not opened yet'}</div>
+        </div>
+        ${s.checkinOpen ? '<span class="badge badge-green" style="margin-left:auto;"><span class="dot pulse"></span> Live</span>' : ''}
+      </div>
+      <div class="step ${s.checkoutOpen ? 'active' : s.checkoutCode ? 'done' : 'pending'}">
+        <span class="step-icon"><i class="ti ti-door-exit"></i></span>
+        <div>
+          <div class="step-label">Check-out Window</div>
+          <div class="step-time">${s.checkoutOpen ? 'Open now — enter the code!' : s.checkoutCode ? 'Closed' : 'Not opened yet'}</div>
+        </div>
+        ${s.checkoutOpen ? '<span class="badge badge-green" style="margin-left:auto;"><span class="dot pulse"></span> Live</span>' : ''}
+      </div>`;
+
+    if (userLat !== null) renderGPS();
+  }
+
+  function logout() { sessionStorage.removeItem('ae_user'); window.location.href = 'login.html'; }
+
+  refreshUI();
+  setInterval(refreshUI, 4000);
+</script>
+</body>
+</html>

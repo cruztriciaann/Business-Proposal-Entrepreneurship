@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TOKI — About</title>
+  <link rel="stylesheet" href="toki.css" />
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="logo">TOKI</div>
+    <nav class="nav" aria-label="Main navigation">
+      <a href="index.html">Home</a>
+      <a href="features.html">Features</a>
+      <a href="how.html">How it works</a>
+      <a href="pricing.html">Pricing</a>
+    </nav>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <button class="topbar-theme-btn" onclick="toggleTheme()" aria-label="Toggle theme">
+        <i class="ti ti-moon" id="topbar-theme-icon"></i>
+      </button>
+      <a href="login.html" class="btn btn-primary btn-sm">Sign In</a>
+    </div>
+  </header>
+
+  <main class="page-landing">
+    <h1>About TOKI</h1>
+
+    <div class="card">
+      <p style="font-size:16px;line-height:1.8;color:var(--text2);">
+        TOKI is an attendance tracking system designed with one core principle:
+        <strong style="color:var(--text);">timing is everything.</strong>
+      </p>
+    </div>
+
+    <div class="card">
+      <h2>Our Mission</h2>
+      <p>
+        TOKI was created to help students and educators build discipline through accurate, automated attendance tracking.
+        Instead of manual roll calls or paper logs, TOKI ensures every record is precise, consistent, and time-based.
+        No more guesswork — just clean, verifiable data.
+      </p>
+    </div>
+
+    <div class="card">
+      <h2>The Philosophy</h2>
+      <p>
+        The system reflects a simple idea — small moments of time define responsibility, presence, and discipline.
+        When you show up on time, it reflects character. TOKI makes that visible and measurable.
+      </p>
+    </div>
+
+    <div class="card">
+      <h2>Security by Design</h2>
+      <p>
+        TOKI uses a dual-verification approach: a time-limited verbal code plus GPS geofencing. Both conditions must be met simultaneously.
+        This makes it virtually impossible to check in remotely or have someone else mark attendance on your behalf.
+      </p>
+    </div>
+
+    <div style="margin-top:36px;display:grid;grid-template-columns:repeat(3,1fr);gap:16px;text-align:center;">
+      <div class="card">
+        <div style="font-size:32px;font-weight:700;color:var(--strawberry);letter-spacing:-1px;">5 min</div>
+        <div style="font-size:12px;color:var(--text3);margin-top:4px;">Code Window</div>
+      </div>
+      <div class="card">
+        <div style="font-size:32px;font-weight:700;color:var(--matcha);letter-spacing:-1px;">GPS</div>
+        <div style="font-size:12px;color:var(--text3);margin-top:4px;">Verified Location</div>
+      </div>
+      <div class="card">
+        <div style="font-size:32px;font-weight:700;color:var(--plum);letter-spacing:-1px;">0</div>
+        <div style="font-size:12px;color:var(--text3);margin-top:4px;">Manual Work</div>
+      </div>
+    </div>
+  </main>
+
+  <script src="toki.js"></script>
+  <script>
+    function applyTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      localStorage.setItem('toki_theme', theme);
+      const icon = document.getElementById('topbar-theme-icon');
+      if (icon) icon.className = theme === 'dark' ? 'ti ti-sun' : 'ti ti-moon';
+    }
+    function toggleTheme() {
+      const cur = document.documentElement.getAttribute('data-theme') || 'dark';
+      applyTheme(cur === 'dark' ? 'light' : 'dark');
+    }
+    applyTheme(localStorage.getItem('toki_theme') || 'dark');
+  </script>
+</body>
+</html>

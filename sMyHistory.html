@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TOKI — My History</title>
+  <link rel="stylesheet" href="toki.css" />
+</head>
+<body>
+<div class="app-layout">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon"><img src="icon.png" alt="TOKI Logo" onerror="this.style.display='none'"/></div>
+      <div>
+        <div class="logo-text"><span class="logo-accent">TOKI</span></div>
+        <div class="logo-sub">Timing is Everything</div>
+      </div>
+    </div>
+    <div class="sidebar-role">
+      <span class="role-pill student"><i class="ti ti-school"></i> Student</span>
+    </div>
+    <div class="sidebar-user">
+      <div class="user-name" id="sb-name">—</div>
+      <div class="user-id" id="sb-id">—</div>
+      <div class="user-id" id="sb-course">—</div>
+    </div>
+    <nav class="sidebar-nav" aria-label="Student navigation">
+      <div class="nav-section-label">Attendance</div>
+      <a class="nav-item" href="sDashboard.html"><span class="nav-icon"><i class="ti ti-layout-dashboard"></i></span> Dashboard</a>
+      <a class="nav-item" href="sCheckIn.html"><span class="nav-icon"><i class="ti ti-circle-check"></i></span> Check-in</a>
+      <a class="nav-item" href="sCheckOut.html"><span class="nav-icon"><i class="ti ti-door-exit"></i></span> Check-out</a>
+      <div class="nav-section-label">Records</div>
+      <a class="nav-item active" href="sMyHistory.html"><span class="nav-icon"><i class="ti ti-clipboard-list"></i></span> My History</a>
+      <div class="nav-section-label">Event</div>
+      <a class="nav-item" href="sEvent.html"><span class="nav-icon"><i class="ti ti-calendar-event"></i></span> Event Info</a>
+      <a class="nav-item" href="sAnnouncements.html"><span class="nav-icon"><i class="ti ti-speakerphone"></i></span> Announcements</a>
+      <div class="nav-section-label">Help</div>
+      <a class="nav-item" href="sHowItWorks.html"><span class="nav-icon"><i class="ti ti-help-circle"></i></span> How It Works</a>
+    </nav>
+    <div class="sidebar-bottom">
+      <button class="theme-toggle" onclick="TOKI.toggleTheme()" aria-label="Toggle theme">
+        <span style="display:flex;align-items:center;gap:8px;">
+          <i class="ti" id="theme-icon"></i>
+          <span id="theme-label">Light Mode</span>
+        </span>
+        <div class="toggle-switch"></div>
+      </button>
+      <button class="logout-btn" onclick="TOKI.logout()"><i class="ti ti-logout"></i> Sign Out</button>
+    </div>
+  </aside>
+
+  <div class="main-content">
+    <div class="top-bar">
+      <div>
+        <div class="page-title">My History</div>
+        <div class="page-sub">Your personal attendance records</div>
+      </div>
+      <div class="top-bar-right"><div id="event-badge"></div></div>
+    </div>
+
+    <div class="content-scroll">
+
+      <!-- Current event record -->
+      <div id="current-section"></div>
+
+      <!-- Past events from archive -->
+      <div id="past-section"></div>
+
+    </div>
+  </div>
+
+  <nav class="bottom-nav" aria-label="Mobile navigation">
+    <a class="bottom-nav-item" href="sDashboard.html"><span class="bn-icon"><i class="ti ti-layout-dashboard"></i></span><span>Home</span></a>
+    <a class="bottom-nav-item" href="sCheckIn.html"><span class="bn-icon"><i class="ti ti-circle-check"></i></span><span>Check In</span></a>
+    <a class="bottom-nav-item" href="sEvent.html"><span class="bn-icon"><i class="ti ti-calendar-event"></i></span><span>Event</span></a>
+    <a class="bottom-nav-item" href="sAnnouncements.html"><span class="bn-icon"><i class="ti ti-speakerphone"></i></span><span>Posts</span></a>
+    <a class="bottom-nav-item active" href="sMyHistory.html"><span class="bn-icon"><i class="ti ti-clipboard-list"></i></span><span>History</span></a>
+  </nav>
+</div>
+
+<script src="shared-state.js"></script>
+<script src="toki.js"></script>
+<script>
+  const user = TOKI.requireStudent();
+  TOKI.initTheme();
+  if (user) {
+    document.getElementById('sb-name').textContent   = user.name;
+    document.getElementById('sb-id').textContent     = user.id;
+    document.getElementById('sb-course').textContent = user.course;
+  }
+
+  function duration(inTime, outTime) {
+    if (!inTime || !outTime) return null;
+    try {
+      function toMins(t) {
+        let h, m;
+        if (t.includes('AM') || t.includes('PM')) {
+          const [time, period] = t.split(' ');
+          [h, m] = time.split(':').map(Number);
+          if (period === 'PM' && h !== 12) h += 12;
+          if (period === 'AM' && h === 12) h = 0;
+        } else {
+          [h, m] = t.split(':').map(Number);
+        }
+        return h * 60 + m;
+      }
+      const diff = toMins(outTime) - toMins(inTime);
+      if (diff <= 0) return null;
+      const hrs = Math.floor(diff / 60);
+      const mins = diff % 60;
+      return hrs > 0 ? `${hrs}h ${mins}m` : `${mins}m`;
+    } catch { return null; }
+  }
+
+  function renderRecord(rec, event) {
+    if (!rec) return '';
+    const grace    = event?.gracePeriod ?? 15;
+    const isLate   = TOKI.isLate(rec.checkinTime, event?.time, grace);
+    const dur      = duration(rec.checkinTime, rec.checkoutTime);
+    const complete = !!rec.checkoutTime;
+
+    return `
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;font-size:13px;">
+        <div>
+          <div style="font-size:9px;text-transform:uppercase;letter-spacing:1.2px;font-weight:700;color:var(--text3);margin-bottom:4px;">Check-in</div>
+          <div style="font-weight:600;color:var(--text);">${rec.checkinTime || '—'}</div>
+          ${rec.checkinTime ? `<div style="margin-top:4px;"><span class="badge ${isLate ? 'badge-amber' : 'badge-green'}" style="font-size:10px;">${isLate ? '⏰ Late' : '✓ On Time'}</span></div>` : ''}
+        </div>
+        <div>
+          <div style="font-size:9px;text-transform:uppercase;letter-spacing:1.2px;font-weight:700;color:var(--text3);margin-bottom:4px;">Check-out</div>
+          <div style="font-weight:600;color:var(--text);">${rec.checkoutTime || '—'}</div>
+          ${dur ? `<div style="font-size:11px;color:var(--text3);margin-top:4px;font-family:var(--font-mono);">Duration: ${dur}</div>` : ''}
+        </div>
+        <div>
+          <div style="font-size:9px;text-transform:uppercase;letter-spacing:1.2px;font-weight:700;color:var(--text3);margin-bottom:4px;">Method</div>
+          <span class="badge ${rec.method === 'manual' ? 'badge-amber' : 'badge-gray'}">${rec.method || 'code'}</span>
+        </div>
+        <div>
+          <div style="font-size:9px;text-transform:uppercase;letter-spacing:1.2px;font-weight:700;color:var(--text3);margin-bottom:4px;">Status</div>
+          <span class="badge ${complete ? 'badge-green' : 'badge-amber'}">${complete ? 'Complete' : 'Inside'}</span>
+        </div>
+      </div>`;
+  }
+
+  function render() {
+    const st    = TOKI.load();
+    const event = st.event;
+
+    document.getElementById('event-badge').innerHTML = event
+      ? `<span class="badge badge-green"><span class="dot pulse"></span>${event.name}</span>`
+      : `<span class="badge badge-gray">No Active Event</span>`;
+
+    // Current event
+    const currentEl = document.getElementById('current-section');
+    if (event) {
+      const myRec = st.attendance.find(a => a.sid === user.id) || null;
+      currentEl.innerHTML = `
+        <div class="card" style="margin-bottom:16px;">
+          <div class="card-header">
+            <div>
+              <div class="card-title">${event.name}</div>
+              <div class="card-sub">${event.date} · ${event.venue}</div>
+            </div>
+            <span class="badge badge-green"><span class="dot pulse"></span> Active</span>
+          </div>
+          ${myRec ? renderRecord(myRec, event) : `
+            <div class="empty-state" style="padding:24px 0;">
+              <div class="icon"><i class="ti ti-clock"></i></div>
+              <p>You haven't checked in to this event yet.</p>
+              <a href="sCheckIn.html" class="btn btn-primary btn-sm" style="margin-top:12px;display:inline-flex;">
+                <i class="ti ti-circle-check"></i> Check In Now
+              </a>
+            </div>`}
+        </div>`;
+    } else {
+      currentEl.innerHTML = `
+        <div class="alert alert-info">
+          <i class="ti ti-info-circle"></i>
+          No active event right now. Your completed records appear below.
+        </div>`;
+    }
+
+    // Past events from archive
+    const pastEl   = document.getElementById('past-section');
+    const archives = TOKI.loadArchives();
+    const myPast   = archives.filter(a => a.attendance.some(r => r.sid === user.id));
+
+    if (!myPast.length) {
+      pastEl.innerHTML = `
+        <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:12px;">Past Events</div>
+        <div class="empty-state">
+          <div class="icon"><i class="ti ti-history"></i></div>
+          <p>No past attendance records yet.</p>
+        </div>`;
+      return;
+    }
+
+    pastEl.innerHTML = `<div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:12px;"><i class="ti ti-history" style="margin-right:8px;color:var(--text3);"></i>Past Events (${myPast.length})</div>` +
+      myPast.slice().reverse().map(archive => {
+        const rec = archive.attendance.find(r => r.sid === user.id);
+        return `
+          <div class="card" style="margin-bottom:14px;">
+            <div class="card-header">
+              <div>
+                <div class="card-title">${archive.event.name}</div>
+                <div class="card-sub">${archive.event.date} · ${archive.event.venue}</div>
+              </div>
+              <span class="badge badge-gray">Archived</span>
+            </div>
+            ${rec ? renderRecord(rec, archive.event) : '<div style="color:var(--text3);font-size:13px;">No attendance record for this event.</div>'}
+          </div>`;
+      }).join('');
+  }
+
+  render();
+  setInterval(render, 5000);
+</script>
+</body>
+</html>
